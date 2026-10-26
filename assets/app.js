@@ -8,10 +8,11 @@
   var SCOT_COLOURS = ['#f2f0f7', '#dadaeb', '#bcbddc', '#9e9ac8', '#807dba', '#6a51a3', '#4a1486'];
   var PFA_COLOURS = ['#eff3ff', '#c6dbef', '#9ecae1', '#6baed6', '#4292c6', '#2171b5', '#084594'];
   var HOTSPOT_Q = 0.97;
+  var MIN_POP = 1500; // a cell needs this many residents (or workday people) before a rate is shown
   var INCOMPLETE = 0.9; // a force with < 90% of window months is flagged as incomplete
 
   var S = {
-    meta: null, forceTotals: null, pfa: null, pfaIndex: [], scotData: null, scotGeo: null, xref: null,
+    meta: null, forceTotals: null, pfa: null, pfaIndex: [], scotData: null, scotGeo: null, xref: null, notes: null, pop: null, popIdx: {}, mode: 'count', vals: [],
     win: '10y', month: null,
     cells: [], breaks: [], sortedCounts: [], rangeIds: [],
     cache: {}
@@ -69,6 +70,18 @@
     if (!sorted.length) return 0;
     return sorted[Math.min(sorted.length - 1, Math.floor(p * sorted.length))];
   }
+  // Value that colours a cell: the count, or an annual rate per 1,000 people (England and Wales only).
+  function cellValue(c) {
+    if (S.mode === 'count') return c[2];
+    var p = S.popIdx[c[0] + ',' + c[1]];
+    if (!p) return null;
+    var denom = S.mode === 'res' ? p[0] : p[1];
+    if (denom < MIN_POP) return null;
+    var ll = hexCenter(c[0], c[1]), slug = forceAt(ll[0], ll[1]);
+    if (slug) { var cov = forceCoverage(slug); if (cov.present < cov.total * INCOMPLETE) return null; }
+    return c[2] / (S.rangeIds.length / 12) * 1000 / denom;
+  }
+  function fmtVal(v) { return S.mode === 'count' ? fmt(Math.round(v)) : (v >= 10 ? v.toFixed(0) : v.toFixed(1)); }
   function classOf(n) {
     var i = 0;
     while (i < S.breaks.length && n >= S.breaks[i]) i++;
@@ -150,19 +163,41 @@
     incomplete_months: 'police.uk has fewer than 12 months for that year, so no like-for-like check is possible',
     no_street_data: 'police.uk published no street-level rows for that year'
   };
+  function forceNotesHtml(slug) {
+    var h = '', n = S.notes && S.notes.forces[slug], ls = S.meta.quality.force_location_share_pct;
+    if (n) h += '<br><span class="small">Known issue: ' + n.note + ' (<a href="' + n.source + '" target="_blank" rel="noopener">source</a>)</span>';
+    if (ls && ls[slug] !== undefined && ls[slug] < 96) h += '<br><span class="small">' + (100 - ls[slug]).toFixed(1) + '% of this force\'s records in the window have no location, so they are in its totals but in no cell.</span>';
+    return h;
+  }
   function xrefHtml(slug, withTotal) {
     var x = xrefLatest(slug);
-    if (!x) return '';
+    if (!x) return forceNotesHtml(slug);
     var d = x.d;
     var h = '<br><span class="small">Home Office (official, whole force, ' + x.fy + '): ' + (withTotal ? fmt(d.home_office_total) + ' violence and sexual offences, of which ' : '') +
       d.sexual_share_pct + '% (' + fmt(d.home_office_sexual) + ') were sexual offences, ' + fmt(d.home_office_rape) + ' of them rape. ' +
       'This is a force-wide share; it is not known for this cell. Cross-check: ' + (AGREE_TEXT[d.agreement] || '') + '.</span>';
-    return h;
+    return h + forceNotesHtml(slug);
+  }
+
+  function popHtml(q, r, n) {
+    var p = S.popIdx[q + ',' + r];
+    if (!p) return '<br><span class="small">No population figure for this cell (Scotland, Northern Ireland and the sea are not covered), so no rate.</span>';
+    var yrs = S.rangeIds.length / 12, h = '<br><span class="small">Census 2021 people in this cell: ' + fmt(p[0]) + ' residents; ' + fmt(p[1]) + ' by workday population (where people work or live).';
+    var c = hexCenter(q, r), slug = forceAt(c[0], c[1]);
+    var inc = false; if (slug) { var cov = forceCoverage(slug); inc = cov.present < cov.total * INCOMPLETE; }
+    if (inc) h += ' Rates are not shown because this force has gaps in this window.';
+    else {
+      if (p[0] >= MIN_POP) h += ' Per 1,000 residents a year: ' + (n / yrs * 1000 / p[0]).toFixed(1) + '.';
+      if (p[1] >= MIN_POP) h += ' Per 1,000 workday population a year: ' + (n / yrs * 1000 / p[1]).toFixed(1) + '.';
+      if (p[0] < MIN_POP && p[1] < MIN_POP) h += ' Too few people for a stable rate.';
+    }
+    return h + ' Busy centres and rural cells can read very differently on the two bases.</span>';
   }
 
   function cellPopup(q, r, n) {
     var c = hexCenter(q, r), slug = forceAt(c[0], c[1]);
-    var rank = S.sortedCounts.length ? Math.round(100 * (S.sortedCounts.filter(function (x) { return x < n; }).length) / S.sortedCounts.length) : 0;
+    var v = cellValue([q, r, n]);
+    var rank = (v !== null && S.sortedCounts.length) ? Math.round(100 * (S.sortedCounts.filter(function (x) { return x < v; }).length) / S.sortedCounts.length) : 0;
     var html = '<div class="big">' + fmt(n) + '</div>reported records (violence and sexual offences, combined category)' +
       '<br><span class="small">Window: ' + windowLabel() + '</span>' +
       '<br>Area: cell ' + q + ',' + r + ' (hexagon about 4&nbsp;km across, centre near ' + c[0].toFixed(2) + ', ' + c[1].toFixed(2) + ')';
@@ -175,19 +210,21 @@
       }
     }
     if (slug) html += xrefHtml(slug, false);
+    html += popHtml(q, r, n);
     var maxN = S.sortedCounts[S.sortedCounts.length - 1];
-    html += '<br><span class="small">' + (n === maxN ? 'The highest-count cell in this window.' : 'Higher than ' + rank + '% of plotted cells.') + '</span>' +
+    html += '<br><span class="small">' + (v === null ? '' : (v === maxN ? 'The highest value in this view.' : 'Higher than ' + rank + '% of cells in this view.')) + '</span>' +
       '<br><span class="small">Source: data.police.uk, Open Government Licence v3.0. Locations anonymised by the police; may include British Transport Police records; reported offences only, not prevalence.</span>';
     return html;
   }
 
   function computeBreaks() {
-    var counts = S.cells.map(function (c) { return c[2]; }).sort(function (a, b) { return a - b; });
+    S.vals = S.cells.map(cellValue);
+    var counts = S.vals.filter(function (v) { return v !== null; }).sort(function (a, b) { return a - b; });
     S.sortedCounts = counts;
     var br = [];
     CLASS_QUANTILES.forEach(function (p) {
       var v = quantile(counts, p), last = br.length ? br[br.length - 1] : 0;
-      br.push(Math.max(v, last + 1));
+      br.push(Math.max(v, last + (S.mode === 'count' ? 1 : 0.01)));
     });
     S.breaks = br;
   }
@@ -196,18 +233,21 @@
     hexGroup.clearLayers();
     if (heat) { map.removeLayer(heat); heat = null; }
     var hot = quantile(S.sortedCounts, HOTSPOT_Q);
-    S.cells.forEach(function (c) {
-      var cls = classOf(c[2]), isHot = c[2] >= hot;
+    S.cells.forEach(function (c, i) {
+      var v = S.vals[i];
+      var na = v === null;
+      var cls = na ? 0 : classOf(v), isHot = !na && v >= hot;
       var poly = L.polygon(hexRing(c[0], c[1]), {
         renderer: canvas, stroke: isHot,
         color: '#5c0010', weight: 2, opacity: 0.95,
-        fillColor: CLASS_COLOURS[cls], fillOpacity: cls < 2 ? 0.12 : 0.3 + 0.07 * cls
+        fillColor: na ? '#9a9a9a' : CLASS_COLOURS[cls], fillOpacity: na ? 0.18 : (cls < 2 ? 0.12 : 0.3 + 0.07 * cls)
       });
       poly.bindPopup(function () { return cellPopup(c[0], c[1], c[2]); });
       poly._usoda = c;
       hexGroup.addLayer(poly);
     });
-    var p99 = Math.max(1, quantile(S.sortedCounts, 0.99));
+    var cs = S.cells.map(function (c) { return c[2]; }).sort(function (a, b) { return a - b; });
+    var p99 = Math.max(1, quantile(cs, 0.99));
     var pts = S.cells.map(function (c) {
       var ll = hexCenter(c[0], c[1]);
       return [ll[0], ll[1], Math.min(1, Math.sqrt(c[2] / p99))];
@@ -316,9 +356,11 @@
     var el = $('legend'), b = S.breaks;
     var ramp = CLASS_COLOURS.map(function (c) { return '<span style="background:' + c + '" title="' + c + '"></span>'; }).join('');
     var max = S.sortedCounts.length ? S.sortedCounts[S.sortedCounts.length - 1] : 0;
-    var html = '<strong>Reported records per cell</strong><div class="ramp" aria-hidden="true">' + ramp + '</div>' +
-      '<div class="ends"><span>fewer (' + (b.length ? '&lt;' + fmt(b[0]) : '') + ')</span><span>more (up to ' + fmt(max) + ')</span></div>' +
+    var title = S.mode === 'count' ? 'Reported records per cell' : (S.mode === 'res' ? 'Reported records a year per 1,000 residents' : 'Reported records a year per 1,000 workday population');
+    var html = '<strong>' + title + '</strong><div class="ramp" aria-hidden="true">' + ramp + '</div>' +
+      '<div class="ends"><span>fewer (' + (b.length ? '&lt;' + fmtVal(b[0]) : '') + ')</span><span>more (up to ' + fmtVal(max) + ')</span></div>' +
       '<div class="key"><span class="sw" aria-hidden="true"></span> Dark outline: hotspot (top 3% of cells in this window)</div>';
+    if (S.mode !== 'count') html += '<div class="key"><span class="sw" style="background:#9a9a9a;opacity:.4" aria-hidden="true"></span> Grey cells: no rate (outside England and Wales, too few people, or the force has data gaps). Census 2021 denominators; the heat layer still shows counts.</div>';
     if ($('lPfa').checked) html += '<div class="key"><span class="sw gap" aria-hidden="true"></span> Dashed grey (force areas): incomplete data</div>';
     if ($('lScot').checked && S.scotBreaks) html += '<div class="key"><span class="sw" style="background:#6a51a3" aria-hidden="true"></span> Purple (Scotland): sexual crimes per 10,000 residents, council areas, Scottish definition. Not comparable with the orange cells.</div>';
     html += '<div class="key" style="color:#555">Colour classes are quantile-based, recalculated for each window.</div>';
@@ -326,13 +368,14 @@
   }
 
   function renderTop() {
-    var top = S.cells.slice().sort(function (a, b) { return b[2] - a[2]; }).slice(0, 15);
+    var top = S.cells.map(function (c, i) { return { c: c, v: S.vals[i] }; })
+      .filter(function (o) { return o.v !== null; }).sort(function (a, b) { return b.v - a.v; }).slice(0, 15).map(function (o) { return o.c; });
     var ol = $('topList'); ol.innerHTML = '';
     top.forEach(function (c) {
       var ll = hexCenter(c[0], c[1]), slug = forceAt(ll[0], ll[1]);
       var li = document.createElement('li'), b = document.createElement('button');
       b.type = 'button';
-      b.textContent = fmt(c[2]) + ' records' + (slug ? ' - ' + forceName(slug) : '') + ' (' + ll[0].toFixed(2) + ', ' + ll[1].toFixed(2) + ')';
+      b.textContent = fmt(c[2]) + ' records' + (S.mode === 'count' ? '' : ' (' + fmtVal(cellValue(c)) + ' per 1,000 a year)') + (slug ? ' - ' + forceName(slug) : '') + ' (' + ll[0].toFixed(2) + ', ' + ll[1].toFixed(2) + ')';
       b.addEventListener('click', function () {
         map.setView(ll, 11);
         L.popup().setLatLng(ll).setContent(cellPopup(c[0], c[1], c[2])).openOn(map);
@@ -431,13 +474,21 @@
   ['lHeat', 'lHex', 'lPfa', 'lScot'].forEach(function (id) {
     $(id).addEventListener('change', function () { applyLayerToggles(); renderLegend(); });
   });
+  Array.prototype.forEach.call(document.querySelectorAll('input[name=mode]'), function (r) {
+    r.addEventListener('change', function () {
+      S.mode = r.value; computeBreaks(); renderCells(); renderLegend(); renderTop();
+    });
+  });
   $('aboutBtn').addEventListener('click', function () { $('about').showModal(); });
 
   // ---------------------------------------------------------------- boot
   Promise.all([getJSON('meta.json'), getJSON('force_totals.json'), getJSON('pfa.geojson'),
     getJSON('scotland_la.json').catch(function () { return null; }), getJSON('scotland_la.geojson').catch(function () { return null; }),
-    getJSON('crossref.json').catch(function () { return null; })]).then(function (r) {
-    S.meta = r[0]; S.forceTotals = r[1]; S.pfa = r[2]; S.scotData = r[3]; S.scotGeo = r[4]; S.xref = r[5];
+    getJSON('crossref.json').catch(function () { return null; }),
+    getJSON('population.json').catch(function () { return null; }),
+    getJSON('annotations.json').catch(function () { return null; })]).then(function (r) {
+    S.meta = r[0]; S.forceTotals = r[1]; S.pfa = r[2]; S.scotData = r[3]; S.scotGeo = r[4]; S.xref = r[5]; S.pop = r[6]; S.notes = r[7];
+    if (S.pop) { S.pop.cells.forEach(function (c) { S.popIdx[c[0] + ',' + c[1]] = [c[2], c[3]]; }); }
     G.R = S.meta.hex.R; G.K = S.meta.hex.K;
     buildPfaIndex(S.pfa);
     var sel = $('monthSelect');

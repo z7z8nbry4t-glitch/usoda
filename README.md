@@ -10,6 +10,7 @@ An interactive map of reported violence and sexual offences in the UK. It uses o
 - Marks hotspots with a dark outline (the top 3% of cells in the selected window).
 - Shows the count, time window and source note when you click or tap a cell.
 - Offers windows of 10 years, 5 years, 3 years, 12 months, or any single month.
+- Colours cells by count or, in England and Wales, by reports a year per 1,000 residents or per 1,000 workday population (grey where no reliable rate exists).
 - Offers a police force area layer with totals. It greys out areas with incomplete data.
 - Shows the data status: latest month, newest month upstream, coverage and the last successful ingest.
 - Lists the top 15 cells as buttons, as a keyboard-friendly alternative to the map.
@@ -20,6 +21,7 @@ An interactive map of reported violence and sexual offences in the UK. It uses o
 |---|---|---|
 | [data.police.uk](https://data.police.uk/) monthly archives (`/data/archive/YYYY-MM.zip`) and availability API (`/api/crimes-street-dates`) | Street-level records, category `violent-crime` | Open Government Licence v3.0 |
 | Home Office, [police recorded crime open data tables](https://www.gov.uk/government/statistical-data-sets/police-recorded-crime-and-outcomes-open-data-tables) (Police Force Area, England and Wales) | Cross-check of force totals; sexual-offence share by force | Open Government Licence v3.0 |
+| ONS Census 2021 (usual residents, workday population) and population-weighted LSOA centroids | Rates per 1,000 for England and Wales cells | Open Government Licence v3.0 |
 | ONS Open Geography Portal, Police Force Areas (December 2023) EW BUC | Force area boundaries | Open Government Licence v3.0; contains OS data (c) Crown copyright |
 | Scottish Government, [Recorded Crimes and Offences](https://data.gov.scot/dataset/recorded_crimes_and_offences) (Police Scotland returns) | Scotland layer: sexual crimes by council area, annual | Open Government Licence v3.0 |
 | ONS Open Geography Portal, Local Authority Districts (December 2024) UK BUC | Scottish council boundaries | Open Government Licence v3.0 |
@@ -70,6 +72,8 @@ Also in step 2: exact duplicate rows (same crime ID and coordinates in one file)
 | `months/YYYY-MM.json` | The same, for one month |
 | `force_totals.json` | Monthly category count per force. A missing month is a gap, not a zero |
 | `pfa.geojson` | Force area boundaries (run `scripts/fetch_boundaries.py` to refresh) |
+| `population.json` | Residents and workday population per hexagon and force (England and Wales, Census 2021). Refresh with `scripts/fetch_population.py` |
+| `annotations.json` | Curated notes on known data problems, with source links |
 | `crossref.json` | Home Office comparison per force and financial year, with agreement bands |
 | `scotland_la.json`, `scotland_la.geojson` | Scotland council-area layer |
 

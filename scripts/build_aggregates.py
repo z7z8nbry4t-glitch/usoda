@@ -100,6 +100,12 @@ def main():
             gaps[s] = {"missing_months": len(miss), "first": miss[0], "last": miss[-1]}
     recs = sum(months[m]["forces"][s]["vso"] for m in present for s in months[m]["forces"])
     located = sum(months[m]["forces"][s]["vso_located"] for m in present for s in months[m]["forces"])
+    force_loc = {}
+    for s_ in all_forces:
+        v_ = sum(months[m]["forces"].get(s_, {}).get("vso", 0) for m in present)
+        l_ = sum(months[m]["forces"].get(s_, {}).get("vso_located", 0) for m in present)
+        if v_:
+            force_loc[s_] = round(100.0 * l_ / v_, 1)
     dups = sum(months[m]["forces"][s].get("dups_dropped", 0) for m in present for s in months[m]["forces"])
     scot_ex = sum(months[m]["forces"][s].get("btp_scotland_excluded", 0) for m in present for s in months[m]["forces"])
     prev = read_json(os.path.join(DATA_DIR, "meta.json"), {}) or {}
@@ -121,6 +127,7 @@ def main():
             "records_in_window": recs,
             "records_with_location": located,
             "duplicate_rows_dropped": dups,
+            "force_location_share_pct": force_loc,
             "btp_scotland_records_excluded": scot_ex,
             "location_share_pct": round(100.0 * located / recs, 2) if recs else None,
             "forces_seen": len(all_forces),

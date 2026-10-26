@@ -13,6 +13,8 @@ Sources are shown side by side and never merged into one number. Each has a diff
 | data.police.uk street-level archives | England, Wales, Northern Ireland, British Transport Police | Anonymised point, grouped here into ~4 km hexagons; monthly | *Violence and sexual offences* (sexual offences plus all other violence) | **High for where reports cluster; low for sexual offences alone** | Only open source with a map location. Counts match the live API exactly in sample checks. Gaps: Greater Manchester 35 of 120 months, BTP 89 of 120. |
 | Scottish Government, *Recorded Crimes and Offences* (Police Scotland returns) | Scotland, 32 council areas | Council area; annual (April to March), 1996/97 to 2025/26 | Group 2 sexual crimes, with rape and attempted rape and sexual assault shown separately | **High for the Scottish definition; medium for place** | Official statistics, OGL v3.0. Council areas are large and uneven in size and population, so a big rural area can look as prominent as a dense city. Rates are published rounded to whole numbers per 10,000. Not comparable with the hexagons. |
 | Home Office, *Police recorded crime open data tables* (Police Force Area; updated 22 Oct 2026; England and Wales; quarterly, to June 2026) | Validation and force-level context for England and Wales | Force and financial year; Violence against the person, Sexual offences (rape as a subgroup) | The same scope as the police.uk category once the two Home Office groups are added together | **Highest of all sources for force totals**, and the only one that separates sexual offences | Used for cross-checking, never added to police.uk counts and never applied to hexagons. Results in `data/crossref.json`. No Scotland or Northern Ireland. Does not give locations. |
+| ONS Census 2021: usual residents (TS001) and workday population (WD002) by LSOA, with ONS population-weighted centroids | Denominators for rates per 1,000, England and Wales only (59.6 million residents; checks against the Census total) | LSOA (about 1,500 people) grouped into the same hexagons | People, not crimes | **High for denominators, but dated (census day 21 March 2021)** | `scripts/fetch_population.py` writes `data/population.json`. Residents understate busy centres (the City of London has 4,395 residents and 82,767 workday population); workday population misses visitors and nightlife (seaside towns such as Skegness show very high resident rates). Show both, never one alone. |
+| police.uk *Known issues* page (official notices) | Reasons for gaps: Greater Manchester, British Transport Police, Gloucestershire, Avon and Somerset | Per force | n/a | **High as an explanation; adds no counts** | Curated in `data/annotations.json` with source links and a checked date. |
 | ONS Open Geography Portal boundaries | Police force areas (E and W); local authority districts (Scotland) | Polygons | None (geometry only) | High | OGL v3.0, contains OS data (c) Crown copyright. |
 | OpenStreetMap tiles | Base map | n/a | n/a | n/a | ODbL. Attribution shown on the map. |
 
@@ -44,6 +46,16 @@ Sources are shown side by side and never merged into one number. Each has a diff
 - **British Transport Police in Scotland.** All 3,327 BTP points that fall inside Scottish council boundaries in the window are kept out of the hexagons, since BTP is not part of the Scottish Government's Police Scotland figures and a few rail points would make Scotland look covered. The count is published in the data status panel.
 - Cross-month repeats of the same crime ID (about 0.02% of rows) are left in, because a record can legitimately reappear with changed details.
 
+## News and other secondary sources
+
+- **News stories are not used to move or add points.** Matching reports to individual incidents would be locating specific offences, which the project's privacy rules exclude (the police anonymise locations on purpose). They are not an official record either.
+- News and official notices are used only to explain *aggregate* gaps (for example Greater Manchester's IT move). For that, police.uk's own known-issues page is a better and more stable source, so that is what the atlas cites.
+- **Not pulled this session:** Crime Survey for England and Wales and Scottish Crime and Justice Survey figures (the ONS page was outside the tool's allowed sites, so I did not quote numbers I could not check), and PSNI/NISRA Northern Ireland tables (the one document I could open held no counts; the series is in a PSNI spreadsheet, Table 14).
+
+## What "fine tuning the location data" means here
+
+Cell counts are not moved, smoothed or re-assigned. Fine tuning is limited to checks that make the existing locations easier to read: duplicates removed; rail points inside Scotland left out; rates per 1,000 using small-area population; force-level location completeness (Avon and Somerset, Gloucestershire and City of London publish 9 to 10% of records without a location) shown in popups; and known-issue notes. Scaling counts up to make up for missing coordinates was considered and rejected, because it would assume missing records fall in the same places as located ones.
+
 ## What I could not reach
 
 - Scottish data below council area (data zone, police division, point level). No open sexual-crime feed exists at that level that I could find. The atlas does not guess it.
@@ -59,6 +71,6 @@ Sources are shown side by side and never merged into one number. Each has a diff
 
 ## Next steps, in order of value
 
-1. Rates per 1,000 for England and Wales forces using ONS population, now that the Home Office totals are in.
+1. Force-level rates per 1,000 using the Home Office numerators (the population totals per force are already in `data/population.json`).
 2. Add NISRA bulletin totals as a Northern Ireland validation figure.
 3. Add the national survey figures (Crime Survey for England and Wales, Scottish Crime and Justice Survey) as a text panel, not a map layer.

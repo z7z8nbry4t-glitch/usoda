@@ -38,7 +38,8 @@ def main():
     except Exception as e:
         check("data/meta.json", False, str(e))
     for p in ("data/windows/10y.json", "data/pfa.geojson", "data/force_totals.json",
-              "data/scotland_la.json", "data/scotland_la.geojson", "assets/app.js", "assets/style.css"):
+              "data/scotland_la.json", "data/scotland_la.geojson", "data/crossref.json",
+              "data/population.json", "data/annotations.json", "assets/app.js", "assets/style.css"):
         try:
             check(p, get(base + "/" + p)[0] == 200)
         except Exception as e:

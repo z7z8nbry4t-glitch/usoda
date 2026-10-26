@@ -1,0 +1,22 @@
+{
+  "about": "Hand-maintained notes explaining known data problems, each with its official source. Checked against the police.uk 'Known issues' page on 26 October 2026. Notes explain gaps; they never add or estimate counts.",
+  "checked": "2026-10-26",
+  "forces": {
+    "greater-manchester": {
+      "note": "The police.uk site states that no crime, outcome or stop-and-search data is currently available for Greater Manchester Police while it moves to a new IT system. Its street-level series is missing for most months. The Home Office totals are shown instead.",
+      "source": "https://data.police.uk/changelog"
+    },
+    "btp": {
+      "note": "No British Transport Police crime data has been published on police.uk for every month since March 2025, and anti-social behaviour data has been missing since April 2016. Rail points that fall inside Scotland are left out of the cells.",
+      "source": "https://data.police.uk/changelog"
+    },
+    "gloucestershire": {
+      "note": "Gloucestershire Constabulary had not provided crime data for February to August 2026 at the last check; the force says it will provide a refresh. No reason is given.",
+      "source": "https://data.police.uk/changelog"
+    },
+    "avon-and-somerset": {
+      "note": "Since a change of IT systems in 2015 the force publishes around 2,000 crimes a month without a latitude and longitude. Those records are counted in force totals but cannot appear in any cell, so cell counts for this force are lower than the true figure.",
+      "source": "https://data.police.uk/changelog"
+    }
+  }
+}

@@ -211,5 +211,28 @@ class CrossReferenceTests(unittest.TestCase):
         self.assertEqual(cr.band(0.0, 0), "no_street_data")
 
 
+class PopulationTests(unittest.TestCase):
+    def test_build_places_people_in_hexes_and_forces(self):
+        import fetch_population as fp
+        from usoda_common import hex_of
+        sq = [[[-1.0, 52.0], [-0.5, 52.0], [-0.5, 52.5], [-1.0, 52.5], [-1.0, 52.0]]]
+        polys = [("box", (-1.0, 52.0, -0.5, 52.5), sq)]
+        cents = {"A": (-0.75, 52.25), "B": (-0.76, 52.26), "C": (5.0, 60.0)}
+        cells, forces, unplaced = fp.build(cents, {"A": 100, "B": 50, "C": 7}, {"A": 300, "B": 20, "C": 1}, polys)
+        self.assertEqual(forces["box"], [150, 320])
+        self.assertEqual(unplaced, 1)
+        self.assertEqual(sum(v[0] for v in cells.values()), 157)
+        q, r = hex_of(52.25, -0.75)
+        self.assertGreaterEqual(cells[(q, r)][0], 100)
+
+    def test_point_in_ring_with_hole(self):
+        import fetch_population as fp
+        outer = [[0, 0], [10, 0], [10, 10], [0, 10], [0, 0]]
+        hole = [[4, 4], [6, 4], [6, 6], [4, 6], [4, 4]]
+        polys = [("p", (0, 0, 10, 10), [outer, hole])]
+        self.assertEqual(fp.force_of(1, 1, polys), "p")
+        self.assertIsNone(fp.force_of(5, 5, polys))
+
+
 if __name__ == "__main__":
     unittest.main()
