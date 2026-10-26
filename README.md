@@ -1,32 +1,114 @@
 # UK Sexual Offence Density Atlas (USODA)
 
-Interactive heatmap prototype for reported violence and sexual offences density in the UK.
+An interactive map of reported violence and sexual offences in the UK. It uses official open police data, pre-aggregated into a rolling ten-year window.
 
-## Data Sources
-- Primary: data.police.uk API (category: violent-crime = Violence and sexual offences). Street-level anonymised lat/lng. Monthly releases.
-- Supplementary: ONS / Home Office Police Force Area and CSP tables for rates.
-- Scotland: Aggregated local authority data only (gov.scot).
+**Read this first.** The map shows the police category *Violence and sexual offences*. That category combines sexual offences with all other violence. The open data cannot separate them. The map shows counts of reports, not rates and not prevalence. Many sexual offences are never reported.
 
-## Features
-- Zoomable/pannable OpenStreetMap base.
-- Load density for current map view by querying the public API for selected month.
-- Heat layer + clickable approximate grid markers showing reported counts.
-- Rolling 10-year full national aggregation requires offline processing of archive ZIPs (data.police.uk/data/archive/).
+## What the site does
 
-## Limitations
-- Locations anonymised (not exact).
-- "violent-crime" bundles sexual offences with other violence.
-- Monthly lag; hourly polls would only detect new monthly drops.
-- API rate limits; production would pre-aggregate.
-- Scotland not covered at street level in this feed.
+- Shows a zoomable, pannable map (touch and keyboard supported) with a density heat layer and clickable hexagonal cells.
+- Marks hotspots with a dark outline (the top 3% of cells in the selected window).
+- Shows the count, time window and source note when you click or tap a cell.
+- Offers windows of 10 years, 5 years, 3 years, 12 months, or any single month.
+- Offers a police force area layer with totals. It greys out areas with incomplete data.
+- Shows the data status: latest month, newest month upstream, coverage and the last successful ingest.
+- Lists the top 15 cells as buttons, as a keyboard-friendly alternative to the map.
 
-## Cloudflare Deployment (recommended free domain)
+## Data sources
 
-1. Install Wrangler: `npm i -g wrangler`
-2. Authenticate: `wrangler login`
-3. From the usoda directory: `npx wrangler pages deploy . --project-name=usoda`
-4. Site will be live at `usoda.pages.dev` (or similar). Custom domain can be attached later in Cloudflare dashboard.
+| Source | Used for | Licence |
+|---|---|---|
+| [data.police.uk](https://data.police.uk/) monthly archives (`/data/archive/YYYY-MM.zip`) and availability API (`/api/crimes-street-dates`) | Street-level records, category `violent-crime` | Open Government Licence v3.0 |
+| ONS Open Geography Portal, Police Force Areas (December 2023) EW BUC | Force area boundaries | Open Government Licence v3.0; contains OS data (c) Crown copyright |
+| OpenStreetMap | Base map | ODbL |
 
-The included wrangler.toml configures static output. Optional Pages Function in functions/api/ provides a caching proxy for the police API (hourly cache) if you route fetches through /api/... to avoid any client-side rate limits.
+The police publish about 36 months in each archive. A 120-month window therefore needs four archives (L, L-36, L-72, L-108, where L is the newest month). The pipeline downloads them one at a time.
 
-Open Government Licence applies to source data.
+### Not yet included
+
+- **Scotland.** There is no open street-level feed. The Scottish Government publishes local-authority totals, but the hosts (gov.scot, statistics.gov.scot) were not reachable from the build environment, so no Scottish layer has been built or tested. The site says so. See *Extension points*.
+- **Home Office force-area totals and rates per 1,000.** The police.uk category (violence and sexual offences) does not match a Home Office offence group, so a like-for-like comparison needs care. The force layer shows raw counts.
+
+## Known data gaps
+
+The pipeline measures coverage in every build and writes it to `data/meta.json`. At the 2026-08 build:
+
+- Greater Manchester Police has street-level data for only 35 of 120 months. Almost nothing appears after June 2019.
+- British Transport Police has 89 of 120 months.
+- Devon and Cornwall (110 of 120) and Gloucestershire (113 of 120) have gaps.
+- Overall force-month coverage is 97.41%. 97.93% of category records carry a location.
+
+The site warns about these gaps in a banner and in cell popups. Do not read a quiet area in a gappy force as a safe area.
+
+## How the data is processed
+
+1. `scripts/poll_availability.py` reads the newest published month. It ingests only when that month is newer than `data/meta.json`.
+2. `scripts/ingest_archive.py` reads each `*-street.csv`, keeps rows with `Crime type = Violence and sexual offences`, drops rows without a coordinate or outside UK bounds, and counts them into hexagons. It keeps no crime IDs, street names or LSOA names.
+3. `scripts/build_aggregates.py` sums months into windows, hides cells with fewer than 3 records, and writes the static files in `data/`.
+4. `scripts/run_pipeline.py` runs steps 1 to 3 end to end and statelessly (download, ingest, delete the ZIP, build).
+
+**Hex grid.** The plane is `x = longitude * K`, `y = latitude`, with `K = cos(54.5 deg)`. Cells are pointy-top hexagons with a circumradius of 0.02 deg of latitude (about 2.2 km, or about 4 km across). Cells are addressed by axial coordinates (q, r). `scripts/usoda_common.py` and `assets/app.js` implement the same maths. The grid is deliberately coarse so that it never resolves individual streets.
+
+**Output files** (all under `data/`):
+
+| File | Content |
+|---|---|
+| `meta.json` | Window, hex definition, quality metrics, force gaps, timestamps |
+| `windows/{10y,5y,3y,12m}.json` | `[q, r, count]` per cell |
+| `months/YYYY-MM.json` | The same, for one month |
+| `force_totals.json` | Monthly category count per force. A missing month is a gap, not a zero |
+| `pfa.geojson` | Force area boundaries (run `scripts/fetch_boundaries.py` to refresh) |
+
+## Update cycle
+
+`.github/workflows/update-data.yml` polls hourly. When a new month appears, it rebuilds the window, commits `data/` to `main` and so triggers a Cloudflare Pages redeploy. You can also run it by hand (*Actions*, *Run workflow*, tick *force*). The site itself checks upstream once an hour and shows when a newer month exists than the atlas holds.
+
+Police data lags by one to three months, and recent months can still change.
+
+## Run it locally
+
+```
+python3 scripts/run_pipeline.py            # about 7 GB of downloads, one ZIP on disk at a time
+python3 scripts/fetch_boundaries.py        # only if boundaries need refreshing
+python3 -m http.server 8000                # then open http://localhost:8000
+python3 -m unittest discover -s tests -v   # offline tests
+python3 scripts/validate_samples.py work/archives/2026-08.zip 2026-08   # needs the ZIP kept (--keep-archives)
+```
+
+Set `USODA_WORK` to choose where temporary files go. The default is `work/` (ignored by Git). Python 3.10 or later, standard library only.
+
+## Testing and validation
+
+- `tests/test_pipeline.py` uses a synthetic archive. It checks the category filter, coordinate handling, hexagon maths, suppression, gap detection, window fall-back, and that no street names or IDs reach the output.
+- `scripts/validate_samples.py` compares archive counts with the live API for four city-centre boxes. On 26 October 2026 all four matched exactly for 2026-08 (Birmingham 289, Leeds 217, Cardiff 218, Belfast 141).
+- Not done: validation against Home Office force-area totals (see above).
+
+## Deployment (Cloudflare Pages)
+
+1. In the Cloudflare dashboard, choose *Workers and Pages*, *Create*, *Pages*, *Connect to Git*.
+2. Select `z7z8nbry4t-glitch/usoda`, branch `main`.
+3. Build command: leave empty (or `exit 0`). Output directory: `.` (the repository root).
+4. Save. The site appears at `https://usoda.pages.dev` (or the name Cloudflare assigns). Every push to `main` redeploys.
+
+`functions/api/[[path]].js` is a Pages Function. It proxies three fixed, read-only police.uk endpoints with a one-hour edge cache. It is not an open proxy. The site works without it (it falls back to calling police.uk directly).
+
+`wrangler.toml` supports `npx wrangler pages deploy .` for manual deploys.
+
+## Privacy and responsible use
+
+- The police anonymise locations by snapping them to a map point. This project does not try to reverse that, and nobody should use it to identify a victim, an offender or an address.
+- Cells with fewer than 3 records are hidden. Cells are about 4 km across.
+- The site shows no street names and keeps no record-level data.
+- Counts follow population, footfall and recording practice. Do not use cell counts to compare how safe areas are.
+
+## Extension points
+
+- **Scotland layer.** Add a script that fetches Scottish Government recorded-crime tables (local authority, sexual crimes group) when run from CI, writes `data/scotland_la.json`, and add a boundary layer. Do not extrapolate point data.
+- **Rates.** Join ONS mid-year population estimates to the force layer to show rates per 1,000.
+- **Vector tiles** if the number of cells grows beyond what canvas rendering handles well.
+- **Year-on-year comparison** using the per-month files.
+- **Home Office validation** of force totals.
+
+## Licence
+
+Code: add a licence file of your choice (none is set yet). Data: Open Government Licence v3.0. Vendored libraries (Leaflet, leaflet.heat) are BSD-2-Clause; their licences are in `assets/vendor/`.

@@ -1,0 +1,59 @@
+name: Update USODA data
+
+on:
+  schedule:
+    - cron: "17 * * * *"      # hourly availability poll; only ingests when a NEW month appears
+  workflow_dispatch:
+    inputs:
+      force:
+        description: "Rebuild even if no new month is available"
+        type: boolean
+        default: false
+  push:
+    paths: ["scripts/**", "tests/**", ".github/workflows/update-data.yml"]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: usoda-update
+  cancel-in-progress: false
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: python -m unittest discover -s tests -v
+
+  update:
+    needs: test
+    if: github.event_name != 'push'
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+
+      - name: Poll data.police.uk availability
+        id: poll
+        run: python scripts/poll_availability.py
+
+      - name: Rebuild rolling 10-year aggregates
+        if: steps.poll.outputs.new_month == 'true' || inputs.force == true
+        env:
+          USODA_WORK: ${{ runner.temp }}/usoda-work
+        run: python scripts/run_pipeline.py --latest "${{ steps.poll.outputs.latest }}"
+
+      - name: Commit and push (triggers Cloudflare Pages redeploy)
+        if: steps.poll.outputs.new_month == 'true' || inputs.force == true
+        run: |
+          git config user.name  "usoda-bot"
+          git config user.email "usoda-bot@users.noreply.github.com"
+          git add data
+          if git diff --cached --quiet; then echo "No data changes"; exit 0; fi
+          git commit -m "data: rolling window to ${{ steps.poll.outputs.latest }}"
+          git push

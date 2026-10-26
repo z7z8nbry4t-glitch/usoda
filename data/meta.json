@@ -1,0 +1,844 @@
+{
+ "category": "Violence and sexual offences",
+ "category_slug": "violent-crime",
+ "generated_at": "2026-10-26T20:28:49Z",
+ "hex": {
+  "K": 0.5807029557109398,
+  "R": 0.02,
+  "min_cell": 3,
+  "orientation": "pointy-top"
+ },
+ "last_successful_ingest": "2026-10-26T20:28:49Z",
+ "latest_month": "2026-08",
+ "months_available": [
+  {
+   "cells": 3418,
+   "month": "2016-09",
+   "records": 106857,
+   "suppressed": 3084
+  },
+  {
+   "cells": 3364,
+   "month": "2016-10",
+   "records": 110247,
+   "suppressed": 3117
+  },
+  {
+   "cells": 3341,
+   "month": "2016-11",
+   "records": 104457,
+   "suppressed": 3114
+  },
+  {
+   "cells": 3401,
+   "month": "2016-12",
+   "records": 109527,
+   "suppressed": 3005
+  },
+  {
+   "cells": 3350,
+   "month": "2017-01",
+   "records": 107791,
+   "suppressed": 3175
+  },
+  {
+   "cells": 3293,
+   "month": "2017-02",
+   "records": 103781,
+   "suppressed": 3147
+  },
+  {
+   "cells": 3587,
+   "month": "2017-03",
+   "records": 123091,
+   "suppressed": 3083
+  },
+  {
+   "cells": 3516,
+   "month": "2017-04",
+   "records": 115970,
+   "suppressed": 3113
+  },
+  {
+   "cells": 3700,
+   "month": "2017-05",
+   "records": 130105,
+   "suppressed": 3192
+  },
+  {
+   "cells": 3744,
+   "month": "2017-06",
+   "records": 133875,
+   "suppressed": 3181
+  },
+  {
+   "cells": 3821,
+   "month": "2017-07",
+   "records": 139519,
+   "suppressed": 3303
+  },
+  {
+   "cells": 3668,
+   "month": "2017-08",
+   "records": 127817,
+   "suppressed": 3326
+  },
+  {
+   "cells": 3609,
+   "month": "2017-09",
+   "records": 125710,
+   "suppressed": 3260
+  },
+  {
+   "cells": 3724,
+   "month": "2017-10",
+   "records": 137091,
+   "suppressed": 3229
+  },
+  {
+   "cells": 3629,
+   "month": "2017-11",
+   "records": 131218,
+   "suppressed": 3240
+  },
+  {
+   "cells": 3646,
+   "month": "2017-12",
+   "records": 129588,
+   "suppressed": 3120
+  },
+  {
+   "cells": 3677,
+   "month": "2018-01",
+   "records": 131417,
+   "suppressed": 3172
+  },
+  {
+   "cells": 3517,
+   "month": "2018-02",
+   "records": 120173,
+   "suppressed": 3205
+  },
+  {
+   "cells": 3738,
+   "month": "2018-03",
+   "records": 141137,
+   "suppressed": 3250
+  },
+  {
+   "cells": 3761,
+   "month": "2018-04",
+   "records": 142348,
+   "suppressed": 3248
+  },
+  {
+   "cells": 3959,
+   "month": "2018-05",
+   "records": 159406,
+   "suppressed": 3345
+  },
+  {
+   "cells": 4028,
+   "month": "2018-06",
+   "records": 160208,
+   "suppressed": 3262
+  },
+  {
+   "cells": 4164,
+   "month": "2018-07",
+   "records": 172869,
+   "suppressed": 3351
+  },
+  {
+   "cells": 3978,
+   "month": "2018-08",
+   "records": 152826,
+   "suppressed": 3371
+  },
+  {
+   "cells": 3953,
+   "month": "2018-09",
+   "records": 151099,
+   "suppressed": 3194
+  },
+  {
+   "cells": 4002,
+   "month": "2018-10",
+   "records": 158899,
+   "suppressed": 3256
+  },
+  {
+   "cells": 3896,
+   "month": "2018-11",
+   "records": 151128,
+   "suppressed": 3237
+  },
+  {
+   "cells": 3829,
+   "month": "2018-12",
+   "records": 147816,
+   "suppressed": 3259
+  },
+  {
+   "cells": 3912,
+   "month": "2019-01",
+   "records": 152116,
+   "suppressed": 3235
+  },
+  {
+   "cells": 3815,
+   "month": "2019-02",
+   "records": 143885,
+   "suppressed": 3338
+  },
+  {
+   "cells": 4039,
+   "month": "2019-03",
+   "records": 164793,
+   "suppressed": 3353
+  },
+  {
+   "cells": 4018,
+   "month": "2019-04",
+   "records": 155840,
+   "suppressed": 3273
+  },
+  {
+   "cells": 4100,
+   "month": "2019-05",
+   "records": 163628,
+   "suppressed": 3407
+  },
+  {
+   "cells": 4152,
+   "month": "2019-06",
+   "records": 166105,
+   "suppressed": 3258
+  },
+  {
+   "cells": 4173,
+   "month": "2019-07",
+   "records": 165612,
+   "suppressed": 3302
+  },
+  {
+   "cells": 4147,
+   "month": "2019-08",
+   "records": 155557,
+   "suppressed": 3278
+  },
+  {
+   "cells": 4009,
+   "month": "2019-09",
+   "records": 152110,
+   "suppressed": 3325
+  },
+  {
+   "cells": 4058,
+   "month": "2019-10",
+   "records": 158256,
+   "suppressed": 3245
+  },
+  {
+   "cells": 4013,
+   "month": "2019-11",
+   "records": 152924,
+   "suppressed": 3273
+  },
+  {
+   "cells": 3991,
+   "month": "2019-12",
+   "records": 152970,
+   "suppressed": 3285
+  },
+  {
+   "cells": 4056,
+   "month": "2020-01",
+   "records": 157274,
+   "suppressed": 3258
+  },
+  {
+   "cells": 4016,
+   "month": "2020-02",
+   "records": 151259,
+   "suppressed": 3203
+  },
+  {
+   "cells": 3997,
+   "month": "2020-03",
+   "records": 149773,
+   "suppressed": 3188
+  },
+  {
+   "cells": 3883,
+   "month": "2020-04",
+   "records": 127902,
+   "suppressed": 3172
+  },
+  {
+   "cells": 4069,
+   "month": "2020-05",
+   "records": 145257,
+   "suppressed": 3240
+  },
+  {
+   "cells": 4140,
+   "month": "2020-06",
+   "records": 155684,
+   "suppressed": 3227
+  },
+  {
+   "cells": 4239,
+   "month": "2020-07",
+   "records": 172621,
+   "suppressed": 3223
+  },
+  {
+   "cells": 4213,
+   "month": "2020-08",
+   "records": 172399,
+   "suppressed": 3346
+  },
+  {
+   "cells": 4172,
+   "month": "2020-09",
+   "records": 166006,
+   "suppressed": 3416
+  },
+  {
+   "cells": 4149,
+   "month": "2020-10",
+   "records": 159063,
+   "suppressed": 3155
+  },
+  {
+   "cells": 4099,
+   "month": "2020-11",
+   "records": 151339,
+   "suppressed": 3129
+  },
+  {
+   "cells": 4036,
+   "month": "2020-12",
+   "records": 149272,
+   "suppressed": 3117
+  },
+  {
+   "cells": 3995,
+   "month": "2021-01",
+   "records": 141447,
+   "suppressed": 3200
+  },
+  {
+   "cells": 3915,
+   "month": "2021-02",
+   "records": 135107,
+   "suppressed": 3143
+  },
+  {
+   "cells": 4289,
+   "month": "2021-03",
+   "records": 166696,
+   "suppressed": 3219
+  },
+  {
+   "cells": 4259,
+   "month": "2021-04",
+   "records": 166154,
+   "suppressed": 3352
+  },
+  {
+   "cells": 4397,
+   "month": "2021-05",
+   "records": 185830,
+   "suppressed": 3448
+  },
+  {
+   "cells": 4420,
+   "month": "2021-06",
+   "records": 188708,
+   "suppressed": 3398
+  },
+  {
+   "cells": 4536,
+   "month": "2021-07",
+   "records": 194485,
+   "suppressed": 3342
+  },
+  {
+   "cells": 4307,
+   "month": "2021-08",
+   "records": 177928,
+   "suppressed": 3308
+  },
+  {
+   "cells": 4359,
+   "month": "2021-09",
+   "records": 184363,
+   "suppressed": 3328
+  },
+  {
+   "cells": 4389,
+   "month": "2021-10",
+   "records": 189387,
+   "suppressed": 3310
+  },
+  {
+   "cells": 4309,
+   "month": "2021-11",
+   "records": 184879,
+   "suppressed": 3281
+  },
+  {
+   "cells": 4258,
+   "month": "2021-12",
+   "records": 175749,
+   "suppressed": 3296
+  },
+  {
+   "cells": 4305,
+   "month": "2022-01",
+   "records": 177093,
+   "suppressed": 3315
+  },
+  {
+   "cells": 4207,
+   "month": "2022-02",
+   "records": 169136,
+   "suppressed": 3261
+  },
+  {
+   "cells": 4352,
+   "month": "2022-03",
+   "records": 189949,
+   "suppressed": 3434
+  },
+  {
+   "cells": 4288,
+   "month": "2022-04",
+   "records": 179052,
+   "suppressed": 3331
+  },
+  {
+   "cells": 4507,
+   "month": "2022-05",
+   "records": 197718,
+   "suppressed": 3246
+  },
+  {
+   "cells": 4450,
+   "month": "2022-06",
+   "records": 189643,
+   "suppressed": 3400
+  },
+  {
+   "cells": 4542,
+   "month": "2022-07",
+   "records": 197461,
+   "suppressed": 3336
+  },
+  {
+   "cells": 4531,
+   "month": "2022-08",
+   "records": 189578,
+   "suppressed": 3353
+  },
+  {
+   "cells": 4403,
+   "month": "2022-09",
+   "records": 179407,
+   "suppressed": 3341
+  },
+  {
+   "cells": 4447,
+   "month": "2022-10",
+   "records": 185168,
+   "suppressed": 3165
+  },
+  {
+   "cells": 4130,
+   "month": "2022-11",
+   "records": 175207,
+   "suppressed": 3084
+  },
+  {
+   "cells": 4003,
+   "month": "2022-12",
+   "records": 160750,
+   "suppressed": 3054
+  },
+  {
+   "cells": 4070,
+   "month": "2023-01",
+   "records": 171181,
+   "suppressed": 3083
+  },
+  {
+   "cells": 4047,
+   "month": "2023-02",
+   "records": 164828,
+   "suppressed": 2956
+  },
+  {
+   "cells": 4218,
+   "month": "2023-03",
+   "records": 182545,
+   "suppressed": 2942
+  },
+  {
+   "cells": 3974,
+   "month": "2023-04",
+   "records": 169951,
+   "suppressed": 3025
+  },
+  {
+   "cells": 4096,
+   "month": "2023-05",
+   "records": 181944,
+   "suppressed": 3116
+  },
+  {
+   "cells": 4213,
+   "month": "2023-06",
+   "records": 185126,
+   "suppressed": 3139
+  },
+  {
+   "cells": 4193,
+   "month": "2023-07",
+   "records": 177165,
+   "suppressed": 3150
+  },
+  {
+   "cells": 3823,
+   "month": "2023-08",
+   "records": 159409,
+   "suppressed": 2758
+  },
+  {
+   "cells": 4270,
+   "month": "2023-09",
+   "records": 176437,
+   "suppressed": 3415
+  },
+  {
+   "cells": 4228,
+   "month": "2023-10",
+   "records": 175728,
+   "suppressed": 3495
+  },
+  {
+   "cells": 4152,
+   "month": "2023-11",
+   "records": 165381,
+   "suppressed": 3444
+  },
+  {
+   "cells": 4175,
+   "month": "2023-12",
+   "records": 168311,
+   "suppressed": 3450
+  },
+  {
+   "cells": 4145,
+   "month": "2024-01",
+   "records": 165814,
+   "suppressed": 3385
+  },
+  {
+   "cells": 4119,
+   "month": "2024-02",
+   "records": 160240,
+   "suppressed": 3198
+  },
+  {
+   "cells": 4206,
+   "month": "2024-03",
+   "records": 171723,
+   "suppressed": 3228
+  },
+  {
+   "cells": 4123,
+   "month": "2024-04",
+   "records": 163937,
+   "suppressed": 3326
+  },
+  {
+   "cells": 4453,
+   "month": "2024-05",
+   "records": 183131,
+   "suppressed": 3447
+  },
+  {
+   "cells": 4368,
+   "month": "2024-06",
+   "records": 177630,
+   "suppressed": 3394
+  },
+  {
+   "cells": 4454,
+   "month": "2024-07",
+   "records": 183440,
+   "suppressed": 3370
+  },
+  {
+   "cells": 4363,
+   "month": "2024-08",
+   "records": 173291,
+   "suppressed": 3421
+  },
+  {
+   "cells": 4291,
+   "month": "2024-09",
+   "records": 167916,
+   "suppressed": 3446
+  },
+  {
+   "cells": 4302,
+   "month": "2024-10",
+   "records": 171874,
+   "suppressed": 3420
+  },
+  {
+   "cells": 4258,
+   "month": "2024-11",
+   "records": 165408,
+   "suppressed": 3399
+  },
+  {
+   "cells": 4230,
+   "month": "2024-12",
+   "records": 164716,
+   "suppressed": 3395
+  },
+  {
+   "cells": 4194,
+   "month": "2025-01",
+   "records": 161169,
+   "suppressed": 3416
+  },
+  {
+   "cells": 4084,
+   "month": "2025-02",
+   "records": 151022,
+   "suppressed": 3387
+  },
+  {
+   "cells": 4350,
+   "month": "2025-03",
+   "records": 175786,
+   "suppressed": 3437
+  },
+  {
+   "cells": 4300,
+   "month": "2025-04",
+   "records": 167894,
+   "suppressed": 3506
+  },
+  {
+   "cells": 4430,
+   "month": "2025-05",
+   "records": 181798,
+   "suppressed": 3421
+  },
+  {
+   "cells": 4388,
+   "month": "2025-06",
+   "records": 183899,
+   "suppressed": 3563
+  },
+  {
+   "cells": 4597,
+   "month": "2025-07",
+   "records": 195176,
+   "suppressed": 3582
+  },
+  {
+   "cells": 4464,
+   "month": "2025-08",
+   "records": 183370,
+   "suppressed": 3540
+  },
+  {
+   "cells": 4312,
+   "month": "2025-09",
+   "records": 167466,
+   "suppressed": 3419
+  },
+  {
+   "cells": 4326,
+   "month": "2025-10",
+   "records": 172574,
+   "suppressed": 3367
+  },
+  {
+   "cells": 4263,
+   "month": "2025-11",
+   "records": 166871,
+   "suppressed": 3504
+  },
+  {
+   "cells": 4255,
+   "month": "2025-12",
+   "records": 166624,
+   "suppressed": 3316
+  },
+  {
+   "cells": 4180,
+   "month": "2026-01",
+   "records": 161835,
+   "suppressed": 3426
+  },
+  {
+   "cells": 4101,
+   "month": "2026-02",
+   "records": 154168,
+   "suppressed": 3228
+  },
+  {
+   "cells": 4301,
+   "month": "2026-03",
+   "records": 174475,
+   "suppressed": 3347
+  },
+  {
+   "cells": 4209,
+   "month": "2026-04",
+   "records": 167163,
+   "suppressed": 3416
+  },
+  {
+   "cells": 4353,
+   "month": "2026-05",
+   "records": 181560,
+   "suppressed": 3389
+  },
+  {
+   "cells": 4418,
+   "month": "2026-06",
+   "records": 185861,
+   "suppressed": 3433
+  },
+  {
+   "cells": 4576,
+   "month": "2026-07",
+   "records": 197520,
+   "suppressed": 3366
+  },
+  {
+   "cells": 4399,
+   "month": "2026-08",
+   "records": 178131,
+   "suppressed": 3499
+  }
+ ],
+ "previous_latest_month": "2026-08",
+ "project": "UK Sexual Offence Density Atlas (USODA)",
+ "quality": {
+  "force_gaps": {
+   "btp": {
+    "first": "2016-09",
+    "last": "2026-08",
+    "missing_months": 31
+   },
+   "cumbria": {
+    "first": "2023-08",
+    "last": "2023-08",
+    "missing_months": 1
+   },
+   "devon-and-cornwall": {
+    "first": "2022-11",
+    "last": "2023-08",
+    "missing_months": 10
+   },
+   "gloucestershire": {
+    "first": "2026-02",
+    "last": "2026-08",
+    "missing_months": 7
+   },
+   "greater-manchester": {
+    "first": "2019-07",
+    "last": "2026-08",
+    "missing_months": 85
+   },
+   "lincolnshire": {
+    "first": "2023-04",
+    "last": "2023-04",
+    "missing_months": 1
+   },
+   "northern-ireland": {
+    "first": "2023-08",
+    "last": "2023-08",
+    "missing_months": 1
+   },
+   "nottinghamshire": {
+    "first": "2023-08",
+    "last": "2023-08",
+    "missing_months": 1
+   },
+   "staffordshire": {
+    "first": "2020-06",
+    "last": "2020-08",
+    "missing_months": 3
+   }
+  },
+  "force_month_coverage_pct": 97.41,
+  "forces_seen": 45,
+  "location_share_pct": 97.93,
+  "records_in_window": 19349998,
+  "records_with_location": 18950079
+ },
+ "sources": [
+  {
+   "licence": "Open Government Licence v3.0",
+   "name": "data.police.uk street-level crime",
+   "url": "https://data.police.uk/"
+  }
+ ],
+ "window": {
+  "from": "2016-09",
+  "missing_months_in_window": [],
+  "months": 120,
+  "note": "Full rolling 120-month window.",
+  "target_months": 120,
+  "to": "2026-08"
+ },
+ "windows": {
+  "10y": {
+   "cells": 11786,
+   "from": "2016-09",
+   "months": 120,
+   "records_plotted": 18949593,
+   "records_suppressed": 486,
+   "requested_months": 120,
+   "to": "2026-08"
+  },
+  "12m": {
+   "cells": 9368,
+   "from": "2025-09",
+   "months": 12,
+   "records_plotted": 2038873,
+   "records_suppressed": 2121,
+   "requested_months": 12,
+   "to": "2026-08"
+  },
+  "3y": {
+   "cells": 10892,
+   "from": "2023-09",
+   "months": 36,
+   "records_plotted": 6102107,
+   "records_suppressed": 1030,
+   "requested_months": 36,
+   "to": "2026-08"
+  },
+  "5y": {
+   "cells": 11373,
+   "from": "2021-09",
+   "months": 60,
+   "records_plotted": 10338475,
+   "records_suppressed": 763,
+   "requested_months": 60,
+   "to": "2026-08"
+  }
+ }
+}

@@ -1,0 +1,74 @@
+:root{
+  --bg:#f6f6f4; --panel:#ffffff; --ink:#1b1b1b; --muted:#555; --line:#d4d4d0;
+  --accent:#8c1c13; --focus:#0b5fff;
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink);display:flex;flex-direction:column}
+a{color:#0a4fbf}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.skip{position:absolute;left:-999px;top:0;background:#fff;padding:8px;z-index:3000}
+.skip:focus{left:8px;top:8px}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+.top{display:flex;gap:12px;align-items:flex-start;justify-content:space-between;padding:10px 14px;background:#1f1f1f;color:#fff}
+.top h1{margin:0;font-size:1.15rem}
+.top .sub{margin:2px 0 0;font-size:.82rem;color:#e4e4e4;max-width:70ch}
+.linkish{background:none;border:1px solid #bbb;color:#fff;border-radius:4px;padding:6px 10px;cursor:pointer;white-space:nowrap;font:inherit;font-size:.85rem}
+.linkish:hover{background:#333}
+
+.layout{flex:1;min-height:0;display:flex}
+.panel{width:290px;flex:none;overflow-y:auto;background:var(--panel);border-right:1px solid var(--line);padding:10px 12px}
+.mapwrap{flex:1;position:relative;min-width:0}
+#map{position:absolute;inset:0;background:#dfe6ea}
+
+fieldset{border:1px solid var(--line);border-radius:6px;margin:0 0 10px;padding:6px 10px 8px}
+legend{font-weight:600;font-size:.85rem;padding:0 4px}
+.row{display:flex;align-items:center;gap:8px;padding:3px 0;cursor:pointer}
+.row.indent{padding-left:26px}
+select{width:100%;padding:6px;border:1px solid #888;border-radius:4px;background:#fff;color:var(--ink);font:inherit}
+select:disabled{opacity:.5}
+
+.legend{border:1px solid var(--line);border-radius:6px;padding:8px 10px;margin-bottom:10px;font-size:.82rem}
+.legend .ramp{display:flex;height:12px;border-radius:2px;overflow:hidden;margin:6px 0 2px}
+.legend .ramp span{flex:1}
+.legend .ends{display:flex;justify-content:space-between;color:var(--muted)}
+.legend .key{display:flex;align-items:center;gap:6px;margin-top:4px}
+.legend .sw{width:14px;height:14px;border:2px solid #7a0000;background:transparent;display:inline-block}
+.legend .sw.gap{border:2px dashed #666;background:#ddd}
+
+details{border:1px solid var(--line);border-radius:6px;margin-bottom:10px;padding:6px 10px}
+summary{cursor:pointer;font-weight:600;font-size:.85rem}
+dl{margin:8px 0 0;font-size:.82rem}
+dt{color:var(--muted);margin-top:6px}
+dd{margin:0;font-weight:600;overflow-wrap:anywhere}
+dd.warn{color:#8a3b00}
+.toplist{margin:8px 0 0;padding-left:20px;font-size:.82rem}
+.toplist button{background:none;border:0;color:#0a4fbf;text-decoration:underline;cursor:pointer;font:inherit;padding:2px 0;text-align:left}
+
+.banner .x{background:none;border:0;font-size:1.2rem;line-height:1;cursor:pointer;color:inherit;float:right;margin-left:8px}
+.banner{position:absolute;left:50%;transform:translateX(-50%);bottom:12px;z-index:1000;max-width:min(680px,92%);background:#fff7e6;border:1px solid #b36b00;color:#4a2b00;border-radius:6px;padding:8px 12px;font-size:.84rem;box-shadow:0 2px 8px rgba(0,0,0,.25)}
+
+.foot{padding:6px 14px;background:#1f1f1f;color:#e4e4e4;font-size:.74rem;display:flex;flex-wrap:wrap;gap:4px 18px}
+.foot a{color:#9cc3ff}
+
+dialog{max-width:min(720px,94vw);border:1px solid #666;border-radius:8px;padding:16px 20px;color:var(--ink)}
+dialog::backdrop{background:rgba(0,0,0,.5)}
+dialog h2{margin-top:0}
+dialog li{margin-bottom:8px}
+button.primary{background:var(--accent);color:#fff;border:0;border-radius:4px;padding:8px 16px;font:inherit;cursor:pointer}
+
+.leaflet-popup-content{font-size:.86rem;line-height:1.4;margin:10px 12px}
+.leaflet-popup-content .big{font-size:1.25rem;font-weight:700}
+.leaflet-popup-content .small{color:#555;font-size:.76rem}
+.leaflet-popup-content .warn{color:#8a3b00;font-weight:600}
+
+@media (max-width:760px){
+  html,body{height:auto;min-height:100%}
+  .layout{flex:none;flex-direction:column}
+  .mapwrap{order:-1;height:62vh;flex:none}
+  .panel{width:auto;border-right:0;border-top:1px solid var(--line);overflow:visible}
+  .top .sub{display:none}
+  .banner{font-size:.74rem;padding:6px 8px;top:8px;bottom:auto;left:56px;transform:none;max-width:calc(100% - 68px);max-height:6.5em;overflow-y:auto}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
