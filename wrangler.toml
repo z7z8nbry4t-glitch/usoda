@@ -1,0 +1,6 @@
+name = "usoda"
+compatibility_date = "2026-10-26"
+pages_build_output_dir = "."
+
+# Static site for UK Sexual Offence Density Atlas
+# Deploy with: npx wrangler pages deploy .

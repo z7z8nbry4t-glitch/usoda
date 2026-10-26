@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UK Sexual Offence Density Atlas (USODA)</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <style>
+    body { margin: 0; font-family: Arial, sans-serif; background: #111; color: #eee; }
+    #map { height: 80vh; width: 100%; }
+    #controls { padding: 10px; background: #222; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+    #info { padding: 10px; background: #1a1a1a; font-size: 14px; max-height: 15vh; overflow-y: auto; }
+    button { background: #c00; color: white; border: none; padding: 8px 16px; cursor: pointer; border-radius: 4px; }
+    button:hover { background: #e00; }
+    select, input { padding: 6px; background: #333; color: #eee; border: 1px solid #555; }
+    .disclaimer { font-size: 12px; color: #aaa; margin-top: 8px; }
+  </style>
+</head>
+<body>
+  <div id="controls">
+    <h2 style="margin:0; font-size:18px;">UK Sexual Offence Density Atlas (USODA)</h2>
+    <label>Month: <select id="monthSelect"></select></label>
+    <button id="loadBtn">Load Density for Current View (violent-crime)</button>
+    <button id="clearBtn">Clear Layer</button>
+    <span id="status">Ready. Data: data.police.uk (anonymised street-level)</span>
+  </div>
+  <div id="map"></div>
+  <div id="info">
+    <strong>Click hotspots or use Load button after panning/zooming.</strong><br>
+    Category: <em>violent-crime</em> = Violence and sexual offences (includes sexual assaults and other violence). Locations are anonymised/approximate.<br>
+    Rolling multi-year view requires pre-aggregation; this demo queries one month for the visible area via the public API.<br>
+    Scotland has separate aggregated data only (no street-level open feed here). Northern Ireland covered by data.police.uk.<br>
+    <div class="disclaimer">
+      Source: data.police.uk under Open Government Licence. Reported/recorded offences only; not a complete picture of prevalence (see Crime Survey for England and Wales). 
+      Hourly checks would poll the availability endpoint in production. Accuracy limited by source data, anonymisation, and reporting rates.
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
+  <script>
+    const map = L.map('map').setView([54.5, -2.5], 6);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap | Crime data: data.police.uk'
+    }).addTo(map);
+
+    let heatLayer = null;
+    let markers = L.layerGroup().addTo(map);
+
+    // Populate month selector (recent months)
+    const monthSelect = document.getElementById('monthSelect');
+    const now = new Date();
+    for (let i = 0; i < 24; i++) {
+      const d = new Date(now.getFullYear(), now.getMonth() - i - 2, 1); // lag
+      const ym = d.toISOString().slice(0,7);
+      const opt = document.createElement('option');
+      opt.value = ym;
+      opt.textContent = ym;
+      monthSelect.appendChild(opt);
+    }
+
+    document.getElementById('loadBtn').onclick = async () => {
+      const status = document.getElementById('status');
+      status.textContent = 'Loading... (API rate limits may apply)';
+      const bounds = map.getBounds();
+      const center = map.getCenter();
+      const date = monthSelect.value;
+      // Sample multiple points across the view for denser coverage (API is point/radius or poly)
+      const points = generateSamplePoints(bounds, 12);
+      let allCrimes = [];
+      for (const pt of points) {
+        try {
+          const url = `https://data.police.uk/api/crimes-street/violent-crime?lat=${pt.lat}&lng=${pt.lng}&date=${date}`;
+          const res = await fetch(url);
+          if (res.ok) {
+            const data = await res.json();
+            allCrimes = allCrimes.concat(data);
+          }
+        } catch (e) { console.warn(e); }
+      }
+      // Deduplicate roughly by id
+      const unique = {};
+      allCrimes.forEach(c => { if (c.id) unique[c.id] = c; });
+      const crimes = Object.values(unique);
+      status.textContent = `Loaded ${crimes.length} anonymised violent-crime records for ${date} in view.`;
+      renderHeat(crimes);
+    };
+
+    document.getElementById('clearBtn').onclick = () => {
+      if (heatLayer) map.removeLayer(heatLayer);
+      markers.clearLayers();
+      document.getElementById('status').textContent = 'Cleared.';
+    };
+
+    function generateSamplePoints(bounds, n) {
+      const pts = [];
+      const sw = bounds.getSouthWest(), ne = bounds.getNorthEast();
+      const steps = Math.ceil(Math.sqrt(n));
+      for (let i = 0; i < steps; i++) {
+        for (let j = 0; j < steps; j++) {
+          const lat = sw.lat + (ne.lat - sw.lat) * (i + 0.5) / steps;
+          const lng = sw.lng + (ne.lng - sw.lng) * (j + 0.5) / steps;
+          pts.push({lat, lng});
+        }
+      }
+      return pts;
+    }
+
+    function renderHeat(crimes) {
+      if (heatLayer) map.removeLayer(heatLayer);
+      markers.clearLayers();
+      const heatData = crimes.map(c => [
+        parseFloat(c.location.latitude),
+        parseFloat(c.location.longitude),
+        0.5  // intensity
+      ]).filter(p => !isNaN(p[0]));
+      heatLayer = L.heatLayer(heatData, {
+        radius: 25,
+        blur: 15,
+        maxZoom: 17,
+        gradient: {0.4: 'blue', 0.65: 'lime', 1.0: 'red'}
+      }).addTo(map);
+
+      // Add clickable markers for counts in clusters (simple)
+      const grid = {};
+      crimes.forEach(c => {
+        const lat = Math.round(parseFloat(c.location.latitude) * 50) / 50;
+        const lng = Math.round(parseFloat(c.location.longitude) * 50) / 50;
+        const key = lat + ',' + lng;
+        if (!grid[key]) grid[key] = {lat, lng, count: 0, streets: new Set()};
+        grid[key].count++;
+        if (c.location.street && c.location.street.name) grid[key].streets.add(c.location.street.name);
+      });
+      Object.values(grid).forEach(g => {
+        if (g.count >= 1) {
+          const m = L.circleMarker([g.lat, g.lng], {
+            radius: Math.min(20, 5 + g.count),
+            color: '#ff0',
+            fillOpacity: 0.3,
+            weight: 1
+          }).bindPopup(`<b>Approx area</b><br>Reported violent-crime (incl. sexual offences): <b>${g.count}</b><br>Sample streets: ${Array.from(g.streets).slice(0,3).join(', ')}<br>Month: ${monthSelect.value}<br><small>Anonymised locations</small>`);
+          markers.addLayer(m);
+        }
+      });
+    }
+
+    // Initial status
+    document.getElementById('status').textContent = 'Pan/zoom to an area (e.g. London, Manchester) then click Load Density. Data updates monthly from data.police.uk.';
+  </script>
+</body>
+</html>
