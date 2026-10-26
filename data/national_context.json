@@ -1,0 +1,54 @@
+{
+  "about": "Curated national figures that put the map in context. They come from official surveys and statistics, not from this atlas, and are not combined with its counts. Each was read from the source page on the date shown; a figure is only listed if it was read there.",
+  "retrieved": "2026-10-26",
+  "items": [
+    {
+      "id": "csew_2026",
+      "area": "England and Wales",
+      "heading": "Survey estimate of people affected, year ending March 2026",
+      "text": "An estimated 2.1% of people aged 16 and over (around 1 million people) experienced sexual victimisation, including attempts, in the last year: 2.8% of women and 1.4% of men. The questions were redeveloped, so this is not comparable with earlier years.",
+      "source": "Office for National Statistics, Crime in England and Wales: year ending March 2026",
+      "url": "https://www.ons.gov.uk/peoplepopulationandcommunity/crimeandjustice/bulletins/crimeinenglandandwales/yearendingmarch2026"
+    },
+    {
+      "id": "prc_2026",
+      "area": "England and Wales",
+      "heading": "Police recorded sexual offences, year ending March 2026",
+      "text": "217,567 sexual offences were recorded, up 4% on the previous year. 74,727 were rape offences, about 34% of the total. The ONS says recorded sexual offences are not a good measure of trends, because recording practice and willingness to report have changed.",
+      "source": "Office for National Statistics, Crime in England and Wales: year ending March 2026",
+      "url": "https://www.ons.gov.uk/peoplepopulationandcommunity/crimeandjustice/bulletins/crimeinenglandandwales/yearendingmarch2026"
+    },
+    {
+      "id": "csew_2025_reporting",
+      "area": "England and Wales",
+      "heading": "Most sexual assaults are not reported, year ending March 2025",
+      "text": "The survey estimated about 900,000 adults (1.9%; 3.0% of women, 0.7% of men) were victims of sexual assault, including attempts, in the year, compared with 209,079 offences recorded by police. Among people who had experienced rape or assault by penetration since the age of 16, around one in seven (14.7%) said they reported the most recent incident to the police.",
+      "source": "Office for National Statistics, Sexual offences in England and Wales overview: year ending March 2025",
+      "url": "https://www.ons.gov.uk/peoplepopulationandcommunity/crimeandjustice/bulletins/sexualoffencesinenglandandwalesoverview/yearendingmarch2025"
+    },
+    {
+      "id": "prc_2025_new_offences",
+      "area": "England and Wales",
+      "heading": "Why recorded counts rose in 2024/25",
+      "text": "Of the 11% rise in recorded sexual offences in the year ending March 2025, over half (about 13,000 offences) came from two new offences created by the Online Safety Act 2023 (sharing or threatening to share intimate images, and sending images of genitals). Part of the rise is therefore new law, not new behaviour.",
+      "source": "Office for National Statistics, Sexual offences in England and Wales overview: year ending March 2025",
+      "url": "https://www.ons.gov.uk/peoplepopulationandcommunity/crimeandjustice/bulletins/sexualoffencesinenglandandwalesoverview/yearendingmarch2025"
+    },
+    {
+      "id": "scot_recorded",
+      "area": "Scotland",
+      "heading": "Recorded sexual crimes, 2024/25",
+      "text": "Police Scotland recorded 14,892 sexual crimes, up 3%. This included 2,897 rapes and attempted rapes (up 15%) and 5,124 sexual assaults. A quarter (25%) were recorded at least a year after they happened, and about 4,070 were sexual cyber-crimes, both of which affect trends. This atlas's Scotland layer sums to exactly these totals.",
+      "source": "Scottish Government, Recorded Crime in Scotland 2024-25: sexual crimes",
+      "url": "https://www.gov.scot/publications/recorded-crime-scotland-2024-25/pages/sexual-crimes/"
+    },
+    {
+      "id": "scot_survey_old",
+      "area": "Scotland",
+      "heading": "Survey estimate (older, second-hand)",
+      "text": "The 2019/20 Scottish Crime and Justice Survey found 3.6% of adults had experienced at least one type of serious sexual assault since the age of 16 (women 6.1%, men 0.8%). This is quoted from Rape Crisis Scotland's summary. The 2023/24 and 2024/25 survey pages could not be opened from the build environment, so no newer Scottish survey figure is shown.",
+      "source": "Rape Crisis Scotland, Statistics and key information (citing SCJS 2019/20)",
+      "url": "https://www.rapecrisisscotland.org.uk/resources-stats-key-info/"
+    }
+  ]
+}

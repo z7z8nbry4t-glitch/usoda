@@ -50,7 +50,20 @@ Sources are shown side by side and never merged into one number. Each has a diff
 
 - **News stories are not used to move or add points.** Matching reports to individual incidents would be locating specific offences, which the project's privacy rules exclude (the police anonymise locations on purpose). They are not an official record either.
 - News and official notices are used only to explain *aggregate* gaps (for example Greater Manchester's IT move). For that, police.uk's own known-issues page is a better and more stable source, so that is what the atlas cites.
-- **Not pulled this session:** Crime Survey for England and Wales and Scottish Crime and Justice Survey figures (the ONS page was outside the tool's allowed sites, so I did not quote numbers I could not check), and PSNI/NISRA Northern Ireland tables (the one document I could open held no counts; the series is in a PSNI spreadsheet, Table 14).
+- **Survey figures (now pulled).** The ONS pages could be fetched directly. `data/national_context.json` holds the Crime Survey for England and Wales results for the years ending March 2026 and March 2025 (prevalence, reporting, the effect of new offences on recorded counts), each with its source link. They appear in the "National context" panel and are not combined with map counts. The March 2026 survey used redeveloped questions and is not comparable with earlier years.
+- **Scottish survey: only an older figure.** The gov.scot Scottish Crime and Justice Survey 2023/24 and 2024/25 pages, the data.gov.scot dataset search, and the ONS-style bulletins were blocked or returned empty. The only Scottish survey figure read is the 2019/20 one (3.6% of adults; women 6.1%, men 0.8%, since age 16), second-hand through Rape Crisis Scotland. It is labelled as older and second-hand.
+- **Still not pulled:** PSNI/NISRA Northern Ireland tables (the one document I could open held no counts; the series is in a PSNI spreadsheet, Table 14).
+
+### Cross-checks between sources (26 October 2026)
+
+| Check | Result |
+|---|---|
+| ONS recorded sexual offences, England and Wales, year ending March 2026 (217,567) against the Home Office force tables summed (217,271) | 0.14% apart; consistent |
+| Rape offences: ONS 74,727 against Home Office force tables 74,697 | 0.04% apart |
+| Scottish Government sexual crimes 2024/25 (14,892; rape and attempted rape 2,897; sexual assault 5,124) against this atlas's Scotland layer | Exact match |
+| Survey estimate (about 900,000 victims, year ending March 2025) against recorded offences (209,079) | Roughly four victims for each recorded offence, consistent with ONS's statement that most are not reported |
+
+These are asserted by tests (`PublishedDataConsistencyTests`), so a future data refresh that breaks them fails the build.
 
 ## What "fine tuning the location data" means here
 

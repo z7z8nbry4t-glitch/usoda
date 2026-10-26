@@ -73,6 +73,7 @@ Also in step 2: exact duplicate rows (same crime ID and coordinates in one file)
 | `force_totals.json` | Monthly category count per force. A missing month is a gap, not a zero |
 | `pfa.geojson` | Force area boundaries (run `scripts/fetch_boundaries.py` to refresh) |
 | `population.json` | Residents and workday population per hexagon and force (England and Wales, Census 2021). Refresh with `scripts/fetch_population.py` |
+| `national_context.json` | Curated survey and official-total figures, each with a source link (shown in the National context panel) |
 | `annotations.json` | Curated notes on known data problems, with source links |
 | `crossref.json` | Home Office comparison per force and financial year, with agreement bands |
 | `scotland_la.json`, `scotland_la.geojson` | Scotland council-area layer |

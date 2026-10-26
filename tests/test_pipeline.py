@@ -234,5 +234,25 @@ class PopulationTests(unittest.TestCase):
         self.assertIsNone(fp.force_of(5, 5, polys))
 
 
+class PublishedDataConsistencyTests(unittest.TestCase):
+    """Checks the committed data against official totals read from source pages."""
+
+    def test_scotland_matches_published_2024_25(self):
+        d = json.load(open(os.path.join(ROOT, "data", "scotland_la.json")))
+        tot = lambda k: sum(a["years"]["2024/2025"][k]["count"] for a in d["areas"].values())
+        self.assertEqual((tot("sexual"), tot("rape"), tot("assault")), (14892, 2897, 5124))
+
+    def test_home_office_sexual_total_matches_ons_2025_26(self):
+        d = json.load(open(os.path.join(ROOT, "data", "crossref.json")))
+        total = sum(f["2025/26"]["home_office_sexual"] for f in d["forces"].values() if "2025/26" in f)
+        self.assertLess(abs(total - 217567) / 217567, 0.01)  # ONS bulletin: 217,567
+
+    def test_context_items_have_sources(self):
+        d = json.load(open(os.path.join(ROOT, "data", "national_context.json")))
+        for it in d["items"]:
+            self.assertTrue(it["url"].startswith("https://"))
+            self.assertTrue(it["text"])
+
+
 if __name__ == "__main__":
     unittest.main()

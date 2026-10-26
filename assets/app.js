@@ -12,7 +12,7 @@
   var INCOMPLETE = 0.9; // a force with < 90% of window months is flagged as incomplete
 
   var S = {
-    meta: null, forceTotals: null, pfa: null, pfaIndex: [], scotData: null, scotGeo: null, xref: null, notes: null, pop: null, popIdx: {}, mode: 'count', vals: [],
+    meta: null, forceTotals: null, pfa: null, pfaIndex: [], scotData: null, scotGeo: null, xref: null, notes: null, ctx: null, pop: null, popIdx: {}, mode: 'count', vals: [],
     win: '10y', month: null,
     cells: [], breaks: [], sortedCounts: [], rangeIds: [],
     cache: {}
@@ -352,6 +352,22 @@
     });
   }
 
+  function renderContext() {
+    var el = $('contextBody');
+    if (!S.ctx) { el.textContent = 'National context is unavailable.'; return; }
+    el.innerHTML = '';
+    var intro = document.createElement('p'); intro.className = 'small';
+    intro.textContent = 'Official national figures, read from the sources on ' + S.ctx.retrieved + '. They are not added to the map counts.';
+    el.appendChild(intro);
+    S.ctx.items.forEach(function (it) {
+      var d = document.createElement('div'); d.className = 'ctxitem';
+      var h = document.createElement('strong'); h.textContent = it.area + ': ' + it.heading;
+      var t = document.createElement('p'); t.textContent = it.text;
+      var a = document.createElement('a'); a.href = it.url; a.target = '_blank'; a.rel = 'noopener'; a.textContent = it.source;
+      d.appendChild(h); d.appendChild(t); d.appendChild(a); el.appendChild(d);
+    });
+  }
+
   function renderLegend() {
     var el = $('legend'), b = S.breaks;
     var ramp = CLASS_COLOURS.map(function (c) { return '<span style="background:' + c + '" title="' + c + '"></span>'; }).join('');
@@ -486,8 +502,9 @@
     getJSON('scotland_la.json').catch(function () { return null; }), getJSON('scotland_la.geojson').catch(function () { return null; }),
     getJSON('crossref.json').catch(function () { return null; }),
     getJSON('population.json').catch(function () { return null; }),
-    getJSON('annotations.json').catch(function () { return null; })]).then(function (r) {
-    S.meta = r[0]; S.forceTotals = r[1]; S.pfa = r[2]; S.scotData = r[3]; S.scotGeo = r[4]; S.xref = r[5]; S.pop = r[6]; S.notes = r[7];
+    getJSON('annotations.json').catch(function () { return null; }),
+    getJSON('national_context.json').catch(function () { return null; })]).then(function (r) {
+    S.meta = r[0]; S.forceTotals = r[1]; S.pfa = r[2]; S.scotData = r[3]; S.scotGeo = r[4]; S.xref = r[5]; S.pop = r[6]; S.notes = r[7]; S.ctx = r[8]; renderContext();
     if (S.pop) { S.pop.cells.forEach(function (c) { S.popIdx[c[0] + ',' + c[1]] = [c[2], c[3]]; }); }
     G.R = S.meta.hex.R; G.K = S.meta.hex.K;
     buildPfaIndex(S.pfa);
