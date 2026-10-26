@@ -19,6 +19,7 @@ An interactive map of reported violence and sexual offences in the UK. It uses o
 | Source | Used for | Licence |
 |---|---|---|
 | [data.police.uk](https://data.police.uk/) monthly archives (`/data/archive/YYYY-MM.zip`) and availability API (`/api/crimes-street-dates`) | Street-level records, category `violent-crime` | Open Government Licence v3.0 |
+| Home Office, [police recorded crime open data tables](https://www.gov.uk/government/statistical-data-sets/police-recorded-crime-and-outcomes-open-data-tables) (Police Force Area, England and Wales) | Cross-check of force totals; sexual-offence share by force | Open Government Licence v3.0 |
 | ONS Open Geography Portal, Police Force Areas (December 2023) EW BUC | Force area boundaries | Open Government Licence v3.0; contains OS data (c) Crown copyright |
 | Scottish Government, [Recorded Crimes and Offences](https://data.gov.scot/dataset/recorded_crimes_and_offences) (Police Scotland returns) | Scotland layer: sexual crimes by council area, annual | Open Government Licence v3.0 |
 | ONS Open Geography Portal, Local Authority Districts (December 2024) UK BUC | Scottish council boundaries | Open Government Licence v3.0 |
@@ -35,7 +36,7 @@ For how each source is weighted, and what was assessed and left out, see [docs/D
 ### Not yet included
 
 - **Scotland below council-area level.** There is no open street-level or small-area feed for Scotland.
-- **Home Office force-area totals and rates per 1,000.** The police.uk category (violence and sexual offences) does not match a Home Office offence group, so a like-for-like comparison needs care. The force layer shows raw counts.
+- **Rates per 1,000.** The force layer shows raw counts. Population rates need ONS mid-year estimates.
 
 ## Known data gaps
 
@@ -54,6 +55,9 @@ The site warns about these gaps in a banner and in cell popups. Do not read a qu
 2. `scripts/ingest_archive.py` reads each `*-street.csv`, keeps rows with `Crime type = Violence and sexual offences`, drops rows without a coordinate or outside UK bounds, and counts them into hexagons. It keeps no crime IDs, street names or LSOA names.
 3. `scripts/build_aggregates.py` sums months into windows, hides cells with fewer than 3 records, and writes the static files in `data/`.
 4. `scripts/run_pipeline.py` runs steps 1 to 3 end to end and statelessly (download, ingest, delete the ZIP, build).
+5. `scripts/crossref_home_office.py` compares each force's police.uk total with the Home Office tables (violence against the person plus sexual offences) for complete financial years and writes `data/crossref.json`. It is validation only.
+
+Also in step 2: exact duplicate rows (same crime ID and coordinates in one file) are counted once, and British Transport Police points inside Scotland are left out of the cells. Both counts are published in `data/meta.json` and the data status panel. See [docs/DATA_SOURCES.md](docs/DATA_SOURCES.md) for results and weighting.
 
 **Hex grid.** The plane is `x = longitude * K`, `y = latitude`, with `K = cos(54.5 deg)`. Cells are pointy-top hexagons with a circumradius of 0.02 deg of latitude (about 2.2 km, or about 4 km across). Cells are addressed by axial coordinates (q, r). `scripts/usoda_common.py` and `assets/app.js` implement the same maths. The grid is deliberately coarse so that it never resolves individual streets.
 
@@ -66,6 +70,8 @@ The site warns about these gaps in a banner and in cell popups. Do not read a qu
 | `months/YYYY-MM.json` | The same, for one month |
 | `force_totals.json` | Monthly category count per force. A missing month is a gap, not a zero |
 | `pfa.geojson` | Force area boundaries (run `scripts/fetch_boundaries.py` to refresh) |
+| `crossref.json` | Home Office comparison per force and financial year, with agreement bands |
+| `scotland_la.json`, `scotland_la.geojson` | Scotland council-area layer |
 
 ## Update cycle
 
@@ -89,7 +95,7 @@ Set `USODA_WORK` to choose where temporary files go. The default is `work/` (ign
 
 - `tests/test_pipeline.py` uses a synthetic archive. It checks the category filter, coordinate handling, hexagon maths, suppression, gap detection, window fall-back, and that no street names or IDs reach the output.
 - `scripts/validate_samples.py` compares archive counts with the live API for four city-centre boxes. On 26 October 2026 all four matched exactly for 2026-08 (Birmingham 289, Leeds 217, Cardiff 218, Belfast 141).
-- Not done: validation against Home Office force-area totals (see above).
+- `scripts/crossref_home_office.py` validates force totals against the Home Office tables: 297 of 396 force-years agree within 5% (see `docs/DATA_SOURCES.md`).
 
 ## Deployment (Cloudflare Pages)
 
@@ -117,7 +123,6 @@ Full checklist: [docs/CLOUDFLARE.md](docs/CLOUDFLARE.md). Smoke test: `python3 s
 - **Rates.** Join ONS mid-year population estimates to the force layer to show rates per 1,000.
 - **Vector tiles** if the number of cells grows beyond what canvas rendering handles well.
 - **Year-on-year comparison** using the per-month files.
-- **Home Office validation** of force totals.
 
 ## Licence
 

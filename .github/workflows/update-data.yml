@@ -48,6 +48,11 @@ jobs:
           USODA_WORK: ${{ runner.temp }}/usoda-work
         run: python scripts/run_pipeline.py --latest "${{ steps.poll.outputs.latest }}"
 
+      - name: Cross-check against Home Office tables (validation only; never blocks the update)
+        if: steps.poll.outputs.new_month == 'true' || inputs.force == true
+        continue-on-error: true
+        run: python scripts/crossref_home_office.py
+
       - name: Commit and push (triggers Cloudflare Pages redeploy)
         if: steps.poll.outputs.new_month == 'true' || inputs.force == true
         run: |

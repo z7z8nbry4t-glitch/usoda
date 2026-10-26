@@ -150,5 +150,66 @@ class ScotlandParserTest(unittest.TestCase):
         self.assertEqual(data["S12000049"]["2024/2025"]["sexual"], {"count": 100.0, "rate_per_10k": 12.0})
 
 
+class CrossReferenceTests(unittest.TestCase):
+    def setUp(self):
+        import ingest_archive
+        self.ing = ingest_archive
+        self.ing._SCOT = [((-5.0, 55.0, -3.0, 57.0), [[-5, 55], [-3, 55], [-3, 57], [-5, 57], [-5, 55]])]
+
+    def _member(self, rows):
+        import io as _io
+        buf = _io.BytesIO()
+        with zipfile.ZipFile(buf, "w") as z:
+            z.writestr("2025-01/2025-01-x-street.csv", HEADER + "".join(rows))
+        return zipfile.ZipFile(buf)
+
+    def test_exact_duplicates_counted_once(self):
+        def r(cid, lon):
+            return f"{cid},2025-01,F,F,{lon},52.48,St,E01,N,{VSO},,\n"
+        zf = self._member([r("A", -1.9), r("A", -1.9), r("A", -1.8), r("B", -1.9)])
+        cells, forces = {}, {}
+        from collections import defaultdict
+        cells = defaultdict(int)
+        self.ing.process_member(zf, "2025-01/2025-01-x-street.csv", "2025-01", "x", cells, forces)
+        # second "A" at identical coordinates is dropped; "A" at a different place and "B" are kept
+        self.assertEqual(forces["x"]["vso"], 3)
+        self.assertEqual(forces["x"]["dups_dropped"], 1)
+
+    def test_northern_ireland_ids_not_deduplicated(self):
+        rows = [f"X,2025-01,F,F,-5.9,54.6,St,N01,N,{VSO},,\n"] * 3
+        zf = self._member(rows)
+        from collections import defaultdict
+        forces = {}
+        self.ing.process_member(zf, "2025-01/2025-01-x-street.csv", "2025-01", "northern-ireland", defaultdict(int), forces)
+        self.assertEqual(forces["northern-ireland"]["vso"], 3)
+
+    def test_btp_points_in_scotland_are_excluded(self):
+        rows = [f"{i},2025-01,F,F,-4.0,56.0,Stn,S01,N,{VSO},,\n" for i in range(3)] + \
+               [f"9,2025-01,F,F,-1.9,52.48,Stn,E01,N,{VSO},,\n"]
+        zf = self._member(rows)
+        from collections import defaultdict
+        forces, cells = {}, defaultdict(int)
+        self.ing.process_member(zf, "2025-01/2025-01-x-street.csv", "2025-01", "btp", cells, forces)
+        self.assertEqual(forces["btp"]["btp_scotland_excluded"], 3)
+        self.assertEqual(forces["btp"]["vso_located"], 1)
+        self.assertEqual(sum(cells.values()), 1)
+
+    def test_compare_bands(self):
+        import crossref_home_office as cr
+        ho = {("a", 2024): {"violence": 900, "sexual": 100, "rape": 30, "quarters": {1, 2, 3, 4}},
+              ("b", 2024): {"violence": 900, "sexual": 100, "rape": 30, "quarters": {1, 2, 3, 4}},
+              ("c", 2024): {"violence": 900, "sexual": 100, "rape": 30, "quarters": {1, 2, 3, 4}},
+              ("d", 2024): {"violence": 900, "sexual": 100, "rape": 30, "quarters": {1, 2}}}
+        ms = cr.fy_months(2024)
+        monthly = {"a": {m: 1000 / 12 for m in ms}, "b": {m: 800 / 12 for m in ms}, "c": {m: 10 for m in ms[:6]}}
+        out = cr.compare(ho, monthly)
+        self.assertEqual(out["a"]["2024/25"]["agreement"], "agree")
+        self.assertEqual(out["b"]["2024/25"]["agreement"], "differs")
+        self.assertEqual(out["c"]["2024/25"]["agreement"], "incomplete_months")
+        self.assertNotIn("d", out)  # part-year Home Office data is not compared
+        self.assertEqual(out["a"]["2024/25"]["sexual_share_pct"], 10.0)
+        self.assertEqual(cr.band(0.0, 0), "no_street_data")
+
+
 if __name__ == "__main__":
     unittest.main()

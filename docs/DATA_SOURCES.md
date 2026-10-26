@@ -12,6 +12,7 @@ Sources are shown side by side and never merged into one number. Each has a diff
 |---|---|---|---|---|---|
 | data.police.uk street-level archives | England, Wales, Northern Ireland, British Transport Police | Anonymised point, grouped here into ~4 km hexagons; monthly | *Violence and sexual offences* (sexual offences plus all other violence) | **High for where reports cluster; low for sexual offences alone** | Only open source with a map location. Counts match the live API exactly in sample checks. Gaps: Greater Manchester 35 of 120 months, BTP 89 of 120. |
 | Scottish Government, *Recorded Crimes and Offences* (Police Scotland returns) | Scotland, 32 council areas | Council area; annual (April to March), 1996/97 to 2025/26 | Group 2 sexual crimes, with rape and attempted rape and sexual assault shown separately | **High for the Scottish definition; medium for place** | Official statistics, OGL v3.0. Council areas are large and uneven in size and population, so a big rural area can look as prominent as a dense city. Rates are published rounded to whole numbers per 10,000. Not comparable with the hexagons. |
+| Home Office, *Police recorded crime open data tables* (Police Force Area; updated 22 Oct 2026; England and Wales; quarterly, to June 2026) | Validation and force-level context for England and Wales | Force and financial year; Violence against the person, Sexual offences (rape as a subgroup) | The same scope as the police.uk category once the two Home Office groups are added together | **Highest of all sources for force totals**, and the only one that separates sexual offences | Used for cross-checking, never added to police.uk counts and never applied to hexagons. Results in `data/crossref.json`. No Scotland or Northern Ireland. Does not give locations. |
 | ONS Open Geography Portal boundaries | Police force areas (E and W); local authority districts (Scotland) | Polygons | None (geometry only) | High | OGL v3.0, contains OS data (c) Crown copyright. |
 | OpenStreetMap tiles | Base map | n/a | n/a | n/a | ODbL. Attribution shown on the map. |
 
@@ -19,13 +20,29 @@ Sources are shown side by side and never merged into one number. Each has a diff
 
 | Source | What it would add | Why it is not in | Weight if added |
 |---|---|---|---|
-| Home Office *Police recorded crime open data tables* (by force area and community safety partnership; .ods, one financial year per sheet) | England and Wales local-authority-sized counts by offence group, with rape reported separately from 2016/17 | The guide confirms rape tables; I could not confirm a separate sexual offences group. It also excludes BTP at partnership level. Needs a parser and a check of the offence-group codes before use. | **Highest available for validating police.uk totals** and the nearest thing to a sexual-offence-only count for E and W. Next step. |
 | Police Scotland quarterly council-area management reports (PDF) | More recent Scottish figures than the annual release | PDFs with changing layouts; unofficial status; the annual release already covers the same ground | Medium; use only for a "latest quarter" note, with a caveat |
 | PSNI / NISRA police recorded crime bulletins | Northern Ireland sexual offences by district, with official definitions | NI points are already in police.uk. Bulletins are PDFs. Worth adding as a validation total, not a layer | Medium to high for validation |
 | Scottish Index of Multiple Deprivation, crime domain | Small-area (data zone) crime context for Scotland | The domain combines several crime types and is not sexual-offence specific. Shows relative rank, not counts. Using it as a proxy for sexual offences would mislead | **Low** for this question. Do not use. |
 | Scottish Crime and Justice Survey (SCJS) | National estimate of how much is *not* reported | National only, with no local breakdown; sexual victimisation items have wide confidence intervals | High for national context; unusable for a map |
 | ONS Crime Survey for England and Wales (sexual offences prevalence and trends) | National prevalence, to show the gap between survey estimates and police-recorded counts | Same: national or regional only | High for context; unusable for a map |
 | FOI disclosures (for example gov.scot and PSNI FOI logs) | Occasional finer breakdowns | One-off, inconsistent definitions, not reproducible by a schedule | Low; reference only |
+
+## Cross-reference results (26 October 2026)
+
+- 396 force-years compared (financial years 2017/18 to 2025/26): **297 within 5%, 59 within 10%, 23 differ by more than 10%**, 17 cannot be checked because police.uk has gaps. The median ratio of police.uk to Home Office is 1.00.
+- Differences are consistent with timing and revisions: police.uk is a monthly snapshot of data as first published, while the Home Office series is revised each quarter.
+- Persistent shortfalls (about 6 to 10% lower in police.uk): Dorset and Kent. Treat the police.uk counts for those forces as a slight undercount.
+- **Greater Manchester** has no police.uk street-level rows for the last two years. The Home Office recorded 138,223 violence and sexual offences there in 2025/26 (similar in scale to the West Midlands). The popup shows that official total. It is not drawn into the hexagons, because the Home Office gives no locations and an estimate would be invented data.
+- **British Transport Police** has street rows for only part of the series. The Home Office total is shown the same way.
+- **Sexual offences share.** Across England and Wales in 2025/26, sexual offences were 10.0% of violence plus sexual offences, ranging by force from about 8% to 13%. The popups show each force's share. It is a force-wide figure and is not applied to cells.
+
+## Duplicates and double counting
+
+- **Exact duplicate rows** (same crime ID and same coordinates in one force-month file) are counted once: 160,923 rows (0.84% of 19.19 million) across the ten-year window. Northern Ireland is excluded from this check, because 93% of its rows reuse a crime ID, so IDs cannot identify duplicates there.
+- **Months are never ingested twice.** The four overlapping archives are cut so that each month comes from one archive only.
+- **Police.uk and the Scottish Government** do not overlap: one covers England, Wales, Northern Ireland and British Transport Police; the other covers Police Scotland returns.
+- **British Transport Police in Scotland.** All 3,327 BTP points that fall inside Scottish council boundaries in the window are kept out of the hexagons, since BTP is not part of the Scottish Government's Police Scotland figures and a few rail points would make Scotland look covered. The count is published in the data status panel.
+- Cross-month repeats of the same crime ID (about 0.02% of rows) are left in, because a record can legitimately reappear with changed details.
 
 ## What I could not reach
 
@@ -38,11 +55,10 @@ Sources are shown side by side and never merged into one number. Each has a diff
 2. **Reporting is not prevalence.** The surveys above show that most sexual offences are never reported to the police.
 3. **Recording practice changes.** Rises and falls can reflect police recording and public willingness to report, not underlying events.
 4. **Population and footfall.** Both layers are driven partly by where people live and visit. Only Scotland has a rate; hexagons are raw counts.
-5. **Edge effects at the border.** About 220 hexagons (roughly 11,000 records over ten years) fall north of the border in the police.uk data. I have not established which force recorded them (British Transport Police is the likely cause). They overlap the Scotland layer and are a point to investigate.
+5. **Different time bases.** The Home Office series is quarterly and revised; police.uk is monthly as first published. Comparisons use complete financial years only.
 
 ## Next steps, in order of value
 
-1. Parse the Home Office open data tables to cross-check force totals (validation, and rates per 1,000 with ONS population).
-2. Add NISRA bulletin totals as an NI validation figure.
-3. Resolve the Scottish border cells.
-4. Add the national survey figures as a text panel, not a map layer.
+1. Rates per 1,000 for England and Wales forces using ONS population, now that the Home Office totals are in.
+2. Add NISRA bulletin totals as a Northern Ireland validation figure.
+3. Add the national survey figures (Crime Survey for England and Wales, Scottish Crime and Justice Survey) as a text panel, not a map layer.

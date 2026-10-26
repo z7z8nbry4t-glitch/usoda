@@ -11,7 +11,7 @@
   var INCOMPLETE = 0.9; // a force with < 90% of window months is flagged as incomplete
 
   var S = {
-    meta: null, forceTotals: null, pfa: null, pfaIndex: [], scotData: null, scotGeo: null,
+    meta: null, forceTotals: null, pfa: null, pfaIndex: [], scotData: null, scotGeo: null, xref: null,
     win: '10y', month: null,
     cells: [], breaks: [], sortedCounts: [], rangeIds: [],
     cache: {}
@@ -135,6 +135,31 @@
     return w.from + ' to ' + w.to + ' (' + w.months + ' months)';
   }
 
+
+  // Home Office cross-check (England and Wales, official, per force and financial year).
+  function xrefLatest(slug) {
+    var f = S.xref && S.xref.forces[slug];
+    if (!f) return null;
+    var ks = Object.keys(f).sort(), k = ks[ks.length - 1];
+    return k ? { fy: k, d: f[k] } : null;
+  }
+  var AGREE_TEXT = {
+    agree: 'police.uk and the Home Office agree within 5% for that year',
+    minor_difference: 'police.uk and the Home Office differ by 5 to 10% for that year',
+    differs: 'police.uk and the Home Office differ by more than 10% for that year',
+    incomplete_months: 'police.uk has fewer than 12 months for that year, so no like-for-like check is possible',
+    no_street_data: 'police.uk published no street-level rows for that year'
+  };
+  function xrefHtml(slug, withTotal) {
+    var x = xrefLatest(slug);
+    if (!x) return '';
+    var d = x.d;
+    var h = '<br><span class="small">Home Office (official, whole force, ' + x.fy + '): ' + (withTotal ? fmt(d.home_office_total) + ' violence and sexual offences, of which ' : '') +
+      d.sexual_share_pct + '% (' + fmt(d.home_office_sexual) + ') were sexual offences, ' + fmt(d.home_office_rape) + ' of them rape. ' +
+      'This is a force-wide share; it is not known for this cell. Cross-check: ' + (AGREE_TEXT[d.agreement] || '') + '.</span>';
+    return h;
+  }
+
   function cellPopup(q, r, n) {
     var c = hexCenter(q, r), slug = forceAt(c[0], c[1]);
     var rank = S.sortedCounts.length ? Math.round(100 * (S.sortedCounts.filter(function (x) { return x < n; }).length) / S.sortedCounts.length) : 0;
@@ -149,6 +174,7 @@
           ' months in this window, so this count is incomplete.</span>';
       }
     }
+    if (slug) html += xrefHtml(slug, false);
     var maxN = S.sortedCounts[S.sortedCounts.length - 1];
     html += '<br><span class="small">' + (n === maxN ? 'The highest-count cell in this window.' : 'Higher than ' + rank + '% of plotted cells.') + '</span>' +
       '<br><span class="small">Source: data.police.uk, Open Government Licence v3.0. Locations anonymised by the police; may include British Transport Police records; reported offences only, not prevalence.</span>';
@@ -278,7 +304,8 @@
         var h = '<strong>' + row.f.properties.name + '</strong><br><span class="big">' + fmt(row.cov.sum) + '</span> reported records' +
           '<br><span class="small">Window: ' + windowLabel() + '. Months with data: ' + row.cov.present + ' of ' + row.cov.total + '.</span>';
         if (row.incomplete) h += '<br><span class="warn">Incomplete: this total understates the force area and must not be compared with other areas.</span>';
-        h += '<br><span class="small">Raw counts, not rates: larger populations record more. Source: data.police.uk, OGL v3.0.</span>';
+        h += xrefHtml(row.f.properties.slug, true);
+        h += '<br><span class="small">Raw counts, not rates: larger populations record more. Sources: data.police.uk and Home Office police recorded crime, OGL v3.0.</span>';
         return h;
       });
       pfaGroup.addLayer(layer);
@@ -328,6 +355,12 @@
     add('Records in 10-year window', fmt(m.quality.records_in_window));
     add('Records with a location', m.quality.location_share_pct + '%');
     add('Force-month coverage', m.quality.force_month_coverage_pct + '%');
+    if (m.quality.duplicate_rows_dropped !== undefined) add('Exact duplicate rows removed', fmt(m.quality.duplicate_rows_dropped) + ' (same crime ID and place in one file)');
+    if (m.quality.btp_scotland_records_excluded) add('BTP rail points in Scotland left out of cells', fmt(m.quality.btp_scotland_records_excluded) + ' (Scotland is shown by council area)');
+    if (S.xref) {
+      var bc = S.xref.band_counts, tot = 0, k; for (k in bc) tot += bc[k];
+      add('Home Office cross-check', fmt(bc.agree || 0) + ' of ' + fmt(tot) + ' force-years within 5%; ' + fmt(bc.minor_difference || 0) + ' within 10%; ' + fmt((bc.differs || 0)) + ' differ more; ' + fmt((bc.incomplete_months || 0) + (bc.no_street_data || 0)) + ' cannot be checked (gaps)');
+    }
     add('Last successful ingest', m.last_successful_ingest.replace('T', ' ').replace('Z', ' UTC'));
     if (S.win !== 'month') {
       var w = m.windows[S.win];
@@ -402,8 +435,9 @@
 
   // ---------------------------------------------------------------- boot
   Promise.all([getJSON('meta.json'), getJSON('force_totals.json'), getJSON('pfa.geojson'),
-    getJSON('scotland_la.json').catch(function () { return null; }), getJSON('scotland_la.geojson').catch(function () { return null; })]).then(function (r) {
-    S.meta = r[0]; S.forceTotals = r[1]; S.pfa = r[2]; S.scotData = r[3]; S.scotGeo = r[4];
+    getJSON('scotland_la.json').catch(function () { return null; }), getJSON('scotland_la.geojson').catch(function () { return null; }),
+    getJSON('crossref.json').catch(function () { return null; })]).then(function (r) {
+    S.meta = r[0]; S.forceTotals = r[1]; S.pfa = r[2]; S.scotData = r[3]; S.scotGeo = r[4]; S.xref = r[5];
     G.R = S.meta.hex.R; G.K = S.meta.hex.K;
     buildPfaIndex(S.pfa);
     var sel = $('monthSelect');
