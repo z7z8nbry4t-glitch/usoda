@@ -5,12 +5,13 @@
   var DATA = 'data/';
   var CLASS_COLOURS = ['#ffffb2', '#fed976', '#feb24c', '#fd8d3c', '#fc4e2a', '#e31a1c', '#b10026'];
   var CLASS_QUANTILES = [0.5, 0.7, 0.85, 0.93, 0.97, 0.99];
+  var SCOT_COLOURS = ['#f2f0f7', '#dadaeb', '#bcbddc', '#9e9ac8', '#807dba', '#6a51a3', '#4a1486'];
   var PFA_COLOURS = ['#eff3ff', '#c6dbef', '#9ecae1', '#6baed6', '#4292c6', '#2171b5', '#084594'];
   var HOTSPOT_Q = 0.97;
   var INCOMPLETE = 0.9; // a force with < 90% of window months is flagged as incomplete
 
   var S = {
-    meta: null, forceTotals: null, pfa: null, pfaIndex: [],
+    meta: null, forceTotals: null, pfa: null, pfaIndex: [], scotData: null, scotGeo: null,
     win: '10y', month: null,
     cells: [], breaks: [], sortedCounts: [], rangeIds: [],
     cache: {}
@@ -25,10 +26,12 @@
     maxZoom: 18,
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors | Crime data: data.police.uk (OGL v3.0)'
   }).addTo(map);
+  map.createPane('scot');
+  map.getPane('scot').style.zIndex = 375;
   map.createPane('pfa');
   map.getPane('pfa').style.zIndex = 380;
   var canvas = L.canvas({ padding: 0.5 });
-  var heat = null, hexGroup = L.layerGroup(), pfaGroup = L.layerGroup();
+  var heat = null, hexGroup = L.layerGroup(), pfaGroup = L.layerGroup(), scotGroup = L.layerGroup();
 
   // ---------------------------------------------------------------- hex geometry (mirrors scripts/usoda_common.py)
   var G = { R: 0.02, K: Math.cos(54.5 * Math.PI / 180) };
@@ -200,9 +203,55 @@
 
   function applyLayerToggles() {
     function set(layer, on) { if (!layer) return; if (on && !map.hasLayer(layer)) layer.addTo(map); if (!on && map.hasLayer(layer)) map.removeLayer(layer); }
+    set(scotGroup, $('lScot').checked);
     set(pfaGroup, $('lPfa').checked);
     set(heat, $('lHeat').checked);
     set(hexGroup, $('lHex').checked);
+  }
+
+
+  // Scotland: annual council-area totals for the Scottish definition of sexual crimes.
+  function scotYears() {
+    var ys = S.scotData.years, n = S.win === '10y' ? 10 : S.win === '5y' ? 5 : S.win === '3y' ? 3 : 1;
+    return ys.slice(-n);
+  }
+  function renderScot() {
+    scotGroup.clearLayers();
+    if (!S.scotGeo || !S.scotData) return;
+    var ys = scotYears(), rows = [];
+    S.scotGeo.features.forEach(function (f) {
+      var a = S.scotData.areas[f.properties.code]; if (!a) return;
+      var t = { sexual: 0, rape: 0, assault: 0, rateSum: 0 };
+      ys.forEach(function (y) {
+        var d = a.years[y] || {};
+        t.sexual += (d.sexual && d.sexual.count) || 0;
+        t.rape += (d.rape && d.rape.count) || 0;
+        t.assault += (d.assault && d.assault.count) || 0;
+        t.rateSum += (d.sexual && d.sexual.rate_per_10k) || 0;
+      });
+      t.rate = t.rateSum / ys.length;
+      rows.push({ f: f, t: t });
+    });
+    var rates = rows.map(function (r) { return r.t.rate; }).sort(function (a, b) { return a - b; });
+    var br = [0.15, 0.3, 0.5, 0.7, 0.85, 0.95].map(function (p) { return quantile(rates, p); });
+    S.scotBreaks = br;
+    var label = ys.length === 1 ? ys[0] : ys[0] + ' to ' + ys[ys.length - 1];
+    rows.forEach(function (row) {
+      var cls = 0; while (cls < br.length && row.t.rate >= br[cls]) cls++;
+      var layer = L.geoJSON(row.f, {
+        pane: 'scot',
+        style: { color: '#4a1486', weight: 1, fillColor: SCOT_COLOURS[cls], fillOpacity: 0.6 }
+      });
+      layer.bindPopup(function () {
+        return '<strong>' + row.f.properties.name + '</strong> (Scotland)<br><span class="big">' + fmt(row.t.sexual) +
+          '</span> recorded sexual crimes<br><span class="small">Financial years ' + label + ' (April to March). Of these: ' +
+          fmt(row.t.rape) + ' rape and attempted rape, ' + fmt(row.t.assault) + ' sexual assault. Average published rate ' +
+          row.t.rate.toFixed(1) + ' per 10,000 residents a year (rounded in the source).</span>' +
+          '<br><span class="small">Scottish definition (Group 2 sexual crimes). Not comparable with the hexagon counts. ' +
+          'Source: Scottish Government / Police Scotland, OGL v3.0. Areas are council-wide, so rural areas average over large empty land.</span>';
+      });
+      scotGroup.addLayer(layer);
+    });
   }
 
   function renderPfa() {
@@ -244,6 +293,7 @@
       '<div class="ends"><span>fewer (' + (b.length ? '&lt;' + fmt(b[0]) : '') + ')</span><span>more (up to ' + fmt(max) + ')</span></div>' +
       '<div class="key"><span class="sw" aria-hidden="true"></span> Dark outline: hotspot (top 3% of cells in this window)</div>';
     if ($('lPfa').checked) html += '<div class="key"><span class="sw gap" aria-hidden="true"></span> Dashed grey (force areas): incomplete data</div>';
+    if ($('lScot').checked && S.scotBreaks) html += '<div class="key"><span class="sw" style="background:#6a51a3" aria-hidden="true"></span> Purple (Scotland): sexual crimes per 10,000 residents, council areas, Scottish definition. Not comparable with the orange cells.</div>';
     html += '<div class="key" style="color:#555">Colour classes are quantile-based, recalculated for each window.</div>';
     el.innerHTML = html;
   }
@@ -294,9 +344,9 @@
     var msg;
     if (inc.length) {
       msg = (single ? 'No data published this month for: ' : 'Incomplete data in this window: ') + inc.join('; ') +
-        '. Areas these forces cover look quieter than they are. Scotland is not covered.';
+        '. Areas these forces cover look quieter than they are.';
     } else {
-      msg = 'Scotland is not covered (no open street-level feed). Cell counts are reported offences, not rates or prevalence.';
+      msg = 'Orange cells: reported records, not rates or prevalence. Scotland (purple) is annual council-area data on a different definition and is not comparable.';
     }
     showBanner(msg);
   }
@@ -317,7 +367,7 @@
     return getJSON(file).then(function (d) {
       S.cells = d.cells;
       S.rangeIds = S.win === 'month' ? [S.month] : monthRange(S.meta.windows[S.win].from, S.meta.windows[S.win].to);
-      computeBreaks(); renderCells(); renderPfa(); renderLegend(); renderTop(); renderBannerAndStatus(upstreamLatest);
+      computeBreaks(); renderCells(); renderScot(); renderPfa(); renderLegend(); renderTop(); renderBannerAndStatus(upstreamLatest);
       $('statusList').removeAttribute('aria-busy');
     }).catch(function (e) {
       showBanner('Could not load data (' + e.message + '). Please retry later.');
@@ -345,14 +395,15 @@
     });
   });
   $('monthSelect').addEventListener('change', function () { S.month = this.value; if (S.win === 'month') load(); });
-  ['lHeat', 'lHex', 'lPfa'].forEach(function (id) {
+  ['lHeat', 'lHex', 'lPfa', 'lScot'].forEach(function (id) {
     $(id).addEventListener('change', function () { applyLayerToggles(); renderLegend(); });
   });
   $('aboutBtn').addEventListener('click', function () { $('about').showModal(); });
 
   // ---------------------------------------------------------------- boot
-  Promise.all([getJSON('meta.json'), getJSON('force_totals.json'), getJSON('pfa.geojson')]).then(function (r) {
-    S.meta = r[0]; S.forceTotals = r[1]; S.pfa = r[2];
+  Promise.all([getJSON('meta.json'), getJSON('force_totals.json'), getJSON('pfa.geojson'),
+    getJSON('scotland_la.json').catch(function () { return null; }), getJSON('scotland_la.geojson').catch(function () { return null; })]).then(function (r) {
+    S.meta = r[0]; S.forceTotals = r[1]; S.pfa = r[2]; S.scotData = r[3]; S.scotGeo = r[4];
     G.R = S.meta.hex.R; G.K = S.meta.hex.K;
     buildPfaIndex(S.pfa);
     var sel = $('monthSelect');

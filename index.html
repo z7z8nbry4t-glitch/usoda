@@ -38,6 +38,7 @@
         <label class="row"><input type="checkbox" id="lHeat" checked> Density heat</label>
         <label class="row"><input type="checkbox" id="lHex" checked> Cells (tap for counts)</label>
         <label class="row"><input type="checkbox" id="lPfa"> Police force areas (totals)</label>
+        <label class="row"><input type="checkbox" id="lScot" checked> Scotland: council areas (sexual crimes, annual)</label>
       </fieldset>
 
       <div id="legend" class="legend" aria-label="Legend"></div>
@@ -73,7 +74,7 @@
       <li><strong>Counts, not rates.</strong> Busy, populous and night-time-economy areas record more simply because more people are present. Cells are not adjusted for population or footfall.</li>
       <li><strong>Anonymised locations.</strong> Police publish approximate points that are snapped to the centre of a street or a place. Here they are grouped into hexagons about 4&nbsp;km across, and cells with fewer than 3 records are hidden. Nothing here identifies a victim, an offender or an address, and it must not be used to try.</li>
       <li><strong>Coverage gaps.</strong> Some forces did not publish for some months, and the map would otherwise read as &ldquo;low&rdquo;. Greater Manchester Police has almost no street-level data after June 2019. Check the <em>Data status</em> panel and the banner for the current list.</li>
-      <li><strong>Geography.</strong> Covers England, Wales, Northern Ireland and British Transport Police points. <strong>Scotland is not covered</strong>: there is no open street-level feed, and the Scottish local-authority layer is not yet included.</li>
+      <li><strong>Geography.</strong> Covers England, Wales, Northern Ireland and British Transport Police points. <strong>Scotland is shown differently.</strong> There is no open street-level feed, so Scotland appears as 32 council-area shapes (Scottish Government, Police Scotland returns, financial years). It uses the Scottish definition of sexual crimes, which is narrower than the combined police.uk category, so it is not comparable with the hexagons and must not be added to them or ranked against them.</li>
       <li><strong>Lag.</strong> Data is published monthly, normally one to three months behind. Totals for recent months can still change.</li>
     </ul>
     <p>Source code and method: <a href="https://github.com/z7z8nbry4t-glitch/usoda">github.com/z7z8nbry4t-glitch/usoda</a>. If you or someone you know has been affected, support in the UK is available from <a href="https://rapecrisis.org.uk/get-help/">Rape Crisis</a> and <a href="https://www.nhs.uk/live-well/sexual-health/help-after-rape-and-sexual-assault/">NHS help after rape and sexual assault</a>.</p>

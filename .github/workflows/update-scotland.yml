@@ -1,0 +1,29 @@
+name: Update Scotland layer
+# The Scottish Government publishes annually (next due 1 June 2027); a monthly check is cheap.
+on:
+  schedule:
+    - cron: "23 4 2 * *"
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  scotland:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python3 scripts/fetch_scotland.py
+      - name: Commit if changed
+        run: |
+          git config user.name "usoda-bot"
+          git config user.email "usoda-bot@users.noreply.github.com"
+          # "fetched" always changes, so compare the content fields only
+          if git diff --quiet -I'"fetched"' -- data/scotland_la.json data/scotland_la.geojson; then
+            echo "No change in Scottish data"; git checkout -- data/scotland_la.json data/scotland_la.geojson
+          else
+            git add data/scotland_la.json data/scotland_la.geojson
+            git commit -m "data: refresh Scotland council-area layer"
+            git push
+          fi

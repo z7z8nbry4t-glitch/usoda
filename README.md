@@ -20,13 +20,21 @@ An interactive map of reported violence and sexual offences in the UK. It uses o
 |---|---|---|
 | [data.police.uk](https://data.police.uk/) monthly archives (`/data/archive/YYYY-MM.zip`) and availability API (`/api/crimes-street-dates`) | Street-level records, category `violent-crime` | Open Government Licence v3.0 |
 | ONS Open Geography Portal, Police Force Areas (December 2023) EW BUC | Force area boundaries | Open Government Licence v3.0; contains OS data (c) Crown copyright |
+| Scottish Government, [Recorded Crimes and Offences](https://data.gov.scot/dataset/recorded_crimes_and_offences) (Police Scotland returns) | Scotland layer: sexual crimes by council area, annual | Open Government Licence v3.0 |
+| ONS Open Geography Portal, Local Authority Districts (December 2024) UK BUC | Scottish council boundaries | Open Government Licence v3.0 |
 | OpenStreetMap | Base map | ODbL |
 
 The police publish about 36 months in each archive. A 120-month window therefore needs four archives (L, L-36, L-72, L-108, where L is the newest month). The pipeline downloads them one at a time.
 
+### Scotland
+
+Scotland appears as 32 council-area shapes (purple), annual, from `scripts/fetch_scotland.py` into `data/scotland_la.json` and `data/scotland_la.geojson`. It uses the Scottish definition of sexual crimes (rape and attempted rape and sexual assault are also listed in the popup). That definition is narrower than the police.uk category, so Scotland must not be added to, or ranked against, the hexagons. A monthly workflow refreshes it.
+
+For how each source is weighted, and what was assessed and left out, see [docs/DATA_SOURCES.md](docs/DATA_SOURCES.md).
+
 ### Not yet included
 
-- **Scotland.** There is no open street-level feed. The Scottish Government publishes local-authority totals, but the hosts (gov.scot, statistics.gov.scot) were not reachable from the build environment, so no Scottish layer has been built or tested. The site says so. See *Extension points*.
+- **Scotland below council-area level.** There is no open street-level or small-area feed for Scotland.
 - **Home Office force-area totals and rates per 1,000.** The police.uk category (violence and sexual offences) does not match a Home Office offence group, so a like-for-like comparison needs care. The force layer shows raw counts.
 
 ## Known data gaps
@@ -85,6 +93,8 @@ Set `USODA_WORK` to choose where temporary files go. The default is `work/` (ign
 
 ## Deployment (Cloudflare Pages)
 
+Full checklist: [docs/CLOUDFLARE.md](docs/CLOUDFLARE.md). Smoke test: `python3 scripts/verify_deploy.py https://usoda.pages.dev`.
+
 1. In the Cloudflare dashboard, choose *Workers and Pages*, *Create*, *Pages*, *Connect to Git*.
 2. Select `z7z8nbry4t-glitch/usoda`, branch `main`.
 3. Build command: leave empty (or `exit 0`). Output directory: `.` (the repository root).
@@ -103,7 +113,7 @@ Set `USODA_WORK` to choose where temporary files go. The default is `work/` (ign
 
 ## Extension points
 
-- **Scotland layer.** Add a script that fetches Scottish Government recorded-crime tables (local authority, sexual crimes group) when run from CI, writes `data/scotland_la.json`, and add a boundary layer. Do not extrapolate point data.
+- **Scotland.** Do not extrapolate point data. Add finer data only if an official open source appears.
 - **Rates.** Join ONS mid-year population estimates to the force layer to show rates per 1,000.
 - **Vector tiles** if the number of cells grows beyond what canvas rendering handles well.
 - **Year-on-year comparison** using the per-month files.

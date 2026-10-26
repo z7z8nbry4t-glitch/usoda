@@ -135,5 +135,20 @@ class PipelineTests(unittest.TestCase):
                           ("2020-08", "2017-09", "2020-08"), ("2017-08", "2016-09", "2017-08")])
 
 
+
+class ScotlandParserTest(unittest.TestCase):
+    def test_build_rows(self):
+        import fetch_scotland as fs
+        hdr = "GeographyCode,GeographyName,GeographyType,DateCode,Measurement,Units,Value,Crime Or Offence\n"
+        rows = ("S12000049,Glasgow City,Council Areas,2024/2025,Count,Crimes Or Offences Recorded,100,All Group 2: Sexual crimes\n"
+                "S12000049,Glasgow City,Council Areas,2024/2025,Ratio,Crimes Or Offences Recorded,12,All Group 2: Sexual crimes\n"
+                "S92000003,Scotland,Country,2024/2025,Count,Crimes Or Offences Recorded,999,All Group 2: Sexual crimes\n"
+                "S12000049,Glasgow City,Council Areas,2024/2025,Count,Crimes Or Offences Recorded,5,All Crimes\n")
+        names, years, data = fs.build_rows(hdr + rows)
+        self.assertEqual(names, {"S12000049": "Glasgow City"})
+        self.assertEqual(years, ["2024/2025"])
+        self.assertEqual(data["S12000049"]["2024/2025"]["sexual"], {"count": 100.0, "rate_per_10k": 12.0})
+
+
 if __name__ == "__main__":
     unittest.main()
