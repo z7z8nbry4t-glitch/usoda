@@ -28,7 +28,8 @@ def main():
     try:
         st, h, body = get(base + "/")
         check("home page", st == 200 and b"USODA" in body or b"Sexual Offence Density Atlas" in body)
-        check("CSP header", "Content-Security-Policy" in h, required=False)
+        # HTTP header names are case-insensitive; Cloudflare sends them in lower case.
+        check("CSP header", "content-security-policy" in {k.lower() for k in h}, required=False)
     except Exception as e:
         check("home page", False, str(e))
     meta = None
