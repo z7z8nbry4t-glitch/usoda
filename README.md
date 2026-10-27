@@ -146,3 +146,7 @@ Popups for cells, force areas, partnerships and Scottish council areas include a
 ## Licence
 
 Code: MIT (`LICENSE`). Data and third-party material: see `DATA-LICENCE.md`; the data is Open Government Licence v3.0 and stays with its publishers.
+
+## Downloads, monitoring and upstream changes
+
+`scripts/export_downloads.py` writes CSV copies of the published aggregates to `data/downloads/` (linked from the front page). `monitor.yml` checks daily that the live atlas is level with police.uk. `docs/UPSTREAM_CHANGES.md` says what to do if a source changes or stops.

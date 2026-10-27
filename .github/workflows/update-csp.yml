@@ -16,6 +16,7 @@ jobs:
         with:
           python-version: "3.12"
       - run: python3 scripts/fetch_csp.py
+      - run: python3 scripts/export_downloads.py
       - name: Commit if changed
         run: |
           git config user.name "usoda-bot"
@@ -24,7 +25,7 @@ jobs:
           if git diff --quiet -I'"fetched"' -- data/csp.json data/csp.geojson; then
             echo "No change in partnership data"; git checkout -- data/csp.json data/csp.geojson
           else
-            git add data/csp.json data/csp.geojson
+            git add data/csp.json data/csp.geojson data/downloads
             git commit -m "data: refresh partnership layer"
             git push
           fi

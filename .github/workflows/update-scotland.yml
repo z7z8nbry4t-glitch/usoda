@@ -15,6 +15,7 @@ jobs:
         with:
           python-version: "3.12"
       - run: python3 scripts/fetch_scotland.py
+      - run: python3 scripts/export_downloads.py
       - name: Commit if changed
         run: |
           git config user.name "usoda-bot"
@@ -23,7 +24,7 @@ jobs:
           if git diff --quiet -I'"fetched"' -- data/scotland_la.json data/scotland_la.geojson; then
             echo "No change in Scottish data"; git checkout -- data/scotland_la.json data/scotland_la.geojson
           else
-            git add data/scotland_la.json data/scotland_la.geojson
+            git add data/scotland_la.json data/scotland_la.geojson data/downloads
             git commit -m "data: refresh Scotland council-area layer"
             git push
           fi
