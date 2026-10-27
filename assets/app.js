@@ -180,15 +180,8 @@
     return '<br><span class="small">About ' + (d.home_office_sexual / f.residents * 1000).toFixed(1) + ' sexual offences per 1,000 residents (Home Office count over Census 2021 residents, ' + fmt(f.residents) +
       '). Census 2021 is older than the offence year, so rates for fast-growing areas run a little high.</span>';
   }
-  function niHtml() {
-    var n = S.ni;
-    return '<br><span class="small">Police Service of Northern Ireland (official), ' + n.period + ': ' + fmt(n.psni.sexual_offences) + ' sexual offences, ' + fmt(n.psni.rape) + ' of them rape, and ' +
-      fmt(n.psni.violence_against_the_person) + ' violence against the person. Cross-check: police.uk holds ' + fmt(n.police_uk_violence_and_sexual) + ' records for those 12 months against ' +
-      fmt(n.psni_violence_plus_sexual) + ' from the police (' + (100 * n.ratio).toFixed(1) + '%). Sexual offences cannot be mapped on their own here. <a href="' + n.source_url + '" target="_blank" rel="noopener">Source</a>.</span>';
-  }
   function xrefHtml(slug, withTotal) {
     var x = xrefLatest(slug);
-    if (!x && slug === 'northern-ireland' && S.ni) return niHtml() + forceNotesHtml(slug);
     if (!x) return forceNotesHtml(slug);
     var d = x.d;
     var h = '<br><span class="small">Home Office (official, whole force, ' + x.fy + '): ' + (withTotal ? fmt(d.home_office_total) + ' violence and sexual offences, of which ' : '') +
@@ -621,6 +614,7 @@
     add('Force-month coverage', m.quality.force_month_coverage_pct + '%');
     if (m.quality.duplicate_rows_dropped !== undefined) add('Exact duplicate rows removed', fmt(m.quality.duplicate_rows_dropped) + ' (same crime ID and place in one file)');
     if (m.quality.btp_scotland_records_excluded) add('BTP rail points in Scotland left out of cells', fmt(m.quality.btp_scotland_records_excluded) + ' (Scotland is shown by council area)');
+    if (S.ni) add('Northern Ireland check (PSNI, ' + S.ni.period + ')', 'police.uk holds ' + fmt(S.ni.police_uk_violence_and_sexual) + ' records against ' + fmt(S.ni.psni_violence_plus_sexual) + ' from the police (' + (100 * S.ni.ratio).toFixed(1) + '%). The police recorded ' + fmt(S.ni.psni.sexual_offences) + ' sexual offences, ' + fmt(S.ni.psni.rape) + ' of them rape; these cannot be mapped separately.');
     if (S.xref) {
       var bc = S.xref.band_counts, tot = 0, k; for (k in bc) tot += bc[k];
       add('Home Office cross-check', fmt(bc.agree || 0) + ' of ' + fmt(tot) + ' force-years within 5%; ' + fmt(bc.minor_difference || 0) + ' within 10%; ' + fmt((bc.differs || 0)) + ' differ more; ' + fmt((bc.incomplete_months || 0) + (bc.no_street_data || 0)) + ' cannot be checked (gaps)');
