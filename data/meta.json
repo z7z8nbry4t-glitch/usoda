@@ -1,14 +1,14 @@
 {
  "category": "Violence and sexual offences",
  "category_slug": "violent-crime",
- "generated_at": "2026-10-26T22:12:19Z",
+ "generated_at": "2026-10-27T07:59:44Z",
  "hex": {
   "K": 0.5807029557109398,
   "R": 0.02,
   "min_cell": 3,
   "orientation": "pointy-top"
  },
- "last_successful_ingest": "2026-10-26T22:12:19Z",
+ "last_successful_ingest": "2026-10-27T07:59:44Z",
  "latest_month": "2026-08",
  "months_available": [
   {
