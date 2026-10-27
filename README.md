@@ -109,12 +109,12 @@ Set `USODA_WORK` to choose where temporary files go. The default is `work/` (ign
 
 ## Deployment (Cloudflare Pages)
 
-Full checklist: [docs/CLOUDFLARE.md](docs/CLOUDFLARE.md). Smoke test: `python3 scripts/verify_deploy.py https://usoda.pages.dev`.
+Full checklist: [docs/CLOUDFLARE.md](docs/CLOUDFLARE.md). Smoke test: `python3 scripts/verify_deploy.py https://usoda.alphatedigital.co.uk`.
 
 1. In the Cloudflare dashboard, choose *Workers and Pages*, *Create*, *Pages*, *Connect to Git*.
 2. Select `z7z8nbry4t-glitch/usoda`, branch `main`.
 3. Build command: leave empty (or `exit 0`). Output directory: `.` (the repository root).
-4. Save. The site appears at `https://usoda.pages.dev` (or the name Cloudflare assigns). Every push to `main` redeploys.
+4. Save. The site appears at `https://usoda.pages.dev` (or the name Cloudflare assigns). The main address is `https://usoda.alphatedigital.co.uk`, and `functions/_middleware.js` redirects the old address to it. Every push to `main` redeploys.
 
 `functions/api/[[path]].js` is a Pages Function. It proxies three fixed, read-only police.uk endpoints with a one-hour edge cache. It is not an open proxy. The site works without it (it falls back to calling police.uk directly).
 
@@ -154,3 +154,7 @@ Code: MIT (`LICENSE`). Data and third-party material: see `DATA-LICENCE.md`; the
 ## Force pages and view links
 
 `force.html?f=<slug>` shows one force: Home Office sexual offences, rate, monthly police.uk records, gaps and notes (`force.html` alone lists every force). On the map, the address after `#` records the window, colour mode, layers and position, so "Copy link to this view" reopens the same view; `atlas.html#f=<slug>` zooms to a force. Charts are shared in `assets/charts.js`.
+
+## Domain and contact
+
+The main address is `https://usoda.alphatedigital.co.uk`, a CNAME to `usoda.pages.dev` set at the DNS host (Mythic Beasts) and added as a custom domain on the Pages project. The old `usoda.pages.dev` address redirects to it with a permanent redirect that keeps the path and query string. Preview deployments are not redirected. Contact: usoda@alphatedigital.co.uk (forwarded; there is no visitor tracking).

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Smoke-test a deployed USODA site. Usage: python3 scripts/verify_deploy.py https://usoda.pages.dev
+"""Smoke-test a deployed USODA site. Usage: python3 scripts/verify_deploy.py https://usoda.alphatedigital.co.uk
 
 Checks the pages and data files load, the data is fresh and consistent, and
 (on Cloudflare) that the API proxy works. Exit code 1 if a required check fails.
@@ -16,7 +16,7 @@ def get(url):
 
 
 def main():
-    base = (sys.argv[1] if len(sys.argv) > 1 else "https://usoda.pages.dev").rstrip("/")
+    base = (sys.argv[1] if len(sys.argv) > 1 else "https://usoda.alphatedigital.co.uk").rstrip("/")
     bad = 0
 
     def check(name, ok, detail="", required=True):
