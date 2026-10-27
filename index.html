@@ -4,98 +4,174 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>UK Sexual Offence Density Atlas (USODA)</title>
-  <meta name="description" content="Interactive map of reported violence and sexual offences in the UK, built from official open police data. Counts are reported offences only, not prevalence.">
-  <link rel="stylesheet" href="assets/vendor/leaflet/leaflet.css">
-  <link rel="stylesheet" href="assets/style.css">
+  <meta name="description" content="A map of reported violence and sexual offences across the UK, built from official open data. Read what it shows, what it cannot show, and how it can be used.">
+  <link rel="stylesheet" href="assets/landing.css">
 </head>
 <body>
-  <a class="skip" href="#controls">Skip to controls</a>
+  <a class="skip" href="#main">Skip to content</a>
 
-  <header class="top">
-    <div>
-      <h1>UK Sexual Offence Density Atlas</h1>
-      <p class="sub">Reported <strong>violence and sexual offences</strong> (one combined police category), from official open data. Counts of reports, not rates and not prevalence.</p>
+  <header class="site">
+    <div class="wrap bar">
+      <a class="brand" href="./">USODA</a>
+      <nav aria-label="Site">
+        <a href="#shows">What it shows</a>
+        <a href="#uses">Uses</a>
+        <a href="#limits">Limits</a>
+        <a href="#sources">Sources</a>
+        <a class="btn small" href="atlas.html">Open the map</a>
+      </nav>
     </div>
-    <button id="aboutBtn" class="linkish" aria-haspopup="dialog">About &amp; limitations</button>
   </header>
 
-  <div class="layout">
-    <aside id="controls" class="panel" aria-label="Map controls">
-      <fieldset>
-        <legend>Time window</legend>
-        <label class="row"><input type="radio" name="win" value="10y" checked> Rolling 10 years</label>
-        <label class="row"><input type="radio" name="win" value="5y"> Last 5 years</label>
-        <label class="row"><input type="radio" name="win" value="3y"> Last 3 years</label>
-        <label class="row"><input type="radio" name="win" value="12m"> Last 12 months</label>
-        <label class="row"><input type="radio" name="win" value="month"> Single month</label>
-        <label class="row indent"><span class="vh">Month</span>
-          <select id="monthSelect" disabled aria-label="Month"></select>
-        </label>
-      </fieldset>
+  <main id="main">
+    <section class="hero">
+      <div class="wrap">
+        <p class="eyebrow">UK Sexual Offence Density Atlas</p>
+        <h1>Where violence and sexual offences are reported across the UK</h1>
+        <p class="lead">An interactive map built from official open police data. It shows ten years of reports, grouped into areas about 4&nbsp;km across, so patterns can be seen without identifying anyone.</p>
+        <p class="cta">
+          <a class="btn" href="atlas.html">Open the map</a>
+          <a class="btn ghost" href="#limits">Read the limits first</a>
+        </p>
+        <p class="stamp" id="stamp">Data: police.uk, rolling ten years.</p>
+      </div>
+    </section>
 
-      <fieldset>
-        <legend>Colour cells by</legend>
-        <label class="row"><input type="radio" name="mode" value="count" checked> Number of reports</label>
-        <label class="row"><input type="radio" name="mode" value="res"> Reports a year per 1,000 residents</label>
-        <label class="row"><input type="radio" name="mode" value="wd"> Reports a year per 1,000 workday population</label>
-      </fieldset>
+    <section class="wrap facts" aria-label="At a glance">
+      <ul>
+        <li><strong>10 years</strong><span>of monthly police data in one rolling window</span></li>
+        <li><strong>About 4&nbsp;km</strong><span>hexagonal cells, with small counts hidden</span></li>
+        <li><strong>Street-level</strong><span>points for England, Wales, Northern Ireland and British Transport Police</span></li>
+        <li><strong>32 council areas</strong><span>Scotland, shown separately on its own definition</span></li>
+      </ul>
+    </section>
 
-      <fieldset>
-        <legend>Layers</legend>
-        <label class="row"><input type="checkbox" id="lHeat" checked> Density heat</label>
-        <label class="row"><input type="checkbox" id="lHex" checked> Cells (tap for counts)</label>
-        <label class="row"><input type="checkbox" id="lPfa"> Police force areas (totals)</label>
-        <label class="row"><input type="checkbox" id="lScot" checked> Scotland: council areas (sexual crimes, annual)</label>
-      </fieldset>
+    <section class="wrap important" aria-labelledby="read-first">
+      <h2 id="read-first">Read this first</h2>
+      <p>The map counts <strong>reports</strong>, not the number of offences that happen. Many sexual offences are never reported. The police category it uses, <em>Violence and sexual offences</em>, also includes assault, harassment and stalking, and the open data cannot separate them. A quiet area on the map is not a safe area.</p>
+    </section>
 
-      <div id="legend" class="legend" aria-label="Legend"></div>
+    <section class="wrap" id="shows" aria-labelledby="shows-h">
+      <h2 id="shows-h">What the atlas shows</h2>
+      <div class="cols">
+        <article>
+          <h3>Density of reports</h3>
+          <p>Cells are coloured by the number of reports in the time window you choose: ten years, five years, three years, twelve months or a single month. The busiest 3% of cells carry a dark outline.</p>
+        </article>
+        <article>
+          <h3>Rates, where they can be worked out</h3>
+          <p>In England and Wales you can switch to reports a year per 1,000 residents, or per 1,000 workday population. Both use Census 2021. Busy town centres record more simply because more people are there, and a rate helps to allow for that.</p>
+        </article>
+        <article>
+          <h3>Police force areas</h3>
+          <p>A second layer gives totals for each force. Each total is checked against the Home Office police recorded crime tables. Where a force has gaps in its data, the map says so and shows the Home Office figure instead.</p>
+        </article>
+        <article>
+          <h3>Scotland, on its own terms</h3>
+          <p>Scotland has no open street-level feed. It appears as 32 council areas, by year, using the narrower Scottish definition of sexual crimes. It is not comparable with the hexagons and must not be added to them.</p>
+        </article>
+        <article>
+          <h3>Data status and national context</h3>
+          <p>A status panel gives the latest month, the newest month published upstream and the coverage of each force. A context panel sets the map beside national survey estimates and official totals.</p>
+        </article>
+        <article>
+          <h3>Keyboard-friendly list</h3>
+          <p>The map works by touch, mouse and keyboard. A ranked list of the top 15 cells gives the same information without needing to use the map.</p>
+        </article>
+      </div>
+    </section>
 
-      <details id="status" open>
-        <summary>Data status</summary>
-        <dl id="statusList" aria-live="polite"><dt>Loading…</dt><dd></dd></dl>
-      </details>
+    <section class="band" id="uses" aria-labelledby="uses-h">
+      <div class="wrap">
+        <h2 id="uses-h">Potential uses</h2>
+        <p class="intro">The atlas helps to ask better questions about where to look further. It does not answer them on its own.</p>
+        <div class="cols">
+          <article>
+            <h3>Community safety and public health teams</h3>
+            <p>Find where reported offending is concentrated over several years, then compare it with local knowledge, licensing data and service use before planning action.</p>
+          </article>
+          <article>
+            <h3>Support services and charities</h3>
+            <p>Look at where reports cluster when deciding where to place outreach, advice sessions or awareness work. Remember that low reporting can mean low trust or poor access, not low need.</p>
+          </article>
+          <article>
+            <h3>Researchers and students</h3>
+            <p>Use it to teach how crime data is built and where it fails: recording practice, reporting rates, gaps in coverage and different national definitions. The code and method are public.</p>
+          </article>
+          <article>
+            <h3>Journalists and campaigners</h3>
+            <p>Use the force-level totals and the known-issue notes to check claims about trends. Quote the limits with the numbers, and do not rank areas that have gaps in their data.</p>
+          </article>
+          <article>
+            <h3>Local authorities and planners</h3>
+            <p>Use ten-year patterns, rather than single months, as background for night-time economy, transport and public-space planning. Add local data before deciding anything.</p>
+          </article>
+          <article>
+            <h3>Anyone checking the data</h3>
+            <p>Every figure traces back to an open source and every step is on GitHub. If something looks wrong, the cross-checks and the data status panel show where to start.</p>
+          </article>
+        </div>
+      </div>
+    </section>
 
-      <details id="context">
-        <summary>National context (surveys and official totals)</summary>
-        <div id="contextBody" class="ctx" aria-live="polite">Loading&hellip;</div>
-      </details>
+    <section class="wrap" id="limits" aria-labelledby="limits-h">
+      <h2 id="limits-h">What it cannot do</h2>
+      <div class="cols two">
+        <article>
+          <h3>Do not use it to</h3>
+          <ul>
+            <li>judge how safe a place is for a person;</li>
+            <li>measure how common sexual offences are;</li>
+            <li>find, or try to identify, a victim, an offender or an address;</li>
+            <li>add Scotland to, or rank it against, the rest of the map;</li>
+            <li>read a quiet cell in a force with data gaps as low risk.</li>
+          </ul>
+        </article>
+        <article>
+          <h3>Keep in mind</h3>
+          <ul>
+            <li>Police publish approximate points, not exact locations.</li>
+            <li>Cells with fewer than 3 records are hidden.</li>
+            <li>Greater Manchester Police has almost no street-level data after June 2019. Other forces have smaller gaps.</li>
+            <li>Data is published monthly, usually one to three months behind, and recent totals can change.</li>
+            <li>Changes over time reflect recording practice and willingness to report, as well as what happened.</li>
+          </ul>
+        </article>
+      </div>
+      <p>The full list of limits is in the <a href="atlas.html">map’s About panel</a>, and the reasoning behind each source is in <a href="https://github.com/z7z8nbry4t-glitch/usoda/blob/main/docs/DATA_SOURCES.md">the data sources note</a>.</p>
+    </section>
 
-      <details id="topbox">
-        <summary>Top 15 cells (keyboard-friendly list)</summary>
-        <ol id="topList" class="toplist"></ol>
-      </details>
-    </aside>
+    <section class="band" id="sources" aria-labelledby="sources-h">
+      <div class="wrap">
+        <h2 id="sources-h">Where the data comes from</h2>
+        <ul class="sources">
+          <li><strong>Crime reports:</strong> <a href="https://data.police.uk/">data.police.uk</a>, street-level monthly archives, category <em>Violence and sexual offences</em>.</li>
+          <li><strong>Cross-checks:</strong> Home Office <a href="https://www.gov.uk/government/statistical-data-sets/police-recorded-crime-and-outcomes-open-data-tables">police recorded crime open data tables</a>, by police force area.</li>
+          <li><strong>Population:</strong> ONS Census 2021, usual residents and workday population.</li>
+          <li><strong>Scotland:</strong> Scottish Government <a href="https://data.gov.scot/dataset/recorded_crimes_and_offences">Recorded Crimes and Offences</a>, by council area.</li>
+          <li><strong>Boundaries:</strong> ONS Open Geography Portal. Base map: OpenStreetMap contributors.</li>
+        </ul>
+        <p>The sources are shown side by side and are never combined into one number. The data refreshes automatically when the police publish a new month.</p>
+        <p class="cta">
+          <a class="btn" href="atlas.html">Open the map</a>
+          <a class="btn ghost" href="https://github.com/z7z8nbry4t-glitch/usoda">Method and code on GitHub</a>
+        </p>
+      </div>
+    </section>
 
-    <main class="mapwrap">
-      <div id="map" role="application" aria-label="Interactive map of the UK. Use arrow keys to pan and plus or minus to zoom."></div>
-      <div id="banner" class="banner" role="status" hidden></div>
-    </main>
-  </div>
+    <section class="wrap support" aria-labelledby="support-h">
+      <h2 id="support-h">If you need support</h2>
+      <p>If you or someone you know has been affected, help in the UK is available from <a href="https://rapecrisis.org.uk/get-help/">Rape Crisis</a> and <a href="https://www.nhs.uk/live-well/sexual-health/help-after-rape-and-sexual-assault/">NHS help after rape and sexual assault</a>. In an emergency, call 999.</p>
+    </section>
+  </main>
 
-  <footer class="foot">
-    <span id="footStamp">Last updated: …</span>
-    <span>Crime data: <a href="https://data.police.uk/">data.police.uk</a> &middot; Boundaries: ONS Open Geography Portal &middot; Map: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors</span>
-    <span>Contains public sector information licensed under the <a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/">Open Government Licence v3.0</a>. Contains OS data &copy; Crown copyright and database right.</span>
+  <footer class="site">
+    <div class="wrap">
+      <p>Crime data: <a href="https://data.police.uk/">data.police.uk</a> &middot; Boundaries: ONS Open Geography Portal &middot; Map: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors</p>
+      <p>Contains public sector information licensed under the <a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/">Open Government Licence v3.0</a>. Contains OS data &copy; Crown copyright and database right.</p>
+    </div>
   </footer>
 
-  <dialog id="about" aria-labelledby="aboutTitle">
-    <h2 id="aboutTitle">About &amp; limitations</h2>
-    <ul>
-      <li><strong>What is counted.</strong> Records in the police category <em>Violence and sexual offences</em>. This combines sexual offences with all other violence (assaults, harassment, stalking and more). Sexual offences are only part of it, and the source data cannot separate them.</li>
-      <li><strong>Reports, not prevalence.</strong> Only offences reported to and recorded by police appear. Many sexual offences are never reported. Changes over time also reflect recording practice and willingness to report, not just underlying behaviour.</li>
-      <li><strong>Counts and rates.</strong> By default cells show counts, and busy, populous and night-time-economy areas record more simply because more people are present. For England and Wales you can switch to a rate per 1,000 residents, or per 1,000 workday population (people counted where they work if employed, otherwise where they live), both from Census 2021. Neither is perfect: residents understate busy centres, workday population misses visitors and nightlife, and both are from 2021. A cell needs 1,500 people for a rate, and a rate is not shown where the force has data gaps. Scotland and Northern Ireland have no cell rates.</li>
-      <li><strong>Anonymised locations.</strong> Police publish approximate points that are snapped to the centre of a street or a place. Here they are grouped into hexagons about 4&nbsp;km across, and cells with fewer than 3 records are hidden. Nothing here identifies a victim, an offender or an address, and it must not be used to try.</li>
-      <li><strong>Coverage gaps.</strong> Some forces did not publish for some months, and the map would otherwise read as &ldquo;low&rdquo;. Greater Manchester Police has almost no street-level data after June 2019. Check the <em>Data status</em> panel and the banner for the current list.</li>
-      <li><strong>Geography.</strong> Covers England, Wales, Northern Ireland and British Transport Police points. <strong>Scotland is shown differently.</strong> There is no open street-level feed, so Scotland appears as 32 council-area shapes (Scottish Government, Police Scotland returns, financial years). It uses the Scottish definition of sexual crimes, which is narrower than the combined police.uk category, so it is not comparable with the hexagons and must not be added to them or ranked against them.</li>
-      <li><strong>Cross-checks.</strong> Force totals are compared with the Home Office police recorded crime tables (violence against the person plus sexual offences, which is the same scope as the police.uk category). Where they agree, the popups say so; where a force has gaps, the popups show the Home Office total instead of guessing. The Home Office also shows that sexual offences are roughly a tenth of this combined category, though the share varies by force. That is a force-wide figure and is not applied to individual cells. Exact duplicate rows are removed, and rail points inside Scotland are left out of the cells.</li>
-      <li><strong>Lag.</strong> Data is published monthly, normally one to three months behind. Totals for recent months can still change.</li>
-    </ul>
-    <p>Source code and method: <a href="https://github.com/z7z8nbry4t-glitch/usoda">github.com/z7z8nbry4t-glitch/usoda</a>. If you or someone you know has been affected, support in the UK is available from <a href="https://rapecrisis.org.uk/get-help/">Rape Crisis</a> and <a href="https://www.nhs.uk/live-well/sexual-health/help-after-rape-and-sexual-assault/">NHS help after rape and sexual assault</a>.</p>
-    <form method="dialog"><button class="primary">Close</button></form>
-  </dialog>
-
-  <script src="assets/vendor/leaflet/leaflet.js"></script>
-  <script src="assets/vendor/leaflet-heat.js"></script>
-  <script src="assets/app.js"></script>
+  <script src="assets/landing.js"></script>
 </body>
 </html>

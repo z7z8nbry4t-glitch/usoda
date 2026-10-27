@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UK Sexual Offence Density Atlas (USODA)</title>
+  <meta name="description" content="Interactive map of reported violence and sexual offences in the UK, built from official open police data. Counts are reported offences only, not prevalence.">
+  <link rel="stylesheet" href="assets/vendor/leaflet/leaflet.css">
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+  <a class="skip" href="#controls">Skip to controls</a>
+
+  <header class="top">
+    <div>
+      <h1>UK Sexual Offence Density Atlas</h1>
+      <p class="sub">Reported <strong>violence and sexual offences</strong> (one combined police category), from official open data. Counts of reports, not rates and not prevalence.</p>
+    </div>
+    <nav class="topnav" aria-label="Site">
+      <a class="linkish" href="./">Home</a>
+      <button id="aboutBtn" class="linkish" aria-haspopup="dialog">About &amp; limitations</button>
+    </nav>
+  </header>
+
+  <div class="layout">
+    <aside id="controls" class="panel" aria-label="Map controls">
+      <fieldset>
+        <legend>Time window</legend>
+        <label class="row"><input type="radio" name="win" value="10y" checked> Rolling 10 years</label>
+        <label class="row"><input type="radio" name="win" value="5y"> Last 5 years</label>
+        <label class="row"><input type="radio" name="win" value="3y"> Last 3 years</label>
+        <label class="row"><input type="radio" name="win" value="12m"> Last 12 months</label>
+        <label class="row"><input type="radio" name="win" value="month"> Single month</label>
+        <label class="row indent"><span class="vh">Month</span>
+          <select id="monthSelect" disabled aria-label="Month"></select>
+        </label>
+      </fieldset>
+
+      <fieldset>
+        <legend>Colour cells by</legend>
+        <label class="row"><input type="radio" name="mode" value="count" checked> Number of reports</label>
+        <label class="row"><input type="radio" name="mode" value="res"> Reports a year per 1,000 residents</label>
+        <label class="row"><input type="radio" name="mode" value="wd"> Reports a year per 1,000 workday population</label>
+      </fieldset>
+
+      <fieldset>
+        <legend>Layers</legend>
+        <label class="row"><input type="checkbox" id="lHeat" checked> Density heat</label>
+        <label class="row"><input type="checkbox" id="lHex" checked> Cells (tap for counts)</label>
+        <label class="row"><input type="checkbox" id="lPfa"> Police force areas (totals)</label>
+        <label class="row"><input type="checkbox" id="lScot" checked> Scotland: council areas (sexual crimes, annual)</label>
+      </fieldset>
+
+      <div id="legend" class="legend" aria-label="Legend"></div>
+
+      <details id="status" open>
+        <summary>Data status</summary>
+        <dl id="statusList" aria-live="polite"><dt>Loading…</dt><dd></dd></dl>
+      </details>
+
+      <details id="context">
+        <summary>National context (surveys and official totals)</summary>
+        <div id="contextBody" class="ctx" aria-live="polite">Loading&hellip;</div>
+      </details>
+
+      <details id="topbox">
+        <summary>Top 15 cells (keyboard-friendly list)</summary>
+        <ol id="topList" class="toplist"></ol>
+      </details>
+    </aside>
+
+    <main class="mapwrap">
+      <div id="map" role="application" aria-label="Interactive map of the UK. Use arrow keys to pan and plus or minus to zoom."></div>
+      <div id="banner" class="banner" role="status" hidden></div>
+    </main>
+  </div>
+
+  <footer class="foot">
+    <span id="footStamp">Last updated: …</span>
+    <span>Crime data: <a href="https://data.police.uk/">data.police.uk</a> &middot; Boundaries: ONS Open Geography Portal &middot; Map: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors</span>
+    <span>Contains public sector information licensed under the <a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/">Open Government Licence v3.0</a>. Contains OS data &copy; Crown copyright and database right.</span>
+  </footer>
+
+  <dialog id="about" aria-labelledby="aboutTitle">
+    <h2 id="aboutTitle">About &amp; limitations</h2>
+    <ul>
+      <li><strong>What is counted.</strong> Records in the police category <em>Violence and sexual offences</em>. This combines sexual offences with all other violence (assaults, harassment, stalking and more). Sexual offences are only part of it, and the source data cannot separate them.</li>
+      <li><strong>Reports, not prevalence.</strong> Only offences reported to and recorded by police appear. Many sexual offences are never reported. Changes over time also reflect recording practice and willingness to report, not just underlying behaviour.</li>
+      <li><strong>Counts and rates.</strong> By default cells show counts, and busy, populous and night-time-economy areas record more simply because more people are present. For England and Wales you can switch to a rate per 1,000 residents, or per 1,000 workday population (people counted where they work if employed, otherwise where they live), both from Census 2021. Neither is perfect: residents understate busy centres, workday population misses visitors and nightlife, and both are from 2021. A cell needs 1,500 people for a rate, and a rate is not shown where the force has data gaps. Scotland and Northern Ireland have no cell rates.</li>
+      <li><strong>Anonymised locations.</strong> Police publish approximate points that are snapped to the centre of a street or a place. Here they are grouped into hexagons about 4&nbsp;km across, and cells with fewer than 3 records are hidden. Nothing here identifies a victim, an offender or an address, and it must not be used to try.</li>
+      <li><strong>Coverage gaps.</strong> Some forces did not publish for some months, and the map would otherwise read as &ldquo;low&rdquo;. Greater Manchester Police has almost no street-level data after June 2019. Check the <em>Data status</em> panel and the banner for the current list.</li>
+      <li><strong>Geography.</strong> Covers England, Wales, Northern Ireland and British Transport Police points. <strong>Scotland is shown differently.</strong> There is no open street-level feed, so Scotland appears as 32 council-area shapes (Scottish Government, Police Scotland returns, financial years). It uses the Scottish definition of sexual crimes, which is narrower than the combined police.uk category, so it is not comparable with the hexagons and must not be added to them or ranked against them.</li>
+      <li><strong>Cross-checks.</strong> Force totals are compared with the Home Office police recorded crime tables (violence against the person plus sexual offences, which is the same scope as the police.uk category). Where they agree, the popups say so; where a force has gaps, the popups show the Home Office total instead of guessing. The Home Office also shows that sexual offences are roughly a tenth of this combined category, though the share varies by force. That is a force-wide figure and is not applied to individual cells. Exact duplicate rows are removed, and rail points inside Scotland are left out of the cells.</li>
+      <li><strong>Lag.</strong> Data is published monthly, normally one to three months behind. Totals for recent months can still change.</li>
+    </ul>
+    <p>Source code and method: <a href="https://github.com/z7z8nbry4t-glitch/usoda">github.com/z7z8nbry4t-glitch/usoda</a>. If you or someone you know has been affected, support in the UK is available from <a href="https://rapecrisis.org.uk/get-help/">Rape Crisis</a> and <a href="https://www.nhs.uk/live-well/sexual-health/help-after-rape-and-sexual-assault/">NHS help after rape and sexual assault</a>.</p>
+    <form method="dialog"><button class="primary">Close</button></form>
+  </dialog>
+
+  <script src="assets/vendor/leaflet/leaflet.js"></script>
+  <script src="assets/vendor/leaflet-heat.js"></script>
+  <script src="assets/app.js"></script>
+</body>
+</html>

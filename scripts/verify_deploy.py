@@ -31,6 +31,11 @@ def main():
         check("CSP header", "Content-Security-Policy" in h, required=False)
     except Exception as e:
         check("home page", False, str(e))
+    try:
+        st, h, body = get(base + "/atlas.html")
+        check("map page", st == 200 and b'id="map"' in body)
+    except Exception as e:
+        check("map page", False, str(e))
     meta = None
     try:
         meta = json.loads(get(base + "/data/meta.json")[2])

@@ -6,6 +6,8 @@ An interactive map of reported violence and sexual offences in the UK. It uses o
 
 ## What the site does
 
+The front page (`index.html`) explains the atlas, its limits and its uses. The map itself is `atlas.html`.
+
 - Shows a zoomable, pannable map (touch and keyboard supported) with a density heat layer and clickable hexagonal cells.
 - Marks hotspots with a dark outline (the top 3% of cells in the selected window).
 - Shows the count, time window and source note when you click or tap a cell.
