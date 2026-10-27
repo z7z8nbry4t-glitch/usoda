@@ -291,6 +291,27 @@ class CspTests(unittest.TestCase):
         self.assertEqual([self.f.quarter_label(k) for k in ks], ["2024/25 Q4", "2025/26 Q1", "2025/26 Q2"])
 
 
+class MonitorAndDownloadTests(unittest.TestCase):
+    def test_month_lag(self):
+        import check_freshness
+        self.assertEqual(check_freshness.month_lag("2026-08", "2026-08"), 0)
+        self.assertEqual(check_freshness.month_lag("2026-08", "2026-09"), 1)
+        self.assertEqual(check_freshness.month_lag("2025-12", "2026-02"), 2)
+        self.assertEqual(check_freshness.month_lag("2026-09", "2026-08"), -1)
+
+    def test_downloads_match_published_json_and_hide_small_cells(self):
+        import csv
+        d = os.path.join(ROOT, "data", "downloads")
+        rows = list(csv.DictReader(open(os.path.join(d, "cells_10y.csv"))))
+        win = json.load(open(os.path.join(ROOT, "data", "windows", "10y.json")))
+        self.assertEqual(len(rows), len(win["cells"]))
+        self.assertEqual(sum(int(r["records"]) for r in rows), sum(c[2] for c in win["cells"]))
+        self.assertGreaterEqual(min(int(r["records"]) for r in rows), 3)
+        csp = list(csv.DictReader(open(os.path.join(d, "partnership_quarterly_home_office.csv"))))
+        self.assertTrue(all(r["partnership"] and r["quarter"] for r in csp))
+        self.assertTrue(os.path.exists(os.path.join(d, "README.txt")))
+
+
 class PublishedDataConsistencyTests(unittest.TestCase):
     """Checks the committed data against official totals read from source pages."""
 

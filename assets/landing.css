@@ -83,3 +83,4 @@ footer.site a{color:#9cc3ff}
   .important{margin-left:12px;margin-right:12px;padding:16px}
 }
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important;animation:none!important}}
+.support .small,.downloads .small{color:#555;font-size:.85rem}

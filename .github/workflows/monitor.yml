@@ -1,0 +1,31 @@
+name: Monitor
+# Fails (and so alerts the repository owner) if the live atlas is behind police.uk,
+# or if the last run of an update workflow failed.
+on:
+  schedule:
+    - cron: "17 7 * * *"
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  freshness:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Live atlas against police.uk
+        run: python3 scripts/check_freshness.py https://usoda.pages.dev
+      - name: Last update runs
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          bad=0
+          for wf in update-data.yml update-scotland.yml update-csp.yml; do
+            c=$(gh run list --workflow "$wf" --limit 5 --json conclusion --jq '[.[] | select(.conclusion != "")][0].conclusion' || true)
+            echo "$wf: last finished run = ${c:-none}"
+            if [ "$c" = "failure" ]; then bad=1; fi
+          done
+          exit $bad

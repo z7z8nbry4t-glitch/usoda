@@ -53,6 +53,10 @@ jobs:
         continue-on-error: true
         run: python scripts/crossref_home_office.py
 
+      - name: Refresh downloadable CSV copies
+        if: steps.poll.outputs.new_month == 'true' || inputs.force == true
+        run: python scripts/export_downloads.py
+
       - name: Commit and push (triggers Cloudflare Pages redeploy)
         if: steps.poll.outputs.new_month == 'true' || inputs.force == true
         run: |
