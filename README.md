@@ -33,7 +33,7 @@ The police publish about 36 months in each archive. A 120-month window therefore
 
 ### Scotland
 
-Scotland appears as 32 council-area shapes (purple), annual, from `scripts/fetch_scotland.py` into `data/scotland_la.json` and `data/scotland_la.geojson`. It uses the Scottish definition of sexual crimes (rape and attempted rape and sexual assault are also listed in the popup). That definition is narrower than the police.uk category, so Scotland must not be added to, or ranked against, the hexagons. A monthly workflow refreshes it.
+Scotland appears as 32 council-area shapes (purple), annual, from `scripts/fetch_scotland.py` into `data/scotland_la.json` and `data/scotland_la.geojson`. It uses the Scottish definition of sexual crimes (rape and attempted rape and sexual assault are also listed in the popup). That definition is narrower than the police.uk category, so Scotland must not be added to, or ranked against, the hexagons. A monthly workflow refreshes it. Every year since 1996/97 is kept so the Scotland popup can chart the full history.
 
 An optional green layer shows Home Office *Sexual offences* by community safety partnership for England and Wales (quarterly, from April 2020, rate per 1,000 residents), from `scripts/fetch_csp.py` into `data/csp.json` and `data/csp.geojson`. It is a different measure from the hexagons and from Scotland, is off by default, and is never added to or ranked against either. A monthly workflow checks for a new quarterly release.
 
@@ -137,3 +137,8 @@ Full checklist: [docs/CLOUDFLARE.md](docs/CLOUDFLARE.md). Smoke test: `python3 s
 ## Licence
 
 Code: add a licence file of your choice (none is set yet). Data: Open Government Licence v3.0. Vendored libraries (Leaflet, leaflet.heat) are BSD-2-Clause; their licences are in `assets/vendor/`.
+
+
+## Trend charts
+
+Popups for cells, force areas, partnerships and Scottish council areas include a small inline SVG bar chart (no chart library). Cell charts load every `data/months/*.json` file on first use; the others use data already loaded. Charts ignore the time-window control and never combine sources.

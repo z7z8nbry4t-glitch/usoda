@@ -299,6 +299,11 @@ class PublishedDataConsistencyTests(unittest.TestCase):
         tot = lambda k: sum(a["years"]["2024/2025"][k]["count"] for a in d["areas"].values())
         self.assertEqual((tot("sexual"), tot("rape"), tot("assault")), (14892, 2897, 5124))
 
+    def test_scotland_keeps_full_history_for_trend_charts(self):
+        d = json.load(open(os.path.join(ROOT, "data", "scotland_la.json")))
+        self.assertEqual(d["years"][0], "1996/1997")
+        self.assertGreaterEqual(len(d["years"]), 29)
+
     def test_home_office_sexual_total_matches_ons_2025_26(self):
         d = json.load(open(os.path.join(ROOT, "data", "crossref.json")))
         total = sum(f["2025/26"]["home_office_sexual"] for f in d["forces"].values() if "2025/26" in f)

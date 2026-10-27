@@ -197,13 +197,107 @@
     return h + ' Busy centres and rural cells can read very differently on the two bases.</span>';
   }
 
+  // ---------------------------------------------------------------- trend charts
+  // Small inline SVG bar charts shown inside popups. pts: [{l: label, v: number|null, gap: bool, tick: string|null}].
+  // A null value is drawn as a short grey mark, not as zero: it means fewer than 3 records (hidden) or no data.
+  function niceMax(m) {
+    if (m <= 4) return 4;
+    var p = Math.pow(10, Math.floor(Math.log(m) / Math.LN10)), f = m / p;
+    return (f <= 1 ? 1 : f <= 2 ? 2 : f <= 5 ? 5 : 10) * p;
+  }
+  function trendChart(pts, o) {
+    var W = 320, H = 150, L = 40, R = 6, T = 8, B = 22, iw = W - L - R, ih = H - T - B;
+    var vals = pts.filter(function (p) { return p.v !== null; });
+    if (vals.length < 2) return '<div class="small">Not enough history to draw a trend.</div>';
+    var max = niceMax(Math.max.apply(null, vals.map(function (p) { return p.v; })));
+    var step = iw / pts.length, bw = Math.max(1, step * 0.8);
+    var svg = '<svg viewBox="0 0 ' + W + ' ' + H + '" width="100%" role="img" aria-label="' + o.alt + '" focusable="false">';
+    [0, 0.5, 1].forEach(function (f) {
+      var y = T + ih - ih * f;
+      svg += '<line x1="' + L + '" x2="' + (W - R) + '" y1="' + y.toFixed(1) + '" y2="' + y.toFixed(1) + '" stroke="#ccc" stroke-width="0.6"/>' +
+        '<text x="' + (L - 4) + '" y="' + (y + 3).toFixed(1) + '" text-anchor="end" font-size="9" fill="#555">' + fmt(Math.round(max * f)) + '</text>';
+    });
+    var every = Math.max(1, Math.ceil(pts.filter(function (p) { return p.tick; }).length / 6)), n = 0;
+    pts.forEach(function (p, i) {
+      var x = L + i * step + (step - bw) / 2;
+      if (p.v === null) {
+        svg += '<rect x="' + x.toFixed(1) + '" y="' + (T + ih - 2) + '" width="' + bw.toFixed(1) + '" height="2" fill="' + (p.gap ? '#c0392b' : '#9a9a9a') + '"/>';
+      } else {
+        var h = Math.max(0.5, ih * p.v / max);
+        svg += '<rect x="' + x.toFixed(1) + '" y="' + (T + ih - h).toFixed(1) + '" width="' + bw.toFixed(1) + '" height="' + h.toFixed(1) + '" fill="' + o.colour + '"><title>' + p.l + ': ' + fmt(p.v) + '</title></rect>';
+      }
+      if (p.tick) {
+        if (n % every === 0) svg += '<text x="' + (x + bw / 2).toFixed(1) + '" y="' + (H - 8) + '" text-anchor="middle" font-size="9" fill="#555">' + p.tick + '</text>';
+        n++;
+      }
+    });
+    svg += '</svg>';
+    var peak = vals.reduce(function (a, b) { return b.v > a.v ? b : a; });
+    var last = vals[vals.length - 1];
+    return '<div class="trend-box"><strong>' + o.title + '</strong>' + svg +
+      '<div class="small">' + o.unit + '. ' + pts[0].l + ' to ' + pts[pts.length - 1].l + '. Highest: ' + fmt(peak.v) + ' (' + peak.l + '). Latest shown: ' + fmt(last.v) + ' (' + last.l + ').' +
+      (o.note ? ' ' + o.note : '') + '</div></div>';
+  }
+  function trendAlt(what, pts) {
+    return 'Bar chart of ' + what + ' from ' + pts[0].l + ' to ' + pts[pts.length - 1].l + '. Values are in the text beneath the chart.';
+  }
+  var MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  function monthLabel(m) { return MONTH_NAMES[+m.slice(5) - 1] + ' ' + m.slice(0, 4); }
+
+  // Hexagon cells: the full monthly history is loaded once, on first use, from the per-month files.
+  var histPromise = null;
+  function loadHistory(progress) {
+    if (histPromise) return histPromise;
+    var months = S.meta.months_available.map(function (m) { return m.month; }).sort(), done = 0, i = 0;
+    S.hist = {};
+    histPromise = new Promise(function (resolve, reject) {
+      function next() {
+        if (i >= months.length) { if (done >= months.length) resolve(months); return; }
+        var m = months[i++];
+        getJSON('months/' + m + '.json').then(function (d) {
+          var idx = {};
+          d.cells.forEach(function (c) { idx[c[0] + ',' + c[1]] = c[2]; });
+          S.hist[m] = idx; done++; progress(done, months.length); next();
+        }).catch(reject);
+      }
+      for (var k = 0; k < 6; k++) next();
+    });
+    histPromise.catch(function () { histPromise = null; });
+    return histPromise;
+  }
+  function cellTrendHtml(q, r, slug, months) {
+    var fm = slug && S.forceTotals && S.forceTotals.monthly[slug];
+    var pts = months.map(function (m) {
+      var v = S.hist[m][q + ',' + r];
+      return { l: monthLabel(m), v: v === undefined ? null : v, gap: !!(fm && fm[m] === undefined), tick: m.slice(5) === '01' ? m.slice(0, 4) : null };
+    });
+    return trendChart(pts, {
+      colour: '#e6550d', title: 'Reported records in this cell, by month', unit: 'Monthly count (violence and sexual offences, combined category)',
+      alt: trendAlt('monthly reported records in this cell', pts),
+      note: 'Grey mark: fewer than 3 records (hidden). Red mark: the force published no data that month.'
+    });
+  }
+  map.on('popupopen', function (e) {
+    var el = e.popup.getElement(), h = el && el.querySelector('.trend-cell');
+    if (!h) return;
+    var q = +h.getAttribute('data-q'), r = +h.getAttribute('data-r'), slug = h.getAttribute('data-force');
+    h.textContent = 'Loading the monthly history\u2026';
+    loadHistory(function (d, t) { h.textContent = 'Loading the monthly history\u2026 ' + d + ' of ' + t + ' months'; }).then(function (months) {
+      h.innerHTML = cellTrendHtml(q, r, slug, months);
+      // the popup content is a function, so freeze the filled-in HTML before Leaflet refreshes the layout
+      var c = el.querySelector('.leaflet-popup-content');
+      if (e.popup._map && c) e.popup.setContent(c.innerHTML);
+    }).catch(function () { h.textContent = 'The monthly history could not be loaded.'; });
+  });
+
   function cellPopup(q, r, n) {
     var c = hexCenter(q, r), slug = forceAt(c[0], c[1]);
     var v = cellValue([q, r, n]);
     var rank = (v !== null && S.sortedCounts.length) ? Math.round(100 * (S.sortedCounts.filter(function (x) { return x < v; }).length) / S.sortedCounts.length) : 0;
     var html = '<div class="big">' + fmt(n) + '</div>reported records (violence and sexual offences, combined category)' +
       '<br><span class="small">Window: ' + windowLabel() + '</span>' +
-      '<br>Area: cell ' + q + ',' + r + ' (hexagon about 4&nbsp;km across, centre near ' + c[0].toFixed(2) + ', ' + c[1].toFixed(2) + ')';
+      '<br>Area: cell ' + q + ',' + r + ' (hexagon about 4&nbsp;km across, centre near ' + c[0].toFixed(2) + ', ' + c[1].toFixed(2) + ')' +
+      '<div class="trend-cell" data-q="' + q + '" data-r="' + r + '" data-force="' + (slug || '') + '"></div>';
     if (slug) {
       html += '<br>Force area: ' + forceName(slug);
       var cov = forceCoverage(slug);
@@ -245,7 +339,7 @@
         color: '#5c0010', weight: 2, opacity: 0.95,
         fillColor: na ? '#9a9a9a' : CLASS_COLOURS[cls], fillOpacity: na ? 0.18 : (cls < 2 ? 0.12 : 0.3 + 0.07 * cls)
       });
-      poly.bindPopup(function () { return cellPopup(c[0], c[1], c[2]); });
+      poly.bindPopup(function () { return cellPopup(c[0], c[1], c[2]); }, { maxWidth: 340 });
       poly._usoda = c;
       hexGroup.addLayer(poly);
     });
@@ -285,6 +379,13 @@
     var ys = S.scotData.years, n = S.win === '10y' ? 10 : S.win === '5y' ? 5 : S.win === '3y' ? 3 : 1;
     return ys.slice(-n);
   }
+  function scotTrendHtml(code) {
+    var a = S.scotData.areas[code], ys = S.scotData.years;
+    var pts = ys.map(function (y) { var d = a.years[y]; return { l: y, v: d && d.sexual ? d.sexual.count : null, tick: y.slice(2, 4) + '-' + y.slice(7) }; });
+    return trendChart(pts, { colour: '#6a51a3', title: 'Recorded sexual crimes, by financial year', unit: 'Annual count (Scottish definition, Group 2 sexual crimes)',
+      alt: trendAlt('annual recorded sexual crimes in this council area', pts),
+      note: 'Definitions and recording practice have changed over this period, so compare years with care.' });
+  }
   function renderScot() {
     scotGroup.clearLayers();
     if (!S.scotGeo || !S.scotData) return;
@@ -314,12 +415,13 @@
       });
       layer.bindPopup(function () {
         return '<strong>' + row.f.properties.name + '</strong> (Scotland)<br><span class="big">' + fmt(row.t.sexual) +
-          '</span> recorded sexual crimes<br><span class="small">Financial years ' + label + ' (April to March). Of these: ' +
+          '</span> recorded sexual crimes<br><span class="small">Financial years ' + label + ' (April to March).</span>' + scotTrendHtml(row.f.properties.code) +
+          '<span class="small">Of these: ' +
           fmt(row.t.rape) + ' rape and attempted rape, ' + fmt(row.t.assault) + ' sexual assault. Average published rate ' +
           row.t.rate.toFixed(1) + ' per 10,000 residents a year (rounded in the source).</span>' +
           '<br><span class="small">Scottish definition (Group 2 sexual crimes). Not comparable with the hexagon counts. ' +
           'Source: Scottish Government / Police Scotland, OGL v3.0. Areas are council-wide, so rural areas average over large empty land.</span>';
-      });
+      }, { maxWidth: 340 });
       scotGroup.addLayer(layer);
     });
   }
@@ -331,6 +433,15 @@
     n = Math.min(n, q);
     var from = q - n, label = S.csp.quarters[from] + ' to ' + S.csp.quarters[q - 1];
     return { from: from, to: q, n: n, label: label, all: S.win === '10y' };
+  }
+  function cspTrendHtml(a) {
+    var pts = S.csp.quarters.map(function (ql, i) {
+      var m = /^(\d{4})\/\d{2} Q(\d)$/.exec(ql);
+      return { l: ql, v: a.sexual[i], tick: m && m[2] === '1' ? ql.slice(2, 7) : null };
+    });
+    return trendChart(pts, { colour: '#238b45', title: 'Recorded sexual offences, by quarter', unit: 'Quarterly count (Home Office; sexual offences only; April to March financial years)',
+      alt: trendAlt('quarterly recorded sexual offences in this partnership', pts),
+      note: 'The Home Office table starts in April 2020. Earlier years are not in the open data used here.' });
   }
   function renderCsp() {
     cspGroup.clearLayers();
@@ -366,7 +477,7 @@
         } else {
           h += '<span class="big">' + fmt(row.sexual) + '</span> recorded sexual offences<br><span class="small">' + w.label +
             '. Of these: ' + fmt(row.rape) + ' rape. About ' + row.rate.toFixed(2) + ' a year per 1,000 residents (Census 2021: ' +
-            fmt(row.a.population) + ' people).</span>';
+            fmt(row.a.population) + ' people).</span>' + cspTrendHtml(row.a);
         }
         h += '<br><span class="small">Home Office definition, <em>Sexual offences</em> only, by community safety partnership. ' +
           'Not comparable with the hexagon counts (which include other violence) or with Scotland. ' +
@@ -374,9 +485,27 @@
           'Source: Home Office police recorded crime open data tables, OGL v3.0. Does not include British Transport Police. ' +
           'Figures are revised each quarter.</span>';
         return h;
-      });
+      }, { maxWidth: 340 });
       cspGroup.addLayer(layer);
     });
+  }
+
+  function forceTrendHtml(slug) {
+    var out = '', fm = S.forceTotals && S.forceTotals.monthly[slug];
+    if (fm) {
+      var ms = S.meta.months_available.map(function (m) { return m.month; }).sort();
+      var pts = ms.map(function (m) { return { l: monthLabel(m), v: fm[m] === undefined ? null : fm[m], gap: true, tick: m.slice(5) === '01' ? m.slice(0, 4) : null }; });
+      out += trendChart(pts, { colour: '#2171b5', title: 'Reported records in this force area, by month', unit: 'Monthly count (police.uk, violence and sexual offences)',
+        alt: trendAlt('monthly reported records for this force area', pts), note: 'Red mark: no data published that month.' });
+    }
+    var x = S.xref && S.xref.forces[slug];
+    if (x) {
+      var yrs = Object.keys(x).filter(function (k) { return /^\d{4}\/\d{2}$/.test(k) && x[k].home_office_sexual !== undefined; }).sort();
+      var yp = yrs.map(function (y) { return { l: y, v: x[y].home_office_sexual, tick: y.slice(2, 4) + '-' + y.slice(5) }; });
+      if (yp.length > 1) out += trendChart(yp, { colour: '#08306b', title: 'Home Office sexual offences, by financial year', unit: 'Annual count (Home Office; sexual offences only; a different measure from the monthly chart)',
+        alt: trendAlt('annual Home Office sexual offences for this force area', yp), note: 'Earliest year available to this atlas: ' + yrs[0] + '.' });
+    }
+    return out;
   }
 
   function renderPfa() {
@@ -402,11 +531,12 @@
       layer.bindPopup(function () {
         var h = '<strong>' + row.f.properties.name + '</strong><br><span class="big">' + fmt(row.cov.sum) + '</span> reported records' +
           '<br><span class="small">Window: ' + windowLabel() + '. Months with data: ' + row.cov.present + ' of ' + row.cov.total + '.</span>';
+        h += forceTrendHtml(row.f.properties.slug);
         if (row.incomplete) h += '<br><span class="warn">Incomplete: this total understates the force area and must not be compared with other areas.</span>';
         h += xrefHtml(row.f.properties.slug, true);
         h += '<br><span class="small">Raw counts, not rates: larger populations record more. Sources: data.police.uk and Home Office police recorded crime, OGL v3.0.</span>';
         return h;
-      });
+      }, { maxWidth: 340 });
       pfaGroup.addLayer(layer);
     });
   }
