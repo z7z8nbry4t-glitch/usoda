@@ -208,50 +208,7 @@
   // ---------------------------------------------------------------- trend charts
   // Small inline SVG bar charts shown inside popups. pts: [{l: label, v: number|null, gap: bool, tick: string|null}].
   // A null value is drawn as a short grey mark, not as zero: it means fewer than 3 records (hidden) or no data.
-  function niceMax(m) {
-    if (m <= 4) return 4;
-    var p = Math.pow(10, Math.floor(Math.log(m) / Math.LN10)), f = m / p;
-    return (f <= 1 ? 1 : f <= 2 ? 2 : f <= 5 ? 5 : 10) * p;
-  }
-  function trendChart(pts, o) {
-    var W = 320, H = 150, L = 40, R = 6, T = 8, B = 22, iw = W - L - R, ih = H - T - B;
-    var vals = pts.filter(function (p) { return p.v !== null; });
-    if (vals.length < 2) return '<div class="small">Not enough history to draw a trend.</div>';
-    var max = niceMax(Math.max.apply(null, vals.map(function (p) { return p.v; })));
-    var step = iw / pts.length, bw = Math.max(1, step * 0.8);
-    var svg = '<svg viewBox="0 0 ' + W + ' ' + H + '" width="100%" role="img" aria-label="' + o.alt + '" focusable="false">';
-    [0, 0.5, 1].forEach(function (f) {
-      var y = T + ih - ih * f;
-      svg += '<line x1="' + L + '" x2="' + (W - R) + '" y1="' + y.toFixed(1) + '" y2="' + y.toFixed(1) + '" stroke="#ccc" stroke-width="0.6"/>' +
-        '<text x="' + (L - 4) + '" y="' + (y + 3).toFixed(1) + '" text-anchor="end" font-size="9" fill="#555">' + fmt(Math.round(max * f)) + '</text>';
-    });
-    var every = Math.max(1, Math.ceil(pts.filter(function (p) { return p.tick; }).length / 6)), n = 0;
-    pts.forEach(function (p, i) {
-      var x = L + i * step + (step - bw) / 2;
-      if (p.v === null) {
-        svg += '<rect x="' + x.toFixed(1) + '" y="' + (T + ih - 2) + '" width="' + bw.toFixed(1) + '" height="2" fill="' + (p.gap ? '#c0392b' : '#9a9a9a') + '"/>';
-      } else {
-        var h = Math.max(0.5, ih * p.v / max);
-        svg += '<rect x="' + x.toFixed(1) + '" y="' + (T + ih - h).toFixed(1) + '" width="' + bw.toFixed(1) + '" height="' + h.toFixed(1) + '" fill="' + o.colour + '"><title>' + p.l + ': ' + fmt(p.v) + '</title></rect>';
-      }
-      if (p.tick) {
-        if (n % every === 0) svg += '<text x="' + (x + bw / 2).toFixed(1) + '" y="' + (H - 8) + '" text-anchor="middle" font-size="9" fill="#555">' + p.tick + '</text>';
-        n++;
-      }
-    });
-    svg += '</svg>';
-    var peak = vals.reduce(function (a, b) { return b.v > a.v ? b : a; });
-    var last = vals[vals.length - 1];
-    return '<div class="trend-box"><strong>' + o.title + '</strong>' + svg +
-      '<div class="small">' + o.unit + '. ' + pts[0].l + ' to ' + pts[pts.length - 1].l + '. Highest: ' + fmt(peak.v) + ' (' + peak.l + '). Latest shown: ' + fmt(last.v) + ' (' + last.l + ').' +
-      (o.note ? ' ' + o.note : '') + '</div></div>';
-  }
-  function trendAlt(what, pts) {
-    return 'Bar chart of ' + what + ' from ' + pts[0].l + ' to ' + pts[pts.length - 1].l + '. Values are in the text beneath the chart.';
-  }
-  var MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-  function monthLabel(m) { return MONTH_NAMES[+m.slice(5) - 1] + ' ' + m.slice(0, 4); }
-
+  var trendChart = UsodaCharts.trendChart, trendAlt = UsodaCharts.trendAlt, monthLabel = UsodaCharts.monthLabel;
   // Hexagon cells: the full monthly history is loaded once, on first use, from the per-month files.
   var histPromise = null;
   function loadHistory(progress) {
@@ -543,6 +500,7 @@
         if (row.incomplete) h += '<br><span class="warn">Incomplete: this total understates the force area and must not be compared with other areas.</span>';
         h += xrefHtml(row.f.properties.slug, true);
         h += '<br><span class="small">Raw counts, not rates: larger populations record more. Sources: data.police.uk and Home Office police recorded crime, OGL v3.0.</span>';
+        h += '<br><a href="force.html?f=' + encodeURIComponent(row.f.properties.slug) + '">Page for this force</a>';
         return h;
       }, { maxWidth: 340 });
       pfaGroup.addLayer(layer);
@@ -696,6 +654,62 @@
   });
   $('aboutBtn').addEventListener('click', function () { $('about').showModal(); });
 
+  // ---------------------------------------------------------------- shareable view links
+  // The address after # records the window, colour mode, layers and map position. It holds no personal data.
+  var LAYER_IDS = { heat: 'lHeat', hex: 'lHex', pfa: 'lPfa', csp: 'lCsp', scot: 'lScot' };
+  var LAYER_DEFAULT = 'heat,hex,scot';
+  function currentLayers() {
+    return Object.keys(LAYER_IDS).filter(function (k) { return $(LAYER_IDS[k]).checked; }).join(',');
+  }
+  function writeHash() {
+    if (!S.meta || !history.replaceState) return;
+    var p = [];
+    if (S.win !== '10y') p.push('win=' + S.win);
+    if (S.win === 'month' && S.month) p.push('month=' + S.month);
+    if (S.mode !== 'count') p.push('mode=' + S.mode);
+    var ly = currentLayers(); if (ly !== LAYER_DEFAULT) p.push('layers=' + (ly || 'none'));
+    var c = map.getCenter(); p.push('ll=' + c.lat.toFixed(3) + ',' + c.lng.toFixed(3) + ',' + map.getZoom());
+    try { history.replaceState(null, '', '#' + p.join('&')); } catch (e) { /* some previews block this */ }
+  }
+  function readHash() {
+    var out = {};
+    location.hash.replace(/^#/, '').split('&').forEach(function (kv) { var i = kv.indexOf('='); if (i > 0) out[kv.slice(0, i)] = decodeURIComponent(kv.slice(i + 1)); });
+    return out;
+  }
+  function applyHash(h) {
+    if (/^(10y|5y|3y|12m|month)$/.test(h.win || '')) {
+      S.win = h.win;
+      Array.prototype.forEach.call(document.querySelectorAll('input[name=win]'), function (r) { r.checked = r.value === S.win; });
+      $('monthSelect').disabled = S.win !== 'month';
+    }
+    if (S.win === 'month' && /^\d{4}-\d{2}$/.test(h.month || '') && S.meta.months_available.some(function (m) { return m.month === h.month; })) { S.month = h.month; $('monthSelect').value = S.month; }
+    if (/^(count|res|wd)$/.test(h.mode || '')) {
+      S.mode = h.mode;
+      Array.prototype.forEach.call(document.querySelectorAll('input[name=mode]'), function (r) { r.checked = r.value === S.mode; });
+    }
+    if (h.layers !== undefined) {
+      var on = h.layers.split(',');
+      Object.keys(LAYER_IDS).forEach(function (k) { $(LAYER_IDS[k]).checked = on.indexOf(k) >= 0; });
+    }
+    var ll = /^(-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?),(\d+(?:\.\d+)?)$/.exec(h.ll || '');
+    if (ll && +ll[1] > 49 && +ll[1] < 61 && +ll[2] > -11 && +ll[2] < 3 && +ll[3] >= 5 && +ll[3] <= 18) { map.setView([+ll[1], +ll[2]], +ll[3], { animate: false }); return true; }
+    if (/^[a-z0-9-]+$/.test(h.f || '') && S.pfa) {
+      var f = S.pfa.features.filter(function (x) { return x.properties.slug === h.f; })[0];
+      if (f) { map.fitBounds(L.geoJSON(f).getBounds(), { animate: false }); $('lPfa').checked = true; return true; }
+    }
+    return false;
+  }
+  map.on('moveend', writeHash);
+  ['lHeat', 'lHex', 'lPfa', 'lCsp', 'lScot'].forEach(function (id) { $(id).addEventListener('change', writeHash); });
+  Array.prototype.forEach.call(document.querySelectorAll('input[name=win], input[name=mode]'), function (r) { r.addEventListener('change', writeHash); });
+  $('monthSelect').addEventListener('change', writeHash);
+  $('copyLink').addEventListener('click', function () {
+    writeHash();
+    var done = function (ok) { $('copyNote').textContent = ok ? 'Link copied.' : 'Copy the address from the browser bar.'; setTimeout(function () { $('copyNote').textContent = ''; }, 3000); };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(location.href).then(function () { done(true); }, function () { done(false); });
+    else done(false);
+  });
+
   // ---------------------------------------------------------------- boot
   Promise.all([getJSON('meta.json'), getJSON('force_totals.json'), getJSON('pfa.geojson'),
     getJSON('scotland_la.json').catch(function () { return null; }), getJSON('scotland_la.geojson').catch(function () { return null; }),
@@ -714,6 +728,7 @@
       var o = document.createElement('option'); o.value = m.month; o.textContent = m.month; sel.appendChild(o);
     });
     S.month = S.meta.latest_month; sel.value = S.month;
+    applyHash(readHash()); applyLayerToggles();
     return load();
   }).then(function () {
     pollUpstream();

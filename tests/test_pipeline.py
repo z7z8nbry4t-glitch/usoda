@@ -299,6 +299,14 @@ class MonitorAndDownloadTests(unittest.TestCase):
         self.assertEqual(check_freshness.month_lag("2025-12", "2026-02"), 2)
         self.assertEqual(check_freshness.month_lag("2026-09", "2026-08"), -1)
 
+    def test_every_force_page_slug_has_monthly_data_and_a_name(self):
+        ft = json.load(open(os.path.join(ROOT, "data", "force_totals.json")))["monthly"]
+        pfa = {f["properties"]["slug"] for f in json.load(open(os.path.join(ROOT, "data", "pfa.geojson")))["features"]}
+        self.assertTrue(pfa <= set(ft), pfa - set(ft))
+        html = open(os.path.join(ROOT, "force.html")).read()
+        self.assertIn("assets/charts.js", html)
+        self.assertNotIn("<script>", html)  # no inline script, to keep the content security policy
+
     def test_downloads_match_published_json_and_hide_small_cells(self):
         import csv
         d = os.path.join(ROOT, "data", "downloads")
