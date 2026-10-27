@@ -6,6 +6,8 @@ An interactive map of reported violence and sexual offences in the UK. It uses o
 
 ## What the site does
 
+The front page (`index.html`) explains the atlas, its limits and its uses. The map itself is `atlas.html`.
+
 - Shows a zoomable, pannable map (touch and keyboard supported) with a density heat layer and clickable hexagonal cells.
 - Marks hotspots with a dark outline (the top 3% of cells in the selected window).
 - Shows the count, time window and source note when you click or tap a cell.
@@ -31,7 +33,9 @@ The police publish about 36 months in each archive. A 120-month window therefore
 
 ### Scotland
 
-Scotland appears as 32 council-area shapes (purple), annual, from `scripts/fetch_scotland.py` into `data/scotland_la.json` and `data/scotland_la.geojson`. It uses the Scottish definition of sexual crimes (rape and attempted rape and sexual assault are also listed in the popup). That definition is narrower than the police.uk category, so Scotland must not be added to, or ranked against, the hexagons. A monthly workflow refreshes it.
+Scotland appears as 32 council-area shapes (purple), annual, from `scripts/fetch_scotland.py` into `data/scotland_la.json` and `data/scotland_la.geojson`. It uses the Scottish definition of sexual crimes (rape and attempted rape and sexual assault are also listed in the popup). That definition is narrower than the police.uk category, so Scotland must not be added to, or ranked against, the hexagons. A monthly workflow refreshes it. Every year since 1996/97 is kept so the Scotland popup can chart the full history.
+
+An optional green layer shows Home Office *Sexual offences* by community safety partnership for England and Wales (quarterly, from April 2020, rate per 1,000 residents), from `scripts/fetch_csp.py` into `data/csp.json` and `data/csp.geojson`. It is a different measure from the hexagons and from Scotland, is off by default, and is never added to or ranked against either. A monthly workflow checks for a new quarterly release.
 
 For how each source is weighted, and what was assessed and left out, see [docs/DATA_SOURCES.md](docs/DATA_SOURCES.md).
 
@@ -77,6 +81,7 @@ Also in step 2: exact duplicate rows (same crime ID and coordinates in one file)
 | `annotations.json` | Curated notes on known data problems, with source links |
 | `crossref.json` | Home Office comparison per force and financial year, with agreement bands |
 | `scotland_la.json`, `scotland_la.geojson` | Scotland council-area layer |
+| `csp.json`, `csp.geojson` | England and Wales partnership layer (Home Office sexual offences, quarterly) |
 
 ## Update cycle
 
@@ -132,3 +137,8 @@ Full checklist: [docs/CLOUDFLARE.md](docs/CLOUDFLARE.md). Smoke test: `python3 s
 ## Licence
 
 Code: add a licence file of your choice (none is set yet). Data: Open Government Licence v3.0. Vendored libraries (Leaflet, leaflet.heat) are BSD-2-Clause; their licences are in `assets/vendor/`.
+
+
+## Trend charts
+
+Popups for cells, force areas, partnerships and Scottish council areas include a small inline SVG bar chart (no chart library). Cell charts load every `data/months/*.json` file on first use; the others use data already loaded. Charts ignore the time-window control and never combine sources.

@@ -28,7 +28,6 @@ CSV_URL = ("https://data.gov.scot/dataset/recorded_crimes_and_offences/resource/
            "3716a560-80b0-4860-b11f-6a53d24deb21/download")
 LAD_URL = ("https://services1.arcgis.com/ESMARspQHYMw9BZ9/arcgis/rest/services/"
            "Local_Authority_Districts_December_2024_Boundaries_UK_BUC/FeatureServer/0/query")
-YEARS = 10
 GROUPS = {
     "All Group 2: Sexual crimes": "sexual",
     "Crimes: Group 2: Rape & attempted rape": "rape",
@@ -63,7 +62,7 @@ def build_rows(text):
         cell = data.setdefault(code, {}).setdefault(yr, {}).setdefault(key, {})
         # "Ratio" rows hold the published rate per 10,000 population.
         cell["rate_per_10k" if r["Measurement"] == "Ratio" else "count"] = v
-    return names, sorted(years)[-YEARS:], data
+    return names, sorted(years), data
 
 
 def main():

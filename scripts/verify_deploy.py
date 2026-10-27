@@ -32,6 +32,11 @@ def main():
         check("CSP header", "content-security-policy" in {k.lower() for k in h}, required=False)
     except Exception as e:
         check("home page", False, str(e))
+    try:
+        st, h, body = get(base + "/atlas.html")
+        check("map page", st == 200 and b'id="map"' in body)
+    except Exception as e:
+        check("map page", False, str(e))
     meta = None
     try:
         meta = json.loads(get(base + "/data/meta.json")[2])
@@ -39,7 +44,7 @@ def main():
     except Exception as e:
         check("data/meta.json", False, str(e))
     for p in ("data/windows/10y.json", "data/pfa.geojson", "data/force_totals.json",
-              "data/scotland_la.json", "data/scotland_la.geojson", "data/crossref.json",
+              "data/scotland_la.json", "data/scotland_la.geojson", "data/csp.json", "data/csp.geojson", "data/crossref.json",
               "data/population.json", "data/annotations.json", "data/national_context.json", "assets/app.js", "assets/style.css"):
         try:
             check(p, get(base + "/" + p)[0] == 200)
@@ -50,6 +55,11 @@ def main():
         check("Scotland: 32 council areas", len(sc["areas"]) == 32)
     except Exception as e:
         check("Scotland data", False, str(e))
+    try:
+        cs = json.loads(get(base + "/data/csp.json")[2])
+        check("Partnerships: at least 280 areas", len(cs["areas"]) >= 280, "%d areas, latest %s" % (len(cs["areas"]), cs["latest_quarter"]))
+    except Exception as e:
+        check("Partnership data", False, str(e))
     try:
         dates = json.loads(get(base + "/api/crimes-street-dates")[2])
         newest = max(d["date"] for d in dates)
