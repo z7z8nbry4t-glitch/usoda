@@ -84,3 +84,18 @@ footer.site a{color:#9cc3ff}
 }
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important;animation:none!important}}
 .support .small,.downloads .small{color:#555;font-size:.85rem}
+.forcepage{padding-block:28px 40px}
+.forcepage .lead{max-width:60ch}
+.facts-list{list-style:none;padding:0;margin:18px 0;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.facts-list li{border:1px solid #d8d8d8;border-radius:6px;padding:12px 14px;background:#fff}
+.facts-list strong{display:block;font-size:1.6rem}
+.facts-list span{font-size:.88rem;color:#444}
+.forcepage .chart{max-width:520px;margin:20px 0}
+.forcepage .chart .small{color:#444}
+.forcepage .notice{border-left:4px solid #8a3b00;background:#fff7ef;padding:10px 14px;max-width:70ch}
+.forcelist{columns:3 220px;list-style:none;padding:0}
+.forcelist li{margin:4px 0}
+.forcepage .small{color:#444;font-size:.85rem;max-width:70ch}
+.trend-box svg{display:block;width:100%;height:auto;margin:2px 0}
+.trend-box strong{display:block}
+.forcepage .lead{color:#333}

@@ -150,3 +150,7 @@ Code: MIT (`LICENSE`). Data and third-party material: see `DATA-LICENCE.md`; the
 ## Downloads, monitoring and upstream changes
 
 `scripts/export_downloads.py` writes CSV copies of the published aggregates to `data/downloads/` (linked from the front page). `monitor.yml` checks daily that the live atlas is level with police.uk. `docs/UPSTREAM_CHANGES.md` says what to do if a source changes or stops.
+
+## Force pages and view links
+
+`force.html?f=<slug>` shows one force: Home Office sexual offences, rate, monthly police.uk records, gaps and notes (`force.html` alone lists every force). On the map, the address after `#` records the window, colour mode, layers and position, so "Copy link to this view" reopens the same view; `atlas.html#f=<slug>` zooms to a force. Charts are shared in `assets/charts.js`.

@@ -81,3 +81,4 @@ button.primary{background:var(--accent);color:#fff;border:0;border-radius:4px;pa
 .trend-box svg{display:block;margin:2px 0 2px}
 .trend-cell{margin-top:8px;padding-top:6px;border-top:1px solid #ddd;font-size:.76rem;color:#555;min-height:1.2em}
 .trend-cell .trend-box{border-top:0;margin-top:0;padding-top:0;color:#222}
+.copynote{font-size:.8rem;color:#d7efe0;align-self:center}
