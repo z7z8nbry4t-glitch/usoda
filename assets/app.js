@@ -172,13 +172,28 @@
     if (ls && ls[slug] !== undefined && ls[slug] < 96) h += '<br><span class="small">' + (100 - ls[slug]).toFixed(1) + '% of this force\'s records in the window have no location, so they are in its totals but in no cell.</span>';
     return h;
   }
+  // Force-level rate: Home Office sexual offences for the latest financial year over Census 2021 residents.
+  function rateHtml(slug, d) {
+    var f = S.pop && S.pop.forces[slug];
+    if (slug === 'city-of-london') return '<br><span class="small">No rate is shown for the City of London: about 4,400 people live there but many more work and visit, so a rate per resident would mislead.</span>';
+    if (!f || !f.residents || d.home_office_sexual === undefined) return '';
+    return '<br><span class="small">About ' + (d.home_office_sexual / f.residents * 1000).toFixed(1) + ' sexual offences per 1,000 residents (Home Office count over Census 2021 residents, ' + fmt(f.residents) +
+      '). Census 2021 is older than the offence year, so rates for fast-growing areas run a little high.</span>';
+  }
+  function niHtml() {
+    var n = S.ni;
+    return '<br><span class="small">Police Service of Northern Ireland (official), ' + n.period + ': ' + fmt(n.psni.sexual_offences) + ' sexual offences, ' + fmt(n.psni.rape) + ' of them rape, and ' +
+      fmt(n.psni.violence_against_the_person) + ' violence against the person. Cross-check: police.uk holds ' + fmt(n.police_uk_violence_and_sexual) + ' records for those 12 months against ' +
+      fmt(n.psni_violence_plus_sexual) + ' from the police (' + (100 * n.ratio).toFixed(1) + '%). Sexual offences cannot be mapped on their own here. <a href="' + n.source_url + '" target="_blank" rel="noopener">Source</a>.</span>';
+  }
   function xrefHtml(slug, withTotal) {
     var x = xrefLatest(slug);
+    if (!x && slug === 'northern-ireland' && S.ni) return niHtml() + forceNotesHtml(slug);
     if (!x) return forceNotesHtml(slug);
     var d = x.d;
     var h = '<br><span class="small">Home Office (official, whole force, ' + x.fy + '): ' + (withTotal ? fmt(d.home_office_total) + ' violence and sexual offences, of which ' : '') +
       d.sexual_share_pct + '% (' + fmt(d.home_office_sexual) + ') were sexual offences, ' + fmt(d.home_office_rape) + ' of them rape. ' +
-      'This is a force-wide share; it is not known for this cell. Cross-check: ' + (AGREE_TEXT[d.agreement] || '') + '.</span>';
+      'This is a force-wide share; it is not known for this cell. Cross-check: ' + (AGREE_TEXT[d.agreement] || '') + '.</span>' + rateHtml(slug, d);
     return h + forceNotesHtml(slug);
   }
 
@@ -694,8 +709,9 @@
     getJSON('population.json').catch(function () { return null; }),
     getJSON('annotations.json').catch(function () { return null; }),
     getJSON('national_context.json').catch(function () { return null; }),
-    getJSON('csp.json').catch(function () { return null; }), getJSON('csp.geojson').catch(function () { return null; })]).then(function (r) {
-    S.meta = r[0]; S.forceTotals = r[1]; S.pfa = r[2]; S.scotData = r[3]; S.scotGeo = r[4]; S.xref = r[5]; S.pop = r[6]; S.notes = r[7]; S.ctx = r[8]; S.csp = r[9]; S.cspGeo = r[10]; renderContext();
+    getJSON('csp.json').catch(function () { return null; }), getJSON('csp.geojson').catch(function () { return null; }),
+    getJSON('ni_validation.json').catch(function () { return null; })]).then(function (r) {
+    S.meta = r[0]; S.forceTotals = r[1]; S.pfa = r[2]; S.scotData = r[3]; S.scotGeo = r[4]; S.xref = r[5]; S.pop = r[6]; S.notes = r[7]; S.ctx = r[8]; S.csp = r[9]; S.cspGeo = r[10]; S.ni = r[11]; renderContext();
     if (S.pop) { S.pop.cells.forEach(function (c) { S.popIdx[c[0] + ',' + c[1]] = [c[2], c[3]]; }); }
     G.R = S.meta.hex.R; G.K = S.meta.hex.K;
     buildPfaIndex(S.pfa);

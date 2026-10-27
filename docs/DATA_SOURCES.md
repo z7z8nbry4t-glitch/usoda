@@ -39,6 +39,11 @@ Sources are shown side by side and never merged into one number. Each has a diff
 - **British Transport Police** has street rows for only part of the series. The Home Office total is shown the same way.
 - **Sexual offences share.** Across England and Wales in 2025/26, sexual offences were 10.0% of violence plus sexual offences, ranging by force from about 8% to 13%. The popups show each force's share. It is a force-wide figure and is not applied to cells.
 
+### Northern Ireland and force rates (27 October 2026)
+
+- **Northern Ireland check.** The Police Service of Northern Ireland bulletin for the year to March 2026 gives 4,459 sexual offences (1,267 rape) and 39,891 violence against the person. Together that is 44,350. police.uk holds 42,535 Northern Ireland records for the same 12 months, 95.9% of the police figure and inside the 5% band used elsewhere. The figures are in `data/ni_validation.json` and shown in the Northern Ireland force popup. Sexual offences cannot be mapped on their own for Northern Ireland, because police.uk does not separate them. Source: [PSNI bulletin](https://www.psni.police.uk/system/files/2026-05/525903612/Police%20Recorded%20Crime%20Bulletin%20Period%20Ending%2031st%20March%202026.pdf).
+- **Force rates.** Force popups now show Home Office sexual offences for 2025-26 per 1,000 residents, using Census 2021 residents already in `data/population.json`. The City of London is left out because its resident population is about 4,400. Census 2021 is older than the offence year, so growing areas read slightly high. Mid-2025 estimates from ONS were considered and not used, to keep one set of denominators across the atlas.
+
 ### Partnership layer checks (27 October 2026)
 
 - For 2025/26 the partnership rows add to 215,076 sexual offences (rape 74,628). The force tables give 217,271 (rape 74,697). The gap of 2,195 is British Transport Police, which the partnership table leaves out. `PublishedDataConsistencyTests` asserts that the drawn total plus unassigned rows never exceeds the force total and stays above 95% of it.

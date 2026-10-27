@@ -322,6 +322,22 @@ class PublishedDataConsistencyTests(unittest.TestCase):
         self.assertLessEqual(len(d["not_drawn"]), 8)
         self.assertEqual(len(d["areas"]), len(json.load(open(os.path.join(ROOT, "data", "csp.geojson")))["features"]))
 
+    def test_northern_ireland_police_uk_agrees_with_psni_within_5_percent(self):
+        d = json.load(open(os.path.join(ROOT, "data", "ni_validation.json")))
+        self.assertEqual(d["psni_violence_plus_sexual"], d["psni"]["violence_against_the_person"] + d["psni"]["sexual_offences"])
+        self.assertEqual(d["police_uk_months"], 12)
+        self.assertLess(abs(d["ratio"] - 1), 0.05)
+        f = json.load(open(os.path.join(ROOT, "data", "force_totals.json")))["monthly"]["northern-ireland"]
+        self.assertEqual(sum(v for m, v in f.items() if "2025-04" <= m <= "2026-03"), d["police_uk_violence_and_sexual"])
+
+    def test_force_rates_have_denominators(self):
+        pop = json.load(open(os.path.join(ROOT, "data", "population.json")))["forces"]
+        x = json.load(open(os.path.join(ROOT, "data", "crossref.json")))["forces"]
+        rates = [x[s]["2025/26"]["home_office_sexual"] / pop[s]["residents"] * 1000
+                 for s in x if s in pop and "2025/26" in x[s] and s != "city-of-london"]
+        self.assertGreater(len(rates), 35)
+        self.assertTrue(all(1 < r < 8 for r in rates), sorted(rates)[-3:])
+
     def test_context_items_have_sources(self):
         d = json.load(open(os.path.join(ROOT, "data", "national_context.json")))
         for it in d["items"]:
