@@ -172,13 +172,21 @@
     if (ls && ls[slug] !== undefined && ls[slug] < 96) h += '<br><span class="small">' + (100 - ls[slug]).toFixed(1) + '% of this force\'s records in the window have no location, so they are in its totals but in no cell.</span>';
     return h;
   }
+  // Force-level rate: Home Office sexual offences for the latest financial year over Census 2021 residents.
+  function rateHtml(slug, d) {
+    var f = S.pop && S.pop.forces[slug];
+    if (slug === 'city-of-london') return '<br><span class="small">No rate is shown for the City of London: about 4,400 people live there but many more work and visit, so a rate per resident would mislead.</span>';
+    if (!f || !f.residents || d.home_office_sexual === undefined) return '';
+    return '<br><span class="small">About ' + (d.home_office_sexual / f.residents * 1000).toFixed(1) + ' sexual offences per 1,000 residents (Home Office count over Census 2021 residents, ' + fmt(f.residents) +
+      '). Census 2021 is older than the offence year, so rates for fast-growing areas run a little high.</span>';
+  }
   function xrefHtml(slug, withTotal) {
     var x = xrefLatest(slug);
     if (!x) return forceNotesHtml(slug);
     var d = x.d;
     var h = '<br><span class="small">Home Office (official, whole force, ' + x.fy + '): ' + (withTotal ? fmt(d.home_office_total) + ' violence and sexual offences, of which ' : '') +
       d.sexual_share_pct + '% (' + fmt(d.home_office_sexual) + ') were sexual offences, ' + fmt(d.home_office_rape) + ' of them rape. ' +
-      'This is a force-wide share; it is not known for this cell. Cross-check: ' + (AGREE_TEXT[d.agreement] || '') + '.</span>';
+      'This is a force-wide share; it is not known for this cell. Cross-check: ' + (AGREE_TEXT[d.agreement] || '') + '.</span>' + rateHtml(slug, d);
     return h + forceNotesHtml(slug);
   }
 
@@ -606,6 +614,7 @@
     add('Force-month coverage', m.quality.force_month_coverage_pct + '%');
     if (m.quality.duplicate_rows_dropped !== undefined) add('Exact duplicate rows removed', fmt(m.quality.duplicate_rows_dropped) + ' (same crime ID and place in one file)');
     if (m.quality.btp_scotland_records_excluded) add('BTP rail points in Scotland left out of cells', fmt(m.quality.btp_scotland_records_excluded) + ' (Scotland is shown by council area)');
+    if (S.ni) add('Northern Ireland check (PSNI, ' + S.ni.period + ')', 'police.uk holds ' + fmt(S.ni.police_uk_violence_and_sexual) + ' records against ' + fmt(S.ni.psni_violence_plus_sexual) + ' from the police (' + (100 * S.ni.ratio).toFixed(1) + '%). The police recorded ' + fmt(S.ni.psni.sexual_offences) + ' sexual offences, ' + fmt(S.ni.psni.rape) + ' of them rape; these cannot be mapped separately.');
     if (S.xref) {
       var bc = S.xref.band_counts, tot = 0, k; for (k in bc) tot += bc[k];
       add('Home Office cross-check', fmt(bc.agree || 0) + ' of ' + fmt(tot) + ' force-years within 5%; ' + fmt(bc.minor_difference || 0) + ' within 10%; ' + fmt((bc.differs || 0)) + ' differ more; ' + fmt((bc.incomplete_months || 0) + (bc.no_street_data || 0)) + ' cannot be checked (gaps)');
@@ -694,8 +703,9 @@
     getJSON('population.json').catch(function () { return null; }),
     getJSON('annotations.json').catch(function () { return null; }),
     getJSON('national_context.json').catch(function () { return null; }),
-    getJSON('csp.json').catch(function () { return null; }), getJSON('csp.geojson').catch(function () { return null; })]).then(function (r) {
-    S.meta = r[0]; S.forceTotals = r[1]; S.pfa = r[2]; S.scotData = r[3]; S.scotGeo = r[4]; S.xref = r[5]; S.pop = r[6]; S.notes = r[7]; S.ctx = r[8]; S.csp = r[9]; S.cspGeo = r[10]; renderContext();
+    getJSON('csp.json').catch(function () { return null; }), getJSON('csp.geojson').catch(function () { return null; }),
+    getJSON('ni_validation.json').catch(function () { return null; })]).then(function (r) {
+    S.meta = r[0]; S.forceTotals = r[1]; S.pfa = r[2]; S.scotData = r[3]; S.scotGeo = r[4]; S.xref = r[5]; S.pop = r[6]; S.notes = r[7]; S.ctx = r[8]; S.csp = r[9]; S.cspGeo = r[10]; S.ni = r[11]; renderContext();
     if (S.pop) { S.pop.cells.forEach(function (c) { S.popIdx[c[0] + ',' + c[1]] = [c[2], c[3]]; }); }
     G.R = S.meta.hex.R; G.K = S.meta.hex.K;
     buildPfaIndex(S.pfa);

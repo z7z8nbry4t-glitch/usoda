@@ -142,3 +142,7 @@ Code: add a licence file of your choice (none is set yet). Data: Open Government
 ## Trend charts
 
 Popups for cells, force areas, partnerships and Scottish council areas include a small inline SVG bar chart (no chart library). Cell charts load every `data/months/*.json` file on first use; the others use data already loaded. Charts ignore the time-window control and never combine sources.
+
+## Licence
+
+Code: MIT (`LICENSE`). Data and third-party material: see `DATA-LICENCE.md`; the data is Open Government Licence v3.0 and stays with its publishers.

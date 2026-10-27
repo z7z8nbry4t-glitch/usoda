@@ -1,0 +1,23 @@
+{
+  "source": "Police Service of Northern Ireland, Police Recorded Crime Bulletin, period ending 31 March 2026 (published 14 May 2026), Table 1; rape figure from the same bulletin's sexual offences text",
+  "source_url": "https://www.psni.police.uk/system/files/2026-05/525903612/Police%20Recorded%20Crime%20Bulletin%20Period%20Ending%2031st%20March%202026.pdf",
+  "licence": "Open Government Licence v3.0",
+  "period": "12 months, April 2025 to March 2026",
+  "retrieved": "2026-10-27",
+  "psni": {
+    "violence_against_the_person": 39891,
+    "sexual_offences": 4459,
+    "rape": 1267
+  },
+  "psni_violence_plus_sexual": 44350,
+  "psni_previous_year": {
+    "period": "April 2024 to March 2025",
+    "violence_against_the_person": 41109,
+    "sexual_offences": 4279,
+    "rape": 1215
+  },
+  "police_uk_months": 12,
+  "police_uk_violence_and_sexual": 42535,
+  "ratio": 0.959,
+  "note": "police.uk 'Violence and sexual offences' covers the same two PSNI groups, so the two totals are compared. PSNI does not publish a location for sexual offences alone, so no sexual-offence-only map layer is possible for Northern Ireland. Never added to other sources."
+}
