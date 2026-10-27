@@ -1,0 +1,30 @@
+name: Update partnership layer
+# The Home Office publishes the community safety partnership tables quarterly
+# (updated 22 October 2026; next due January 2027). A monthly check is cheap.
+on:
+  schedule:
+    - cron: "41 5 3 * *"
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  csp:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python3 scripts/fetch_csp.py
+      - name: Commit if changed
+        run: |
+          git config user.name "usoda-bot"
+          git config user.email "usoda-bot@users.noreply.github.com"
+          # "fetched" always changes, so compare the content fields only
+          if git diff --quiet -I'"fetched"' -- data/csp.json data/csp.geojson; then
+            echo "No change in partnership data"; git checkout -- data/csp.json data/csp.geojson
+          else
+            git add data/csp.json data/csp.geojson
+            git commit -m "data: refresh partnership layer"
+            git push
+          fi

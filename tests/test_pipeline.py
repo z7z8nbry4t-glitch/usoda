@@ -234,6 +234,63 @@ class PopulationTests(unittest.TestCase):
         self.assertIsNone(fp.force_of(5, 5, polys))
 
 
+
+class CspTests(unittest.TestCase):
+    """Home Office community safety partnership layer (scripts/fetch_csp.py)."""
+
+    def setUp(self):
+        import fetch_csp
+        self.f = fetch_csp
+        sq = lambda x: {"type": "Polygon", "coordinates": [[[x, 0], [x + 1, 0], [x + 1, 1], [x, 1], [x, 0]]]}
+        self.gj = {"features": [
+            {"properties": {"LAD24CD": "E1", "LAD24NM": "Kings Lynn and West Norfolk"}, "geometry": sq(0)},
+            {"properties": {"LAD24CD": "E2", "LAD24NM": "Cumberland"}, "geometry": sq(2)},
+            {"properties": {"LAD24CD": "E3", "LAD24NM": "Hackney"}, "geometry": sq(4)},
+            {"properties": {"LAD24CD": "E4", "LAD24NM": "Cornwall"}, "geometry": sq(6)},
+            {"properties": {"LAD24CD": "E5", "LAD24NM": "Isles of Scilly"}, "geometry": sq(8)}]}
+        self.pops = {"E1": 1000, "E2": 2000, "E3": 3000, "E4": 4000, "E5": 50}
+
+    def test_norm_ignores_apostrophes_and_case(self):
+        self.assertEqual(self.f.norm("King\u2019s Lynn & West Norfolk"), "kings lynn and west norfolk")
+
+    def test_match_splits_joined_names(self):
+        lads = {"cornwall": "E4", "isles of scilly": "E5"}
+        self.assertEqual(self.f.match_lads("Cornwall and Isles of Scilly", lads), ["E4", "E5"])
+        self.assertIsNone(self.f.match_lads("Nowhere", lads))
+
+    def test_aggregate_counts_only_sexual_offences_and_splits_rape(self):
+        hdr = ["Financial Year", "Financial Quarter", "Police Force", "CSP Name", "Offence Description",
+               "Offence Group", "Offence Subgroup", "Offence Code", "Offence Count"]
+        mk = lambda g, sg, n: ["2025/26", "1", "F", "Hackney", "x", g, sg, "1", str(n)]
+        rows = [("Cover_sheet", ["Updated: 22 October 2026"]), ("Cover_sheet", ["Next scheduled update: January 2027"]),
+                ("2025_26", hdr), ("2025_26", mk("Sexual offences", "Rape offences", 4)),
+                ("2025_26", mk("Sexual offences", "Other sexual offences", 6)),
+                ("2025_26", mk("Violence against the person", "Stalking", 99)),
+                ("2025_26", [""] * 9)]
+        updated, nxt, agg = self.f.aggregate(rows)
+        self.assertEqual((updated, nxt), ("22 October 2026", "January 2027"))
+        self.assertEqual(agg[("F", "Hackney")][(2025, 1)], [10, 4])
+
+    def test_build_groups_sums_and_never_draws_unassigned(self):
+        q = (2025, 1)
+        agg = {("Cumbria", "Allerdale"): {q: [5, 1]}, ("Cumbria", "Carlisle"): {q: [7, 2]},
+               ("Cumbria", "Unassigned Cumbria"): {q: [50, 9]}, ("Met", "Hackney"): {q: [20, 3]},
+               ("Met", "Mystery"): {q: [1, 0]}, ("Greater Manchester", "Manchester Airport"): {q: [2, 0]}}
+        quarters, areas, feats, unmatched, unassigned, shared = self.f.build(agg, self.gj, self.pops)
+        self.assertEqual(areas["cumberland"]["sexual"], [12]) 
+        self.assertEqual(areas["cumberland"]["rape"], [3])
+        self.assertEqual(areas["hackney"]["population"], 3000)
+        self.assertEqual(unmatched, ["Mystery (Met)"])
+        self.assertEqual(unassigned, {"2025/26 Q1": 50})
+        self.assertEqual(sorted(a["name"] for a in areas.values()), ["Cumberland", "Hackney"])
+        self.assertEqual(len(feats), 2)
+        self.assertFalse(shared)
+
+    def test_quarter_labels_sort_in_time_order(self):
+        ks = sorted([self.f.quarter_key("2025/26", "2"), self.f.quarter_key("2024/25", "4"), self.f.quarter_key("2025/26", "1")])
+        self.assertEqual([self.f.quarter_label(k) for k in ks], ["2024/25 Q4", "2025/26 Q1", "2025/26 Q2"])
+
+
 class PublishedDataConsistencyTests(unittest.TestCase):
     """Checks the committed data against official totals read from source pages."""
 
@@ -246,6 +303,19 @@ class PublishedDataConsistencyTests(unittest.TestCase):
         d = json.load(open(os.path.join(ROOT, "data", "crossref.json")))
         total = sum(f["2025/26"]["home_office_sexual"] for f in d["forces"].values() if "2025/26" in f)
         self.assertLess(abs(total - 217567) / 217567, 0.01)  # ONS bulletin: 217,567
+
+    def test_csp_layer_reconciles_to_home_office_force_totals(self):
+        d = json.load(open(os.path.join(ROOT, "data", "csp.json")))
+        idx = [i for i, q in enumerate(d["quarters"]) if q.startswith("2025/26")]
+        self.assertEqual(len(idx), 4)
+        drawn = sum(a["sexual"][i] or 0 for a in d["areas"].values() for i in idx)
+        unassigned = sum(v for k, v in d["unassigned_by_quarter"].items() if k.startswith("2025/26"))
+        # the table has no British Transport Police and five partnership names are not drawn, so the
+        # drawn total sits a little under the force-table total of 217,271 and must not exceed it
+        self.assertLessEqual(drawn + unassigned, 217271)
+        self.assertGreater((drawn + unassigned) / 217271, 0.95)
+        self.assertLessEqual(len(d["not_drawn"]), 8)
+        self.assertEqual(len(d["areas"]), len(json.load(open(os.path.join(ROOT, "data", "csp.geojson")))["features"]))
 
     def test_context_items_have_sources(self):
         d = json.load(open(os.path.join(ROOT, "data", "national_context.json")))

@@ -5,6 +5,7 @@
   var DATA = 'data/';
   var CLASS_COLOURS = ['#ffffb2', '#fed976', '#feb24c', '#fd8d3c', '#fc4e2a', '#e31a1c', '#b10026'];
   var CLASS_QUANTILES = [0.5, 0.7, 0.85, 0.93, 0.97, 0.99];
+  var CSP_COLOURS = ['#e6f5f1', '#c7e9df', '#99d8c9', '#66c2a4', '#41ae76', '#238b45', '#005a32'];
   var SCOT_COLOURS = ['#f2f0f7', '#dadaeb', '#bcbddc', '#9e9ac8', '#807dba', '#6a51a3', '#4a1486'];
   var PFA_COLOURS = ['#eff3ff', '#c6dbef', '#9ecae1', '#6baed6', '#4292c6', '#2171b5', '#084594'];
   var HOTSPOT_Q = 0.97;
@@ -12,7 +13,7 @@
   var INCOMPLETE = 0.9; // a force with < 90% of window months is flagged as incomplete
 
   var S = {
-    meta: null, forceTotals: null, pfa: null, pfaIndex: [], scotData: null, scotGeo: null, xref: null, notes: null, ctx: null, pop: null, popIdx: {}, mode: 'count', vals: [],
+    meta: null, forceTotals: null, pfa: null, pfaIndex: [], scotData: null, scotGeo: null, csp: null, cspGeo: null, xref: null, notes: null, ctx: null, pop: null, popIdx: {}, mode: 'count', vals: [],
     win: '10y', month: null,
     cells: [], breaks: [], sortedCounts: [], rangeIds: [],
     cache: {}
@@ -27,12 +28,14 @@
     maxZoom: 18,
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors | Crime data: data.police.uk (OGL v3.0)'
   }).addTo(map);
+  map.createPane('csp');
+  map.getPane('csp').style.zIndex = 372;
   map.createPane('scot');
   map.getPane('scot').style.zIndex = 375;
   map.createPane('pfa');
   map.getPane('pfa').style.zIndex = 380;
   var canvas = L.canvas({ padding: 0.5 });
-  var heat = null, hexGroup = L.layerGroup(), pfaGroup = L.layerGroup(), scotGroup = L.layerGroup();
+  var heat = null, hexGroup = L.layerGroup(), pfaGroup = L.layerGroup(), scotGroup = L.layerGroup(), cspGroup = L.layerGroup();
 
   // ---------------------------------------------------------------- hex geometry (mirrors scripts/usoda_common.py)
   var G = { R: 0.02, K: Math.cos(54.5 * Math.PI / 180) };
@@ -269,6 +272,7 @@
 
   function applyLayerToggles() {
     function set(layer, on) { if (!layer) return; if (on && !map.hasLayer(layer)) layer.addTo(map); if (!on && map.hasLayer(layer)) map.removeLayer(layer); }
+    set(cspGroup, $('lCsp').checked);
     set(scotGroup, $('lScot').checked);
     set(pfaGroup, $('lPfa').checked);
     set(heat, $('lHeat').checked);
@@ -317,6 +321,61 @@
           'Source: Scottish Government / Police Scotland, OGL v3.0. Areas are council-wide, so rural areas average over large empty land.</span>';
       });
       scotGroup.addLayer(layer);
+    });
+  }
+
+  // England and Wales: Home Office "Sexual offences" by community safety partnership, quarterly.
+  // A separate measure from the hexagons and from Scotland. Never added to either.
+  function cspWindow() {
+    var q = S.csp.quarters.length, n = S.win === '10y' ? q : S.win === '5y' ? 20 : S.win === '3y' ? 12 : 4;
+    n = Math.min(n, q);
+    var from = q - n, label = S.csp.quarters[from] + ' to ' + S.csp.quarters[q - 1];
+    return { from: from, to: q, n: n, label: label, all: S.win === '10y' };
+  }
+  function renderCsp() {
+    cspGroup.clearLayers();
+    S.cspBreaks = null;
+    if (!S.cspGeo || !S.csp) return;
+    var w = cspWindow(), rows = [];
+    S.cspGeo.features.forEach(function (f) {
+      var a = S.csp.areas[f.properties.key]; if (!a) return;
+      var sexual = 0, rape = 0, have = 0;
+      for (var i = w.from; i < w.to; i++) {
+        if (a.sexual[i] !== null) { sexual += a.sexual[i]; rape += a.rape[i] || 0; have++; }
+      }
+      var hidden = sexual < 3 || !a.population || have === 0;
+      var rate = hidden ? null : sexual / (have / 4) / a.population * 1000;
+      rows.push({ f: f, a: a, sexual: sexual, rape: rape, have: have, rate: rate, hidden: hidden });
+    });
+    var rates = rows.filter(function (r) { return r.rate !== null; }).map(function (r) { return r.rate; }).sort(function (x, y) { return x - y; });
+    var br = [0.15, 0.3, 0.5, 0.7, 0.85, 0.95].map(function (p) { return quantile(rates, p); });
+    S.cspBreaks = br;
+    rows.forEach(function (row) {
+      var cls = 0;
+      if (row.rate !== null) { while (cls < br.length && row.rate >= br[cls]) cls++; }
+      var layer = L.geoJSON(row.f, {
+        pane: 'csp',
+        style: row.hidden
+          ? { color: '#777', weight: 1, dashArray: '3 3', fillColor: '#9a9a9a', fillOpacity: 0.2 }
+          : { color: '#005a32', weight: 1, fillColor: CSP_COLOURS[cls], fillOpacity: 0.6 }
+      });
+      layer.bindPopup(function () {
+        var h = '<strong>' + row.a.name + '</strong> (' + row.a.force + ')<br>';
+        if (row.hidden) {
+          h += '<span class="small">Fewer than 3 recorded sexual offences in this window, or no population figure, so no rate is shown.</span>';
+        } else {
+          h += '<span class="big">' + fmt(row.sexual) + '</span> recorded sexual offences<br><span class="small">' + w.label +
+            '. Of these: ' + fmt(row.rape) + ' rape. About ' + row.rate.toFixed(2) + ' a year per 1,000 residents (Census 2021: ' +
+            fmt(row.a.population) + ' people).</span>';
+        }
+        h += '<br><span class="small">Home Office definition, <em>Sexual offences</em> only, by community safety partnership. ' +
+          'Not comparable with the hexagon counts (which include other violence) or with Scotland. ' +
+          'A partnership is one or more local authorities, so large or rural areas average over empty land. ' +
+          'Source: Home Office police recorded crime open data tables, OGL v3.0. Does not include British Transport Police. ' +
+          'Figures are revised each quarter.</span>';
+        return h;
+      });
+      cspGroup.addLayer(layer);
     });
   }
 
@@ -378,6 +437,7 @@
       '<div class="key"><span class="sw" aria-hidden="true"></span> Dark outline: hotspot (top 3% of cells in this window)</div>';
     if (S.mode !== 'count') html += '<div class="key"><span class="sw" style="background:#9a9a9a;opacity:.4" aria-hidden="true"></span> Grey cells: no rate (outside England and Wales, too few people, or the force has data gaps). Census 2021 denominators; the heat layer still shows counts.</div>';
     if ($('lPfa').checked) html += '<div class="key"><span class="sw gap" aria-hidden="true"></span> Dashed grey (force areas): incomplete data</div>';
+    if ($('lCsp').checked && S.cspBreaks) { var cw = cspWindow(); html += '<div class="key"><span class="sw" style="background:#41ae76" aria-hidden="true"></span> Green (England and Wales partnerships): Home Office sexual offences a year per 1,000 residents, ' + cw.label + (cw.all ? ' (all quarters published, from April 2020)' : '') + '. Not comparable with the orange cells or with Scotland. Dashed grey: fewer than 3.</div>'; }
     if ($('lScot').checked && S.scotBreaks) html += '<div class="key"><span class="sw" style="background:#6a51a3" aria-hidden="true"></span> Purple (Scotland): sexual crimes per 10,000 residents, council areas, Scottish definition. Not comparable with the orange cells.</div>';
     html += '<div class="key" style="color:#555">Colour classes are quantile-based, recalculated for each window.</div>';
     el.innerHTML = html;
@@ -459,7 +519,7 @@
     return getJSON(file).then(function (d) {
       S.cells = d.cells;
       S.rangeIds = S.win === 'month' ? [S.month] : monthRange(S.meta.windows[S.win].from, S.meta.windows[S.win].to);
-      computeBreaks(); renderCells(); renderScot(); renderPfa(); renderLegend(); renderTop(); renderBannerAndStatus(upstreamLatest);
+      computeBreaks(); renderCells(); renderCsp(); renderScot(); renderPfa(); renderLegend(); renderTop(); renderBannerAndStatus(upstreamLatest);
       $('statusList').removeAttribute('aria-busy');
     }).catch(function (e) {
       showBanner('Could not load data (' + e.message + '). Please retry later.');
@@ -487,7 +547,7 @@
     });
   });
   $('monthSelect').addEventListener('change', function () { S.month = this.value; if (S.win === 'month') load(); });
-  ['lHeat', 'lHex', 'lPfa', 'lScot'].forEach(function (id) {
+  ['lHeat', 'lHex', 'lPfa', 'lCsp', 'lScot'].forEach(function (id) {
     $(id).addEventListener('change', function () { applyLayerToggles(); renderLegend(); });
   });
   Array.prototype.forEach.call(document.querySelectorAll('input[name=mode]'), function (r) {
@@ -503,8 +563,9 @@
     getJSON('crossref.json').catch(function () { return null; }),
     getJSON('population.json').catch(function () { return null; }),
     getJSON('annotations.json').catch(function () { return null; }),
-    getJSON('national_context.json').catch(function () { return null; })]).then(function (r) {
-    S.meta = r[0]; S.forceTotals = r[1]; S.pfa = r[2]; S.scotData = r[3]; S.scotGeo = r[4]; S.xref = r[5]; S.pop = r[6]; S.notes = r[7]; S.ctx = r[8]; renderContext();
+    getJSON('national_context.json').catch(function () { return null; }),
+    getJSON('csp.json').catch(function () { return null; }), getJSON('csp.geojson').catch(function () { return null; })]).then(function (r) {
+    S.meta = r[0]; S.forceTotals = r[1]; S.pfa = r[2]; S.scotData = r[3]; S.scotGeo = r[4]; S.xref = r[5]; S.pop = r[6]; S.notes = r[7]; S.ctx = r[8]; S.csp = r[9]; S.cspGeo = r[10]; renderContext();
     if (S.pop) { S.pop.cells.forEach(function (c) { S.popIdx[c[0] + ',' + c[1]] = [c[2], c[3]]; }); }
     G.R = S.meta.hex.R; G.K = S.meta.hex.K;
     buildPfaIndex(S.pfa);
