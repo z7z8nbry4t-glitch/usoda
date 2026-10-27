@@ -17,7 +17,7 @@ jobs:
         with:
           python-version: "3.12"
       - name: Live atlas against police.uk
-        run: python3 scripts/check_freshness.py https://usoda.pages.dev
+        run: python3 scripts/check_freshness.py https://usoda.alphatedigital.co.uk
       - name: Last update runs
         env:
           GH_TOKEN: ${{ github.token }}

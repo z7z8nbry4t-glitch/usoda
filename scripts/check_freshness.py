@@ -6,7 +6,7 @@ Exit code 1 (so the scheduled workflow fails and GitHub sends its alert) when:
   * the newest month on police.uk is ahead of the month the atlas shows.
 The partnership layer's dates are printed for information only (the Home Office publishes quarterly).
 
-Usage: check_freshness.py [https://usoda.pages.dev]
+Usage: check_freshness.py [https://usoda.alphatedigital.co.uk]
 """
 import json
 import sys
@@ -27,7 +27,7 @@ def month_lag(atlas_latest, upstream_latest):
 
 
 def main():
-    base = (sys.argv[1] if len(sys.argv) > 1 else "https://usoda.pages.dev").rstrip("/")
+    base = (sys.argv[1] if len(sys.argv) > 1 else "https://usoda.alphatedigital.co.uk").rstrip("/")
     problems = []
     try:
         meta = json.loads(get(base + "/data/meta.json"))

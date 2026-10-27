@@ -23,12 +23,12 @@ The repository is ready. These are the only steps that need a person, because th
    | Build output directory | `.` |
    | Environment variables | none |
 
-5. *Save and Deploy*. The site appears at `https://usoda.pages.dev` (or `usoda-xxx.pages.dev` if the name is taken).
+5. *Save and Deploy*. The site appears at `https://usoda.alphatedigital.co.uk` (or `usoda-xxx.pages.dev` if the name is taken).
 
 ## Verify
 
 ```
-python3 scripts/verify_deploy.py https://usoda.pages.dev
+python3 scripts/verify_deploy.py https://usoda.alphatedigital.co.uk
 ```
 
 Expected: PASS for the page, `data/meta.json`, window and boundary files, the Scotland files, and 32 council areas. The API proxy check and the "atlas up to date" check are warnings, not failures, if the proxy is not running. Then open the site and confirm that the Data status panel reads up to date.
