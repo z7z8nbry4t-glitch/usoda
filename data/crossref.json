@@ -1,9 +1,9 @@
 {
  "band_counts": {
-  "agree": 297,
+  "agree": 298,
   "differs": 23,
   "incomplete_months": 11,
-  "minor_difference": 59,
+  "minor_difference": 58,
   "no_street_data": 6
  },
  "bands": {
@@ -150,14 +150,14 @@
     "sexual_share_pct": 9.1
    },
    "2020/21": {
-    "agreement": "minor_difference",
+    "agreement": "agree",
     "home_office_rape": 534,
     "home_office_sexual": 1397,
     "home_office_total": 18521,
     "home_office_violence": 17124,
     "police_uk_months": 12,
-    "police_uk_total": 17578,
-    "ratio": 0.949,
+    "police_uk_total": 17666,
+    "ratio": 0.954,
     "sexual_share_pct": 7.5
    },
    "2021/22": {
@@ -223,9 +223,9 @@
     "home_office_sexual": 1820,
     "home_office_total": 12605,
     "home_office_violence": 10785,
-    "police_uk_months": 7,
-    "police_uk_total": 7306,
-    "ratio": 0.58,
+    "police_uk_months": 6,
+    "police_uk_total": 6389,
+    "ratio": 0.507,
     "sexual_share_pct": 14.4
    },
    "2018/19": {
@@ -246,7 +246,7 @@
     "home_office_total": 14384,
     "home_office_violence": 12499,
     "police_uk_months": 12,
-    "police_uk_total": 13554,
+    "police_uk_total": 13555,
     "ratio": 0.942,
     "sexual_share_pct": 13.1
    },
@@ -257,7 +257,7 @@
     "home_office_total": 7075,
     "home_office_violence": 6389,
     "police_uk_months": 12,
-    "police_uk_total": 6708,
+    "police_uk_total": 6710,
     "ratio": 0.948,
     "sexual_share_pct": 9.7
    },
@@ -268,8 +268,8 @@
     "home_office_total": 12002,
     "home_office_violence": 10375,
     "police_uk_months": 12,
-    "police_uk_total": 11963,
-    "ratio": 0.997,
+    "police_uk_total": 11972,
+    "ratio": 0.998,
     "sexual_share_pct": 13.6
    },
    "2022/23": {
@@ -279,8 +279,8 @@
     "home_office_total": 13647,
     "home_office_violence": 11692,
     "police_uk_months": 12,
-    "police_uk_total": 13599,
-    "ratio": 0.996,
+    "police_uk_total": 13610,
+    "ratio": 0.997,
     "sexual_share_pct": 14.3
    },
    "2023/24": {
@@ -290,8 +290,8 @@
     "home_office_total": 16035,
     "home_office_violence": 13991,
     "police_uk_months": 12,
-    "police_uk_total": 11540,
-    "ratio": 0.72,
+    "police_uk_total": 12204,
+    "ratio": 0.761,
     "sexual_share_pct": 12.7
    },
    "2024/25": {
@@ -492,8 +492,8 @@
     "home_office_total": 39045,
     "home_office_violence": 35366,
     "police_uk_months": 12,
-    "police_uk_total": 36181,
-    "ratio": 0.927,
+    "police_uk_total": 35752,
+    "ratio": 0.916,
     "sexual_share_pct": 9.4
    },
    "2024/25": {
@@ -996,9 +996,9 @@
     "home_office_sexual": 5694,
     "home_office_total": 53934,
     "home_office_violence": 48240,
-    "police_uk_months": 7,
-    "police_uk_total": 26283,
-    "ratio": 0.487,
+    "police_uk_months": 6,
+    "police_uk_total": 23973,
+    "ratio": 0.444,
     "sexual_share_pct": 10.6
    },
    "2024/25": {
@@ -1638,8 +1638,8 @@
     "home_office_total": 16103,
     "home_office_violence": 14764,
     "police_uk_months": 12,
-    "police_uk_total": 14782,
-    "ratio": 0.918,
+    "police_uk_total": 14721,
+    "ratio": 0.914,
     "sexual_share_pct": 8.3
    },
    "2018/19": {
@@ -2176,7 +2176,7 @@
     "home_office_total": 55413,
     "home_office_violence": 51531,
     "police_uk_months": 12,
-    "police_uk_total": 58892,
+    "police_uk_total": 58884,
     "ratio": 1.063,
     "sexual_share_pct": 7.0
    },
@@ -2209,8 +2209,8 @@
     "home_office_total": 59502,
     "home_office_violence": 54589,
     "police_uk_months": 12,
-    "police_uk_total": 60230,
-    "ratio": 1.012,
+    "police_uk_total": 60276,
+    "ratio": 1.013,
     "sexual_share_pct": 8.3
    },
    "2024/25": {
@@ -2345,8 +2345,8 @@
     "home_office_total": 10479,
     "home_office_violence": 8932,
     "police_uk_months": 12,
-    "police_uk_total": 10419,
-    "ratio": 0.994,
+    "police_uk_total": 10510,
+    "ratio": 1.003,
     "sexual_share_pct": 14.8
    },
    "2018/19": {
@@ -3218,9 +3218,9 @@
     "home_office_sexual": 3554,
     "home_office_total": 38257,
     "home_office_violence": 34703,
-    "police_uk_months": 11,
-    "police_uk_total": 35506,
-    "ratio": 0.928,
+    "police_uk_months": 10,
+    "police_uk_total": 32166,
+    "ratio": 0.841,
     "sexual_share_pct": 9.3
    },
    "2024/25": {
@@ -3456,8 +3456,8 @@
     "home_office_total": 32842,
     "home_office_violence": 29479,
     "police_uk_months": 12,
-    "police_uk_total": 32887,
-    "ratio": 1.001,
+    "police_uk_total": 32908,
+    "ratio": 1.002,
     "sexual_share_pct": 10.2
    },
    "2018/19": {
@@ -3488,9 +3488,9 @@
     "home_office_sexual": 2371,
     "home_office_total": 32065,
     "home_office_violence": 29694,
-    "police_uk_months": 9,
-    "police_uk_total": 22845,
-    "ratio": 0.712,
+    "police_uk_months": 8,
+    "police_uk_total": 19866,
+    "ratio": 0.62,
     "sexual_share_pct": 7.4
    },
    "2021/22": {
@@ -3522,7 +3522,7 @@
     "home_office_total": 41437,
     "home_office_violence": 38062,
     "police_uk_months": 12,
-    "police_uk_total": 41722,
+    "police_uk_total": 41733,
     "ratio": 1.007,
     "sexual_share_pct": 8.1
    },
@@ -3724,8 +3724,8 @@
     "home_office_total": 30852,
     "home_office_violence": 28233,
     "police_uk_months": 12,
-    "police_uk_total": 29691,
-    "ratio": 0.962,
+    "police_uk_total": 29660,
+    "ratio": 0.961,
     "sexual_share_pct": 8.5
    },
    "2024/25": {
@@ -4095,7 +4095,7 @@
     "home_office_total": 34690,
     "home_office_violence": 31558,
     "police_uk_months": 12,
-    "police_uk_total": 35155,
+    "police_uk_total": 35151,
     "ratio": 1.013,
     "sexual_share_pct": 9.0
    },
@@ -4459,7 +4459,7 @@
    }
   }
  },
- "generated": "2026-10-27T08:00:05Z",
+ "generated": "2026-11-05T18:53:18Z",
  "licence": "Open Government Licence v3.0",
  "method": "police.uk 'Violence and sexual offences' compared with Home Office 'Violence against the person' plus 'Sexual offences', per force and complete financial year (Apr to Mar). Validation only.",
  "source": "Home Office, Police recorded crime open data tables (Police Force Area), England and Wales",

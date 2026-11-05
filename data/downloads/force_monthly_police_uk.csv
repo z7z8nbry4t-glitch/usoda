@@ -1,5 +1,4 @@
 force,month,records
-avon-and-somerset,2016-09,3766
 avon-and-somerset,2016-10,3652
 avon-and-somerset,2016-11,3476
 avon-and-somerset,2016-12,3732
@@ -119,7 +118,7 @@ avon-and-somerset,2026-05,6014
 avon-and-somerset,2026-06,5953
 avon-and-somerset,2026-07,6506
 avon-and-somerset,2026-08,5795
-bedfordshire,2016-09,898
+avon-and-somerset,2026-09,5557
 bedfordshire,2016-10,898
 bedfordshire,2016-11,876
 bedfordshire,2016-12,848
@@ -167,7 +166,7 @@ bedfordshire,2020-05,1512
 bedfordshire,2020-06,1526
 bedfordshire,2020-07,1535
 bedfordshire,2020-08,1688
-bedfordshire,2020-09,1503
+bedfordshire,2020-09,1591
 bedfordshire,2020-10,1241
 bedfordshire,2020-11,1442
 bedfordshire,2020-12,1514
@@ -239,7 +238,7 @@ bedfordshire,2026-05,2032
 bedfordshire,2026-06,1955
 bedfordshire,2026-07,2183
 bedfordshire,2026-08,1826
-btp,2017-09,917
+bedfordshire,2026-09,1861
 btp,2017-10,1236
 btp,2017-11,1120
 btp,2017-12,1051
@@ -259,22 +258,22 @@ btp,2019-01,963
 btp,2019-02,981
 btp,2019-03,1249
 btp,2019-04,1060
-btp,2019-05,1090
+btp,2019-05,1089
 btp,2019-06,1107
 btp,2019-07,1088
 btp,2019-08,1154
-btp,2019-09,1092
+btp,2019-09,1093
 btp,2019-10,1087
-btp,2019-11,1440
-btp,2019-12,1262
+btp,2019-11,1439
+btp,2019-12,1261
 btp,2020-01,1049
-btp,2020-02,1227
-btp,2020-03,898
+btp,2020-02,1229
+btp,2020-03,899
 btp,2020-04,229
-btp,2020-05,281
-btp,2020-06,425
-btp,2020-07,615
-btp,2020-08,827
+btp,2020-05,283
+btp,2020-06,435
+btp,2020-07,619
+btp,2020-08,813
 btp,2020-09,727
 btp,2020-10,806
 btp,2020-11,692
@@ -288,30 +287,30 @@ btp,2021-06,907
 btp,2021-07,1014
 btp,2021-08,1003
 btp,2021-09,1026
-btp,2021-10,1040
-btp,2021-11,1152
-btp,2021-12,1174
-btp,2022-01,947
-btp,2022-02,1037
+btp,2021-10,1041
+btp,2021-11,1154
+btp,2021-12,1177
+btp,2022-01,948
+btp,2022-02,1039
 btp,2022-03,1122
 btp,2022-04,1169
-btp,2022-05,1189
+btp,2022-05,1193
 btp,2022-06,1076
 btp,2022-07,1242
-btp,2022-08,1168
-btp,2022-09,1008
+btp,2022-08,1169
+btp,2022-09,1009
 btp,2022-10,1149
-btp,2022-11,1288
+btp,2022-11,1290
 btp,2022-12,957
-btp,2023-01,1025
-btp,2023-02,1095
-btp,2023-03,1233
-btp,2023-04,1208
+btp,2023-01,1026
+btp,2023-02,1094
+btp,2023-03,1236
+btp,2023-04,1211
 btp,2023-05,1317
-btp,2023-06,1269
-btp,2023-07,1340
-btp,2023-08,1401
-btp,2023-09,752
+btp,2023-06,1261
+btp,2023-07,1344
+btp,2023-08,1396
+btp,2023-09,1422
 btp,2023-10,740
 btp,2023-11,736
 btp,2023-12,696
@@ -328,7 +327,6 @@ btp,2024-10,785
 btp,2024-11,747
 btp,2024-12,706
 btp,2025-01,671
-cambridgeshire,2016-09,1245
 cambridgeshire,2016-10,1253
 cambridgeshire,2016-11,1414
 cambridgeshire,2016-12,1377
@@ -448,7 +446,7 @@ cambridgeshire,2026-05,2672
 cambridgeshire,2026-06,2836
 cambridgeshire,2026-07,2834
 cambridgeshire,2026-08,2807
-cheshire,2016-09,1686
+cambridgeshire,2026-09,2650
 cheshire,2016-10,1566
 cheshire,2016-11,1424
 cheshire,2016-12,1477
@@ -532,7 +530,7 @@ cheshire,2023-05,3016
 cheshire,2023-06,3007
 cheshire,2023-07,2801
 cheshire,2023-08,2518
-cheshire,2023-09,3226
+cheshire,2023-09,2797
 cheshire,2023-10,3154
 cheshire,2023-11,2891
 cheshire,2023-12,3165
@@ -568,7 +566,7 @@ cheshire,2026-05,3272
 cheshire,2026-06,3494
 cheshire,2026-07,3463
 cheshire,2026-08,3121
-city-of-london,2016-09,73
+cheshire,2026-09,3149
 city-of-london,2016-10,89
 city-of-london,2016-11,72
 city-of-london,2016-12,117
@@ -688,7 +686,7 @@ city-of-london,2026-05,124
 city-of-london,2026-06,124
 city-of-london,2026-07,136
 city-of-london,2026-08,118
-cleveland,2016-09,1223
+city-of-london,2026-09,104
 cleveland,2016-10,1226
 cleveland,2016-11,1172
 cleveland,2016-12,1228
@@ -808,7 +806,7 @@ cleveland,2026-05,2561
 cleveland,2026-06,2762
 cleveland,2026-07,2835
 cleveland,2026-08,2665
-cumbria,2016-09,700
+cleveland,2026-09,2357
 cumbria,2016-10,710
 cumbria,2016-11,632
 cumbria,2016-12,757
@@ -927,7 +925,6 @@ cumbria,2026-05,1677
 cumbria,2026-06,1700
 cumbria,2026-07,1892
 cumbria,2026-08,1666
-derbyshire,2016-09,1165
 derbyshire,2016-10,1280
 derbyshire,2016-11,1078
 derbyshire,2016-12,1122
@@ -1047,7 +1044,7 @@ derbyshire,2026-05,3907
 derbyshire,2026-06,4113
 derbyshire,2026-07,4434
 derbyshire,2026-08,3940
-devon-and-cornwall,2016-09,2416
+derbyshire,2026-09,3582
 devon-and-cornwall,2016-10,2456
 devon-and-cornwall,2016-11,2342
 devon-and-cornwall,2016-12,2691
@@ -1121,7 +1118,6 @@ devon-and-cornwall,2022-07,4363
 devon-and-cornwall,2022-08,4625
 devon-and-cornwall,2022-09,4182
 devon-and-cornwall,2022-10,4280
-devon-and-cornwall,2023-09,2310
 devon-and-cornwall,2023-10,2252
 devon-and-cornwall,2023-11,2445
 devon-and-cornwall,2023-12,4834
@@ -1157,7 +1153,7 @@ devon-and-cornwall,2026-05,5863
 devon-and-cornwall,2026-06,5850
 devon-and-cornwall,2026-07,6666
 devon-and-cornwall,2026-08,6046
-dorset,2016-09,1152
+devon-and-cornwall,2026-09,5486
 dorset,2016-10,1036
 dorset,2016-11,974
 dorset,2016-12,1115
@@ -1277,7 +1273,7 @@ dorset,2026-05,1589
 dorset,2026-06,1579
 dorset,2026-07,1998
 dorset,2026-08,1800
-durham,2016-09,1100
+dorset,2026-09,1639
 durham,2016-10,1132
 durham,2016-11,1067
 durham,2016-12,1368
@@ -1397,7 +1393,7 @@ durham,2026-05,2324
 durham,2026-06,2401
 durham,2026-07,2754
 durham,2026-08,2487
-dyfed-powys,2016-09,659
+durham,2026-09,2370
 dyfed-powys,2016-10,706
 dyfed-powys,2016-11,690
 dyfed-powys,2016-12,722
@@ -1517,7 +1513,7 @@ dyfed-powys,2026-05,1846
 dyfed-powys,2026-06,1946
 dyfed-powys,2026-07,2029
 dyfed-powys,2026-08,1812
-essex,2016-09,3159
+dyfed-powys,2026-09,1639
 essex,2016-10,3183
 essex,2016-11,2983
 essex,2016-12,3022
@@ -1637,7 +1633,7 @@ essex,2026-05,5933
 essex,2026-06,6260
 essex,2026-07,6828
 essex,2026-08,6041
-gloucestershire,2016-09,688
+essex,2026-09,5865
 gloucestershire,2016-10,627
 gloucestershire,2016-11,669
 gloucestershire,2016-12,748
@@ -1750,7 +1746,6 @@ gloucestershire,2025-10,1798
 gloucestershire,2025-11,1711
 gloucestershire,2025-12,1563
 gloucestershire,2026-01,1577
-greater-manchester,2016-09,5753
 greater-manchester,2016-10,6921
 greater-manchester,2016-11,6605
 greater-manchester,2016-12,7187
@@ -1785,7 +1780,6 @@ greater-manchester,2019-04,8867
 greater-manchester,2019-05,9436
 greater-manchester,2019-06,9286
 greater-manchester,2022-08,1
-gwent,2016-09,1034
 gwent,2016-10,997
 gwent,2016-11,959
 gwent,2016-12,889
@@ -1797,7 +1791,7 @@ gwent,2017-05,1158
 gwent,2017-06,1158
 gwent,2017-07,1165
 gwent,2017-08,1148
-gwent,2017-09,1084
+gwent,2017-09,1023
 gwent,2017-10,1275
 gwent,2017-11,1320
 gwent,2017-12,1337
@@ -1905,7 +1899,7 @@ gwent,2026-05,2159
 gwent,2026-06,2322
 gwent,2026-07,2578
 gwent,2026-08,2264
-hampshire,2016-09,2800
+gwent,2026-09,2205
 hampshire,2016-10,2759
 hampshire,2016-11,2772
 hampshire,2016-12,2751
@@ -2025,7 +2019,7 @@ hampshire,2026-05,5830
 hampshire,2026-06,6054
 hampshire,2026-07,6639
 hampshire,2026-08,5830
-hertfordshire,2016-09,1582
+hampshire,2026-09,5781
 hertfordshire,2016-10,1715
 hertfordshire,2016-11,1608
 hertfordshire,2016-12,1691
@@ -2145,7 +2139,7 @@ hertfordshire,2026-05,3240
 hertfordshire,2026-06,3246
 hertfordshire,2026-07,3477
 hertfordshire,2026-08,3289
-humberside,2016-09,2057
+hertfordshire,2026-09,3166
 humberside,2016-10,2243
 humberside,2016-11,1981
 humberside,2016-12,2027
@@ -2265,7 +2259,7 @@ humberside,2026-05,3601
 humberside,2026-06,3493
 humberside,2026-07,3870
 humberside,2026-08,3246
-kent,2016-09,4164
+humberside,2026-09,3106
 kent,2016-10,3908
 kent,2016-11,3748
 kent,2016-12,4424
@@ -2385,7 +2379,7 @@ kent,2026-05,5001
 kent,2026-06,5091
 kent,2026-07,5761
 kent,2026-08,5492
-lancashire,2016-09,2738
+kent,2026-09,5362
 lancashire,2016-10,2654
 lancashire,2016-11,2561
 lancashire,2016-12,2722
@@ -2433,7 +2427,7 @@ lancashire,2020-05,4783
 lancashire,2020-06,5034
 lancashire,2020-07,5540
 lancashire,2020-08,5386
-lancashire,2020-09,5224
+lancashire,2020-09,5216
 lancashire,2020-10,4929
 lancashire,2020-11,4821
 lancashire,2020-12,4740
@@ -2469,7 +2463,7 @@ lancashire,2023-05,5198
 lancashire,2023-06,5185
 lancashire,2023-07,5124
 lancashire,2023-08,4886
-lancashire,2023-09,5055
+lancashire,2023-09,5101
 lancashire,2023-10,4971
 lancashire,2023-11,4681
 lancashire,2023-12,5051
@@ -2505,7 +2499,7 @@ lancashire,2026-05,6177
 lancashire,2026-06,6062
 lancashire,2026-07,6324
 lancashire,2026-08,5654
-leicestershire,2016-09,1384
+lancashire,2026-09,5301
 leicestershire,2016-10,1525
 leicestershire,2016-11,1539
 leicestershire,2016-12,1478
@@ -2625,7 +2619,7 @@ leicestershire,2026-05,3133
 leicestershire,2026-06,3593
 leicestershire,2026-07,3346
 leicestershire,2026-08,3342
-lincolnshire,2016-09,780
+leicestershire,2026-09,2951
 lincolnshire,2016-10,764
 lincolnshire,2016-11,742
 lincolnshire,2016-12,832
@@ -2635,9 +2629,9 @@ lincolnshire,2017-03,778
 lincolnshire,2017-04,791
 lincolnshire,2017-05,939
 lincolnshire,2017-06,878
-lincolnshire,2017-07,985
-lincolnshire,2017-08,951
-lincolnshire,2017-09,761
+lincolnshire,2017-07,982
+lincolnshire,2017-08,949
+lincolnshire,2017-09,857
 lincolnshire,2017-10,863
 lincolnshire,2017-11,849
 lincolnshire,2017-12,913
@@ -2744,7 +2738,7 @@ lincolnshire,2026-05,2298
 lincolnshire,2026-06,2521
 lincolnshire,2026-07,2718
 lincolnshire,2026-08,2436
-merseyside,2016-09,2617
+lincolnshire,2026-09,2268
 merseyside,2016-10,2811
 merseyside,2016-11,2472
 merseyside,2016-12,2792
@@ -2864,7 +2858,7 @@ merseyside,2026-05,5012
 merseyside,2026-06,5472
 merseyside,2026-07,5802
 merseyside,2026-08,5121
-metropolitan,2016-09,15787
+merseyside,2026-09,4867
 metropolitan,2016-10,16030
 metropolitan,2016-11,15434
 metropolitan,2016-12,15817
@@ -2984,7 +2978,7 @@ metropolitan,2026-05,25545
 metropolitan,2026-06,26093
 metropolitan,2026-07,27279
 metropolitan,2026-08,24374
-norfolk,2016-09,1504
+metropolitan,2026-09,23584
 norfolk,2016-10,1448
 norfolk,2016-11,1370
 norfolk,2016-12,1476
@@ -3104,7 +3098,7 @@ norfolk,2026-05,2414
 norfolk,2026-06,2620
 norfolk,2026-07,2771
 norfolk,2026-08,2630
-north-wales,2016-09,1131
+norfolk,2026-09,2502
 north-wales,2016-10,1234
 north-wales,2016-11,1228
 north-wales,2016-12,1315
@@ -3224,7 +3218,7 @@ north-wales,2026-05,2517
 north-wales,2026-06,2041
 north-wales,2026-07,2083
 north-wales,2026-08,2599
-north-yorkshire,2016-09,870
+north-wales,2026-09,2456
 north-yorkshire,2016-10,1005
 north-yorkshire,2016-11,850
 north-yorkshire,2016-12,904
@@ -3344,7 +3338,7 @@ north-yorkshire,2026-05,1818
 north-yorkshire,2026-06,2011
 north-yorkshire,2026-07,2096
 north-yorkshire,2026-08,1880
-northamptonshire,2016-09,1353
+north-yorkshire,2026-09,1825
 northamptonshire,2016-10,1456
 northamptonshire,2016-11,1362
 northamptonshire,2016-12,1364
@@ -3464,7 +3458,7 @@ northamptonshire,2026-05,2250
 northamptonshire,2026-06,2375
 northamptonshire,2026-07,2477
 northamptonshire,2026-08,2231
-northern-ireland,2016-09,2822
+northamptonshire,2026-09,1952
 northern-ireland,2016-10,3051
 northern-ireland,2016-11,2421
 northern-ireland,2016-12,2820
@@ -3547,7 +3541,6 @@ northern-ireland,2023-04,4211
 northern-ireland,2023-05,4364
 northern-ireland,2023-06,4148
 northern-ireland,2023-07,4029
-northern-ireland,2023-09,3948
 northern-ireland,2023-10,4110
 northern-ireland,2023-11,3581
 northern-ireland,2023-12,3811
@@ -3583,7 +3576,7 @@ northern-ireland,2026-05,3886
 northern-ireland,2026-06,3741
 northern-ireland,2026-07,4164
 northern-ireland,2026-08,3748
-northumbria,2016-09,3240
+northern-ireland,2026-09,3558
 northumbria,2016-10,3128
 northumbria,2016-11,2906
 northumbria,2016-12,3097
@@ -3703,7 +3696,7 @@ northumbria,2026-05,3732
 northumbria,2026-06,3911
 northumbria,2026-07,3881
 northumbria,2026-08,3796
-nottinghamshire,2016-09,2332
+northumbria,2026-09,3592
 nottinghamshire,2016-10,2734
 nottinghamshire,2016-11,2593
 nottinghamshire,2016-12,2174
@@ -3786,7 +3779,6 @@ nottinghamshire,2023-04,3259
 nottinghamshire,2023-05,3480
 nottinghamshire,2023-06,3418
 nottinghamshire,2023-07,3461
-nottinghamshire,2023-09,3340
 nottinghamshire,2023-10,3331
 nottinghamshire,2023-11,3063
 nottinghamshire,2023-12,3004
@@ -3822,7 +3814,7 @@ nottinghamshire,2026-05,3810
 nottinghamshire,2026-06,4026
 nottinghamshire,2026-07,4193
 nottinghamshire,2026-08,3777
-south-wales,2016-09,2775
+nottinghamshire,2026-09,3681
 south-wales,2016-10,2896
 south-wales,2016-11,2846
 south-wales,2016-12,2654
@@ -3942,7 +3934,7 @@ south-wales,2026-05,4318
 south-wales,2026-06,4389
 south-wales,2026-07,4779
 south-wales,2026-08,4252
-south-yorkshire,2016-09,2277
+south-wales,2026-09,3877
 south-yorkshire,2016-10,2572
 south-yorkshire,2016-11,2600
 south-yorkshire,2016-12,3028
@@ -4062,7 +4054,7 @@ south-yorkshire,2026-05,5407
 south-yorkshire,2026-06,5509
 south-yorkshire,2026-07,5812
 south-yorkshire,2026-08,5226
-staffordshire,2016-09,2708
+south-yorkshire,2026-09,5155
 staffordshire,2016-10,2559
 staffordshire,2016-11,2442
 staffordshire,2016-12,2298
@@ -4074,7 +4066,7 @@ staffordshire,2017-05,2998
 staffordshire,2017-06,2748
 staffordshire,2017-07,3038
 staffordshire,2017-08,2744
-staffordshire,2017-09,2794
+staffordshire,2017-09,2815
 staffordshire,2017-10,2949
 staffordshire,2017-11,2806
 staffordshire,2017-12,2494
@@ -4107,7 +4099,6 @@ staffordshire,2020-02,3737
 staffordshire,2020-03,4269
 staffordshire,2020-04,3025
 staffordshire,2020-05,1383
-staffordshire,2020-09,2979
 staffordshire,2020-10,2874
 staffordshire,2020-11,2570
 staffordshire,2020-12,2103
@@ -4143,7 +4134,7 @@ staffordshire,2023-05,3378
 staffordshire,2023-06,4400
 staffordshire,2023-07,3561
 staffordshire,2023-08,3472
-staffordshire,2023-09,3618
+staffordshire,2023-09,3629
 staffordshire,2023-10,3670
 staffordshire,2023-11,3039
 staffordshire,2023-12,2938
@@ -4179,7 +4170,7 @@ staffordshire,2026-05,3761
 staffordshire,2026-06,4191
 staffordshire,2026-07,4244
 staffordshire,2026-08,3525
-suffolk,2016-09,1269
+staffordshire,2026-09,3894
 suffolk,2016-10,1214
 suffolk,2016-11,1370
 suffolk,2016-12,1371
@@ -4299,7 +4290,7 @@ suffolk,2026-05,1889
 suffolk,2026-06,1893
 suffolk,2026-07,2098
 suffolk,2026-08,1837
-surrey,2016-09,1618
+suffolk,2026-09,1793
 surrey,2016-10,1825
 surrey,2016-11,1571
 surrey,2016-12,1828
@@ -4383,7 +4374,7 @@ surrey,2023-05,2392
 surrey,2023-06,2517
 surrey,2023-07,2635
 surrey,2023-08,2349
-surrey,2023-09,2624
+surrey,2023-09,2593
 surrey,2023-10,2687
 surrey,2023-11,2483
 surrey,2023-12,2463
@@ -4419,7 +4410,7 @@ surrey,2026-05,2781
 surrey,2026-06,2856
 surrey,2026-07,2959
 surrey,2026-08,2662
-sussex,2016-09,2818
+surrey,2026-09,2641
 sussex,2016-10,2796
 sussex,2016-11,2699
 sussex,2016-12,2665
@@ -4539,7 +4530,7 @@ sussex,2026-05,4779
 sussex,2026-06,4916
 sussex,2026-07,5342
 sussex,2026-08,5028
-thames-valley,2016-09,3020
+sussex,2026-09,4723
 thames-valley,2016-10,2914
 thames-valley,2016-11,2797
 thames-valley,2016-12,2896
@@ -4659,7 +4650,7 @@ thames-valley,2026-05,6727
 thames-valley,2026-06,6876
 thames-valley,2026-07,7082
 thames-valley,2026-08,6210
-warwickshire,2016-09,940
+thames-valley,2026-09,6037
 warwickshire,2016-10,1057
 warwickshire,2016-11,982
 warwickshire,2016-12,1086
@@ -4779,7 +4770,7 @@ warwickshire,2026-05,1460
 warwickshire,2026-06,1558
 warwickshire,2026-07,1723
 warwickshire,2026-08,1517
-west-mercia,2016-09,2441
+warwickshire,2026-09,1478
 west-mercia,2016-10,2515
 west-mercia,2016-11,2343
 west-mercia,2016-12,2366
@@ -4827,7 +4818,7 @@ west-mercia,2020-05,2944
 west-mercia,2020-06,3150
 west-mercia,2020-07,3535
 west-mercia,2020-08,3468
-west-mercia,2020-09,3359
+west-mercia,2020-09,3355
 west-mercia,2020-10,2985
 west-mercia,2020-11,2741
 west-mercia,2020-12,2660
@@ -4894,12 +4885,12 @@ west-mercia,2025-12,3225
 west-mercia,2026-01,3336
 west-mercia,2026-02,2983
 west-mercia,2026-03,3489
-west-mercia,2026-04,3217
+west-mercia,2026-04,2311
 west-mercia,2026-05,3663
 west-mercia,2026-06,3604
 west-mercia,2026-07,3972
 west-mercia,2026-08,3723
-west-midlands,2016-09,4511
+west-mercia,2026-09,3477
 west-midlands,2016-10,4694
 west-midlands,2016-11,4376
 west-midlands,2016-12,4479
@@ -5019,7 +5010,7 @@ west-midlands,2026-05,12281
 west-midlands,2026-06,12389
 west-midlands,2026-07,13569
 west-midlands,2026-08,11700
-west-yorkshire,2016-09,6092
+west-midlands,2026-09,11382
 west-yorkshire,2016-10,6349
 west-yorkshire,2016-11,5997
 west-yorkshire,2016-12,6200
@@ -5139,7 +5130,7 @@ west-yorkshire,2026-05,10492
 west-yorkshire,2026-06,10258
 west-yorkshire,2026-07,10020
 west-yorkshire,2026-08,8785
-wiltshire,2016-09,1247
+west-yorkshire,2026-09,8587
 wiltshire,2016-10,1199
 wiltshire,2016-11,1183
 wiltshire,2016-12,1192
@@ -5259,3 +5250,4 @@ wiltshire,2026-05,1643
 wiltshire,2026-06,1627
 wiltshire,2026-07,1827
 wiltshire,2026-08,1597
+wiltshire,2026-09,1595

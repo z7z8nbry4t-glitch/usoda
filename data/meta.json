@@ -1,22 +1,16 @@
 {
  "category": "Violence and sexual offences",
  "category_slug": "violent-crime",
- "generated_at": "2026-10-27T07:59:44Z",
+ "generated_at": "2026-11-05T18:52:55Z",
  "hex": {
   "K": 0.5807029557109398,
   "R": 0.02,
   "min_cell": 3,
   "orientation": "pointy-top"
  },
- "last_successful_ingest": "2026-10-27T07:59:44Z",
- "latest_month": "2026-08",
+ "last_successful_ingest": "2026-11-05T18:52:55Z",
+ "latest_month": "2026-09",
  "months_available": [
-  {
-   "cells": 3417,
-   "month": "2016-09",
-   "records": 105594,
-   "suppressed": 3086
-  },
   {
    "cells": 3364,
    "month": "2016-10",
@@ -74,20 +68,20 @@
   {
    "cells": 3821,
    "month": "2017-07",
-   "records": 137745,
-   "suppressed": 3303
+   "records": 137742,
+   "suppressed": 3302
   },
   {
    "cells": 3667,
    "month": "2017-08",
-   "records": 126394,
+   "records": 126392,
    "suppressed": 3325
   },
   {
-   "cells": 3607,
+   "cells": 3608,
    "month": "2017-09",
-   "records": 124262,
-   "suppressed": 3241
+   "records": 123401,
+   "suppressed": 3237
   },
   {
    "cells": 3720,
@@ -189,7 +183,7 @@
    "cells": 3812,
    "month": "2019-02",
    "records": 142172,
-   "suppressed": 3320
+   "suppressed": 3319
   },
   {
    "cells": 4034,
@@ -201,12 +195,12 @@
    "cells": 4014,
    "month": "2019-04",
    "records": 154131,
-   "suppressed": 3250
+   "suppressed": 3249
   },
   {
    "cells": 4095,
    "month": "2019-05",
-   "records": 161878,
+   "records": 161877,
    "suppressed": 3396
   },
   {
@@ -230,8 +224,8 @@
   {
    "cells": 4005,
    "month": "2019-09",
-   "records": 150409,
-   "suppressed": 3303
+   "records": 150410,
+   "suppressed": 3302
   },
   {
    "cells": 4056,
@@ -242,13 +236,13 @@
   {
    "cells": 4010,
    "month": "2019-11",
-   "records": 151109,
+   "records": 151108,
    "suppressed": 3247
   },
   {
    "cells": 3985,
    "month": "2019-12",
-   "records": 151335,
+   "records": 151334,
    "suppressed": 3259
   },
   {
@@ -260,13 +254,13 @@
   {
    "cells": 4012,
    "month": "2020-02",
-   "records": 149555,
+   "records": 149557,
    "suppressed": 3181
   },
   {
    "cells": 3994,
    "month": "2020-03",
-   "records": 148247,
+   "records": 148248,
    "suppressed": 3169
   },
   {
@@ -278,32 +272,32 @@
   {
    "cells": 4068,
    "month": "2020-05",
-   "records": 143585,
+   "records": 143587,
    "suppressed": 3236
   },
   {
    "cells": 4139,
    "month": "2020-06",
-   "records": 153749,
+   "records": 153759,
    "suppressed": 3217
   },
   {
    "cells": 4236,
    "month": "2020-07",
-   "records": 170707,
-   "suppressed": 3207
+   "records": 170711,
+   "suppressed": 3208
   },
   {
    "cells": 4209,
    "month": "2020-08",
-   "records": 170360,
+   "records": 170346,
    "suppressed": 3332
   },
   {
-   "cells": 4166,
+   "cells": 4086,
    "month": "2020-09",
-   "records": 162164,
-   "suppressed": 3399
+   "records": 159261,
+   "suppressed": 3352
   },
   {
    "cells": 4143,
@@ -378,91 +372,91 @@
    "suppressed": 3302
   },
   {
-   "cells": 4386,
+   "cells": 4387,
    "month": "2021-10",
-   "records": 187414,
+   "records": 187415,
    "suppressed": 3286
   },
   {
-   "cells": 4303,
+   "cells": 4305,
    "month": "2021-11",
-   "records": 182912,
+   "records": 182914,
    "suppressed": 3247
   },
   {
-   "cells": 4255,
+   "cells": 4256,
    "month": "2021-12",
-   "records": 174063,
-   "suppressed": 3275
+   "records": 174066,
+   "suppressed": 3278
   },
   {
-   "cells": 4297,
+   "cells": 4298,
    "month": "2022-01",
-   "records": 175198,
+   "records": 175199,
    "suppressed": 3307
   },
   {
-   "cells": 4202,
+   "cells": 4203,
    "month": "2022-02",
-   "records": 167419,
-   "suppressed": 3246
+   "records": 167421,
+   "suppressed": 3249
   },
   {
    "cells": 4348,
    "month": "2022-03",
    "records": 187970,
-   "suppressed": 3416
+   "suppressed": 3417
   },
   {
-   "cells": 4280,
+   "cells": 4282,
    "month": "2022-04",
    "records": 177251,
    "suppressed": 3308
   },
   {
-   "cells": 4502,
+   "cells": 4503,
    "month": "2022-05",
-   "records": 195664,
-   "suppressed": 3215
+   "records": 195668,
+   "suppressed": 3214
   },
   {
-   "cells": 4447,
+   "cells": 4448,
    "month": "2022-06",
    "records": 187655,
    "suppressed": 3390
   },
   {
-   "cells": 4539,
+   "cells": 4540,
    "month": "2022-07",
    "records": 195386,
-   "suppressed": 3313
+   "suppressed": 3315
   },
   {
-   "cells": 4524,
+   "cells": 4525,
    "month": "2022-08",
-   "records": 187693,
-   "suppressed": 3335
+   "records": 187694,
+   "suppressed": 3337
   },
   {
-   "cells": 4397,
+   "cells": 4399,
    "month": "2022-09",
-   "records": 177572,
-   "suppressed": 3307
+   "records": 177573,
+   "suppressed": 3306
   },
   {
-   "cells": 4439,
+   "cells": 4440,
    "month": "2022-10",
    "records": 183165,
-   "suppressed": 3146
+   "suppressed": 3147
   },
   {
-   "cells": 4126,
+   "cells": 4127,
    "month": "2022-11",
-   "records": 173322,
-   "suppressed": 3059
+   "records": 173324,
+   "suppressed": 3061
   },
   {
-   "cells": 3997,
+   "cells": 3998,
    "month": "2022-12",
    "records": 159091,
    "suppressed": 3039
@@ -470,56 +464,56 @@
   {
    "cells": 4063,
    "month": "2023-01",
-   "records": 169031,
-   "suppressed": 3063
+   "records": 169032,
+   "suppressed": 3065
   },
   {
-   "cells": 4041,
+   "cells": 4042,
    "month": "2023-02",
-   "records": 163083,
-   "suppressed": 2935
+   "records": 163082,
+   "suppressed": 2934
   },
   {
-   "cells": 4207,
+   "cells": 4208,
    "month": "2023-03",
-   "records": 180628,
-   "suppressed": 2927
+   "records": 180631,
+   "suppressed": 2926
   },
   {
-   "cells": 3966,
+   "cells": 3967,
    "month": "2023-04",
-   "records": 168069,
+   "records": 168072,
    "suppressed": 3016
   },
   {
-   "cells": 4089,
+   "cells": 4090,
    "month": "2023-05",
    "records": 180801,
    "suppressed": 3091
   },
   {
-   "cells": 4199,
+   "cells": 4200,
    "month": "2023-06",
-   "records": 182430,
-   "suppressed": 3126
+   "records": 182422,
+   "suppressed": 3127
   },
   {
-   "cells": 4188,
+   "cells": 4189,
    "month": "2023-07",
-   "records": 176371,
-   "suppressed": 3123
+   "records": 176375,
+   "suppressed": 3125
   },
   {
-   "cells": 3818,
+   "cells": 3819,
    "month": "2023-08",
-   "records": 158828,
-   "suppressed": 2721
+   "records": 158823,
+   "suppressed": 2719
   },
   {
-   "cells": 4269,
+   "cells": 3894,
    "month": "2023-09",
-   "records": 175857,
-   "suppressed": 3390
+   "records": 166526,
+   "suppressed": 2866
   },
   {
    "cells": 4226,
@@ -702,10 +696,10 @@
    "suppressed": 3348
   },
   {
-   "cells": 4203,
+   "cells": 4175,
    "month": "2026-04",
-   "records": 167037,
-   "suppressed": 3420
+   "records": 166131,
+   "suppressed": 3413
   },
   {
    "cells": 4351,
@@ -730,38 +724,44 @@
    "month": "2026-08",
    "records": 177895,
    "suppressed": 3506
+  },
+  {
+   "cells": 4196,
+   "month": "2026-09",
+   "records": 169055,
+   "suppressed": 3278
   }
  ],
  "previous_latest_month": "2026-08",
  "project": "UK Sexual Offence Density Atlas (USODA)",
  "quality": {
-  "btp_scotland_records_excluded": 3327,
-  "duplicate_rows_dropped": 160923,
+  "btp_scotland_records_excluded": 3326,
+  "duplicate_rows_dropped": 157950,
   "force_gaps": {
    "btp": {
-    "first": "2016-09",
-    "last": "2026-08",
-    "missing_months": 31
+    "first": "2016-10",
+    "last": "2026-09",
+    "missing_months": 32
    },
    "cumbria": {
     "first": "2023-08",
-    "last": "2023-08",
-    "missing_months": 1
+    "last": "2026-09",
+    "missing_months": 2
    },
    "devon-and-cornwall": {
     "first": "2022-11",
-    "last": "2023-08",
-    "missing_months": 10
+    "last": "2023-09",
+    "missing_months": 11
    },
    "gloucestershire": {
     "first": "2026-02",
-    "last": "2026-08",
-    "missing_months": 7
+    "last": "2026-09",
+    "missing_months": 8
    },
    "greater-manchester": {
     "first": "2019-07",
-    "last": "2026-08",
-    "missing_months": 85
+    "last": "2026-09",
+    "missing_months": 86
    },
    "lincolnshire": {
     "first": "2023-04",
@@ -770,22 +770,22 @@
    },
    "northern-ireland": {
     "first": "2023-08",
-    "last": "2023-08",
-    "missing_months": 1
+    "last": "2023-09",
+    "missing_months": 2
    },
    "nottinghamshire": {
     "first": "2023-08",
-    "last": "2023-08",
-    "missing_months": 1
+    "last": "2023-09",
+    "missing_months": 2
    },
    "staffordshire": {
     "first": "2020-06",
-    "last": "2020-08",
-    "missing_months": 3
+    "last": "2020-09",
+    "missing_months": 4
    }
   },
   "force_location_share_pct": {
-   "avon-and-somerset": 90.3,
+   "avon-and-somerset": 90.4,
    "bedfordshire": 97.6,
    "btp": 96.1,
    "cambridgeshire": 96.9,
@@ -795,18 +795,18 @@
    "cumbria": 100.0,
    "derbyshire": 100.0,
    "devon-and-cornwall": 94.9,
-   "dorset": 96.5,
+   "dorset": 96.6,
    "durham": 100.0,
    "dyfed-powys": 96.4,
    "essex": 99.1,
    "gloucestershire": 90.7,
    "greater-manchester": 100.0,
-   "gwent": 98.9,
+   "gwent": 98.8,
    "hampshire": 100.0,
    "hertfordshire": 98.4,
    "humberside": 100.0,
    "kent": 98.2,
-   "lancashire": 93.0,
+   "lancashire": 93.1,
    "leicestershire": 97.0,
    "lincolnshire": 100.0,
    "merseyside": 100.0,
@@ -820,22 +820,22 @@
    "nottinghamshire": 99.3,
    "south-wales": 98.0,
    "south-yorkshire": 95.0,
-   "staffordshire": 95.8,
+   "staffordshire": 95.9,
    "suffolk": 98.2,
    "surrey": 97.4,
-   "sussex": 97.7,
+   "sussex": 97.6,
    "thames-valley": 94.8,
    "warwickshire": 99.1,
-   "west-mercia": 97.8,
+   "west-mercia": 97.7,
    "west-midlands": 100.0,
    "west-yorkshire": 97.7,
    "wiltshire": 100.0
   },
-  "force_month_coverage_pct": 97.41,
+  "force_month_coverage_pct": 97.26,
   "forces_seen": 45,
-  "location_share_pct": 97.92,
-  "records_in_window": 19189075,
-  "records_with_location": 18790097
+  "location_share_pct": 97.93,
+  "records_in_window": 19238547,
+  "records_with_location": 18839819
  },
  "sources": [
   {
@@ -845,49 +845,49 @@
   }
  ],
  "window": {
-  "from": "2016-09",
+  "from": "2016-10",
   "missing_months_in_window": [],
   "months": 120,
   "note": "Full rolling 120-month window.",
   "target_months": 120,
-  "to": "2026-08"
+  "to": "2026-09"
  },
  "windows": {
   "10y": {
-   "cells": 11658,
-   "from": "2016-09",
+   "cells": 11656,
+   "from": "2016-10",
    "months": 120,
-   "records_plotted": 18789669,
-   "records_suppressed": 428,
+   "records_plotted": 18839382,
+   "records_suppressed": 437,
    "requested_months": 120,
-   "to": "2026-08"
+   "to": "2026-09"
   },
   "12m": {
-   "cells": 9366,
-   "from": "2025-09",
+   "cells": 9306,
+   "from": "2025-10",
    "months": 12,
-   "records_plotted": 2037320,
-   "records_suppressed": 2122,
+   "records_plotted": 2038026,
+   "records_suppressed": 2215,
    "requested_months": 12,
-   "to": "2026-08"
+   "to": "2026-09"
   },
   "3y": {
-   "cells": 10830,
-   "from": "2023-09",
+   "cells": 10828,
+   "from": "2023-10",
    "months": 36,
-   "records_plotted": 6089365,
-   "records_suppressed": 958,
+   "records_plotted": 6082015,
+   "records_suppressed": 963,
    "requested_months": 36,
-   "to": "2026-08"
+   "to": "2026-09"
   },
   "5y": {
-   "cells": 11276,
-   "from": "2021-09",
+   "cells": 11269,
+   "from": "2021-10",
    "months": 60,
-   "records_plotted": 10282331,
-   "records_suppressed": 696,
+   "records_plotted": 10260374,
+   "records_suppressed": 693,
    "requested_months": 60,
-   "to": "2026-08"
+   "to": "2026-09"
   }
  }
 }
